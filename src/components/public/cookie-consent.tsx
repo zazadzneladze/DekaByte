@@ -32,6 +32,9 @@ export function CookieConsent() {
 
   if (!isClient || consent !== null) return null;
 
+  // Don't interrupt visitors when Meta Pixel is not configured yet.
+  if (!getMetaPixelId()) return null;
+
   return (
     <div
       role="dialog"

@@ -17,7 +17,7 @@ import {
   scopeOptions,
   type EstimateResult,
 } from "@/config/estimate";
-import { whatsappHref } from "@/config/site";
+import { whatsappDefaultMessage, whatsappHref } from "@/config/site";
 import { trackMetaEvent, TrackedAnchor } from "@/lib/meta-pixel";
 import { cn } from "@/lib/utils";
 
@@ -54,7 +54,7 @@ export function EstimateCalculator() {
 
   const waHref = result
     ? whatsappHref(buildEstimateWhatsAppMessage(result))
-    : whatsappHref();
+    : whatsappHref(whatsappDefaultMessage);
   const contactHref = result
     ? `/contact?summary=${encodeURIComponent(result.summary)}`
     : "/contact";
@@ -172,35 +172,38 @@ export function EstimateCalculator() {
       </div>
 
       <div className="lg:sticky lg:top-[calc(var(--header-height)+1.5rem)] lg:self-start">
-        <div className="rounded-xl border border-border bg-surface p-5 shadow-soft sm:p-6">
-          <h2 className="text-lg font-semibold text-foreground">
+        <div className="rounded-2xl border border-border/80 bg-surface p-5 shadow-lift ring-1 ring-border/40 sm:p-6">
+          <p className="text-[0.7rem] font-semibold tracking-[0.14em] text-electric uppercase">
+            შედეგი
+          </p>
+          <h2 className="mt-2 text-xl font-semibold tracking-tight text-foreground">
             სავარაუდო შეფასება
           </h2>
 
           {result ? (
-            <div className="mt-5 flex flex-col gap-4">
+            <div className="mt-6 flex flex-col gap-5">
               <div>
                 <p className="text-sm text-muted-foreground">ბიუჯეტი</p>
-                <p className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
+                <p className="text-display mt-1 text-3xl font-semibold text-foreground">
                   {formatGelRange(result.minPrice, result.maxPrice)}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">ვადა</p>
-                <p className="mt-1 text-lg font-semibold text-foreground">
+                <p className="mt-1 text-xl font-semibold tracking-tight text-foreground">
                   {formatDaysRange(result.minDays, result.maxDays)}
                 </p>
               </div>
-              <dl className="space-y-2 border-t border-border pt-4 text-sm">
+              <dl className="space-y-2.5 border-t border-border pt-4 text-sm">
                 <div className="flex justify-between gap-4">
                   <dt className="text-muted-foreground">პროდუქტი</dt>
-                  <dd className="text-right text-foreground">
+                  <dd className="text-right font-medium text-foreground">
                     {result.productName}
                   </dd>
                 </div>
                 <div className="flex justify-between gap-4">
                   <dt className="text-muted-foreground">მასშტაბი</dt>
-                  <dd className="text-right text-foreground">
+                  <dd className="text-right font-medium text-foreground">
                     {result.scopeName}
                   </dd>
                 </div>
@@ -218,7 +221,7 @@ export function EstimateCalculator() {
                 {ESTIMATE_DISCLAIMER}
               </p>
 
-              <div className="flex flex-col gap-2 pt-2">
+              <div className="flex flex-col gap-2 pt-1">
                 <Button
                   size="lg"
                   className="w-full"
@@ -244,7 +247,7 @@ export function EstimateCalculator() {
               </div>
             </div>
           ) : (
-            <p className="mt-4 text-sm text-muted-foreground">
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
               აირჩიეთ პროდუქტი და მასშტაბი შეფასების სანახავად.
             </p>
           )}

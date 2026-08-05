@@ -5,7 +5,11 @@ import { MobileContactBar } from "@/components/public/mobile-contact-bar";
 import { SiteFooter } from "@/components/public/site-footer";
 import { SiteHeader } from "@/components/public/site-header";
 import { getPublicSiteSettings } from "@/db/queries";
-import { JsonLdScript, organizationJsonLd } from "@/lib/seo";
+import {
+  JsonLdScript,
+  organizationJsonLd,
+  professionalServiceJsonLd,
+} from "@/lib/seo";
 
 function HeaderFallback() {
   return (
@@ -23,11 +27,18 @@ export default async function PublicLayout({
   return (
     <>
       <JsonLdScript
-        data={organizationJsonLd({
-          brandName: settings.brandName,
-          email: settings.email,
-          phoneE164: settings.phoneE164,
-        })}
+        data={[
+          organizationJsonLd({
+            brandName: settings.brandName,
+            email: settings.email,
+            phoneE164: settings.phoneE164,
+          }),
+          professionalServiceJsonLd({
+            brandName: settings.brandName,
+            email: settings.email,
+            phoneE164: settings.phoneE164,
+          }),
+        ]}
       />
       <a
         href="#main-content"

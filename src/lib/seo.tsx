@@ -7,14 +7,57 @@ export function organizationJsonLd(settings?: {
   email?: string;
   phoneE164?: string;
 }): JsonLd {
+  const name = settings?.brandName ?? siteDefaults.brandName;
+  const email = settings?.email ?? siteDefaults.email;
+  const telephone = settings?.phoneE164 ?? siteDefaults.phoneE164;
+  const url = getSiteUrl();
+
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: settings?.brandName ?? siteDefaults.brandName,
-    url: getSiteUrl(),
-    email: settings?.email ?? siteDefaults.email,
-    telephone: settings?.phoneE164 ?? siteDefaults.phoneE164,
+    name,
+    url,
+    email,
+    telephone,
     areaServed: "GE",
+  };
+}
+
+/** Studio / agency entity for richer local search understanding. */
+export function professionalServiceJsonLd(settings?: {
+  brandName?: string;
+  email?: string;
+  phoneE164?: string;
+}): JsonLd {
+  const name = settings?.brandName ?? siteDefaults.brandName;
+  const email = settings?.email ?? siteDefaults.email;
+  const telephone = settings?.phoneE164 ?? siteDefaults.phoneE164;
+  const url = getSiteUrl();
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name,
+    url,
+    email,
+    telephone,
+    description: siteDefaults.defaultSeoDescription,
+    areaServed: {
+      "@type": "Country",
+      name: "Georgia",
+    },
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "GE",
+    },
+    availableLanguage: ["ka", "en"],
+    priceRange: "$$",
+    serviceType: [
+      "Website development",
+      "Web application development",
+      "Android application development",
+      "UI/UX design",
+    ],
   };
 }
 
