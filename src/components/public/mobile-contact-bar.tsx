@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { MailIcon, MessageCircleIcon, PhoneIcon, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { mailtoHref, telHref, whatsappHref } from "@/config/site";
+import { mailtoHref, telHref, whatsappDefaultMessage, whatsappHref } from "@/config/site";
 import { trackMetaEvent } from "@/lib/meta-pixel";
 
 const DISMISS_KEY = "dekabyte-mobile-contact-dismissed";
@@ -69,7 +69,7 @@ export function MobileContactBar({ settings }: MobileContactBarProps) {
 
   const tel = telHref(settings.phoneE164);
   const mail = mailtoHref(settings.email);
-  const wa = whatsappHref();
+  const wa = whatsappHref(whatsappDefaultMessage);
 
   function dismiss() {
     try {

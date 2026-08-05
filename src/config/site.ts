@@ -27,6 +27,14 @@ export function whatsappHref(text?: string) {
   return `${base}?text=${encodeURIComponent(text)}`;
 }
 
+/** Default outreach message when clicking WhatsApp CTAs. */
+export const whatsappDefaultMessage =
+  "გამარჯობა! მაინტერესებს პროექტი DekaByte-თან.";
+
+export function whatsappProjectMessage(projectTitle: string) {
+  return `გამარჯობა! მაინტერესებს მსგავსი პროექტი: ${projectTitle}`;
+}
+
 export function telHref(phoneE164: string = siteDefaults.phoneE164) {
   return `tel:${phoneE164}`;
 }

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Logo } from "@/components/public/logo";
 import { TrackedAnchor } from "@/lib/meta-pixel";
-import { mailtoHref, telHref, whatsappHref } from "@/config/site";
+import { mailtoHref, telHref, whatsappDefaultMessage, whatsappHref } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 export type SiteFooterSettings = {
@@ -27,7 +27,7 @@ const FOOTER_NAV = [
 
 export function SiteFooter({ settings, className }: SiteFooterProps) {
   const year = 2026;
-  const wa = whatsappHref();
+  const wa = whatsappHref(whatsappDefaultMessage);
   const tel = telHref(settings.phoneE164);
   const mail = mailtoHref(settings.email);
 

@@ -18,7 +18,7 @@ import {
   servicesContent,
   whyDekabyte,
 } from "@/config/content";
-import { whatsappHref } from "@/config/site";
+import { whatsappDefaultMessage, whatsappHref } from "@/config/site";
 import { getFeaturedProjects, getPublishedProjects } from "@/db/queries";
 import { TrackedAnchor } from "@/lib/meta-pixel";
 
@@ -26,9 +26,11 @@ export default async function HomePage() {
   let featured = await getFeaturedProjects();
   if (featured.length === 0) {
     featured = (await getPublishedProjects()).slice(0, 3);
+  } else {
+    featured = featured.slice(0, 3);
   }
 
-  const wa = whatsappHref();
+  const wa = whatsappHref(whatsappDefaultMessage);
   const lead = featured[0];
   const showcaseCover =
     lead?.coverImageUrl ?? lead?.images[0]?.url ?? null;

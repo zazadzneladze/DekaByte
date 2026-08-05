@@ -28,6 +28,11 @@ export const metadata: Metadata = {
     type: "website",
     siteName: siteDefaults.brandName,
   },
+  twitter: {
+    card: "summary_large_image",
+    title: siteDefaults.defaultSeoTitle,
+    description: siteDefaults.defaultSeoDescription,
+  },
 };
 
 export default function RootLayout({

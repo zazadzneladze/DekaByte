@@ -7,7 +7,7 @@ import type { ProjectCategoryId } from "@/config/categories";
 
 export const CACHE_TAGS = {
   projects: "projects",
-  featured: "featured-projects",
+  featured: "featured-projects-v2",
   siteSettings: "site-settings",
   project: (slug: string) => `project:${slug}`,
 } as const;
