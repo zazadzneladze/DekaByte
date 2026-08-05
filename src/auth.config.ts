@@ -21,7 +21,18 @@ export const authConfig = {
 
       if (isAdminArea) {
         if (isAdminLogin) return true;
-        return auth?.user?.role === "admin";
+        // Static assets under /admin (matcher usually excludes these)
+        if (
+          pathname.endsWith(".js") ||
+          pathname.endsWith(".webmanifest") ||
+          pathname.endsWith(".png")
+        ) {
+          return true;
+        }
+        if (auth?.user?.role === "admin") return true;
+        // Legacy JWT without role — let the Node layout backfill + enforce
+        if (auth?.user?.email) return true;
+        return false;
       }
 
       if (isPortalArea) {
