@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   calculateEstimate,
+  defaultEstimateConfig,
   formatDaysRange,
   formatGelRange,
 } from "@/config/estimate";
@@ -21,6 +22,20 @@ describe("calculateEstimate", () => {
     expect(result.minDays).toBe(5);
     expect(result.maxDays).toBe(Math.round(5 * 1.3));
     expect(result.addOnNames).toEqual([]);
+    expect(result.discountPercent).toBe(0);
+    expect(result.preDiscountMinPrice).toBe(900);
+  });
+
+  it("applies global discount percent to prices", () => {
+    const result = calculateEstimate(
+      { productId: "landing", scopeId: "small", addOnIds: [] },
+      { ...defaultEstimateConfig, discountPercent: 10 },
+    );
+
+    expect(result.preDiscountMinPrice).toBe(900);
+    expect(result.minPrice).toBe(Math.round(900 * 0.9));
+    expect(result.maxPrice).toBe(Math.round(900 * 0.9 * 1.25));
+    expect(result.discountPercent).toBe(10);
   });
 
   it("adds feature (add-on) prices and days", () => {

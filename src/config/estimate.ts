@@ -32,10 +32,23 @@ export type EstimateResult = {
   maxPrice: number;
   minDays: number;
   maxDays: number;
+  /** Price before discount (same as minPrice when discount is 0). */
+  preDiscountMinPrice: number;
+  discountPercent: number;
   productName: string;
   scopeName: string;
   addOnNames: string[];
   summary: string;
+};
+
+export type EstimateConfig = {
+  discountPercent: number;
+  priceRangeMultiplier: number;
+  daysRangeMultiplier: number;
+  products: ProductType[];
+  scopes: ScopeOption[];
+  addOns: AddOnOption[];
+  disclaimer: string;
 };
 
 export const ESTIMATE_DISCLAIMER =
@@ -122,6 +135,16 @@ export const addOns: AddOnOption[] = [
   },
 ];
 
+export const defaultEstimateConfig: EstimateConfig = {
+  discountPercent: 0,
+  priceRangeMultiplier: 1.25,
+  daysRangeMultiplier: 1.3,
+  products: productTypes,
+  scopes: scopeOptions,
+  addOns,
+  disclaimer: ESTIMATE_DISCLAIMER,
+};
+
 export function formatGelAmount(amount: number) {
   return `${amount.toLocaleString("ka-GE")} ₾`;
 }
@@ -134,9 +157,12 @@ export function formatDaysRange(min: number, max: number) {
   return `${min} - ${max} დღე`;
 }
 
-export function calculateEstimate(input: EstimateInput): EstimateResult {
-  const product = productTypes.find((p) => p.id === input.productId);
-  const scope = scopeOptions.find((s) => s.id === input.scopeId);
+export function calculateEstimate(
+  input: EstimateInput,
+  config: EstimateConfig = defaultEstimateConfig,
+): EstimateResult {
+  const product = config.products.find((p) => p.id === input.productId);
+  const scope = config.scopes.find((s) => s.id === input.scopeId);
 
   if (!product || !scope) {
     throw new Error("INVALID_ESTIMATE_INPUT");
@@ -144,7 +170,7 @@ export function calculateEstimate(input: EstimateInput): EstimateResult {
 
   const uniqueAddOnIds = [...new Set(input.addOnIds)];
   const selectedAddOns = uniqueAddOnIds.map((id) => {
-    const addon = addOns.find((a) => a.id === id);
+    const addon = config.addOns.find((a) => a.id === id);
     if (!addon) throw new Error("INVALID_ADDON");
     return addon;
   });
@@ -157,25 +183,46 @@ export function calculateEstimate(input: EstimateInput): EstimateResult {
     calcMinDays += addon.days;
   }
 
-  const minPrice = Math.round(calcMinPrice);
-  const maxPrice = Math.round(calcMinPrice * 1.25);
+  const discountPercent = Math.min(
+    100,
+    Math.max(0, Number(config.discountPercent) || 0),
+  );
+  const preDiscountMinPrice = Math.round(calcMinPrice);
+  const discounted =
+    calcMinPrice * (1 - discountPercent / 100);
+  const minPrice = Math.round(discounted);
+  const maxPrice = Math.round(
+    discounted * (config.priceRangeMultiplier || 1.25),
+  );
   const minDays = Math.round(calcMinDays);
-  const maxDays = Math.round(calcMinDays * 1.3);
+  const maxDays = Math.round(
+    calcMinDays * (config.daysRangeMultiplier || 1.3),
+  );
   const addOnNames = selectedAddOns.map((a) => a.name);
+
+  const discountLine =
+    discountPercent > 0
+      ? `ფასდაკლება: ${discountPercent}% (ფასამდე: ${formatGelAmount(preDiscountMinPrice)})`
+      : null;
 
   const summary = [
     `პროდუქტი: ${product.name}`,
     `მასშტაბი: ${scope.name}`,
     `დამატებითი მოდულები: ${addOnNames.length ? addOnNames.join(", ") : "არ არის არჩეული"}`,
+    discountLine,
     `სავარაუდო ბიუჯეტი: ${formatGelRange(minPrice, maxPrice)}`,
     `სავარაუდო ვადა: ${formatDaysRange(minDays, maxDays)}`,
-  ].join("\n");
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   return {
     minPrice,
     maxPrice,
     minDays,
     maxDays,
+    preDiscountMinPrice,
+    discountPercent,
     productName: product.name,
     scopeName: scope.name,
     addOnNames,
@@ -184,10 +231,59 @@ export function calculateEstimate(input: EstimateInput): EstimateResult {
 }
 
 export function buildEstimateWhatsAppMessage(result: EstimateResult) {
+  const discountBit =
+    result.discountPercent > 0
+      ? `\n• ფასდაკლება: ${result.discountPercent}%`
+      : "";
   return `გამარჯობა, მაინტერესებს პროექტის დაწყება DekaByte-ში. ჩემი წინასწარი კალკულაციაა:
 • პროდუქტი: ${result.productName}
 • მასშტაბი: ${result.scopeName}
-• დამატებითი მოდულები: ${result.addOnNames.length ? result.addOnNames.join(", ") : "არ არის არჩეული"}
+• დამატებითი მოდულები: ${result.addOnNames.length ? result.addOnNames.join(", ") : "არ არის არჩეული"}${discountBit}
 • სავარაუდო ბიუჯეტი: ${formatGelRange(result.minPrice, result.maxPrice)}
 • სავარაუდო ვადა: ${formatDaysRange(result.minDays, result.maxDays)}.`;
+}
+
+/** Merge partial DB jsonb with file defaults (keeps ids/structure stable). */
+export function mergeEstimateConfig(
+  stored: Partial<EstimateConfig> | null | undefined,
+): EstimateConfig {
+  if (!stored || typeof stored !== "object") {
+    return structuredClone(defaultEstimateConfig);
+  }
+
+  const byId = <T extends { id: string }>(
+    defaults: T[],
+    overrides: T[] | undefined,
+  ): T[] => {
+    if (!Array.isArray(overrides) || overrides.length === 0) {
+      return structuredClone(defaults);
+    }
+    const map = new Map(overrides.map((item) => [item.id, item]));
+    return defaults.map((item) => {
+      const over = map.get(item.id);
+      return over ? { ...item, ...over, id: item.id } : structuredClone(item);
+    });
+  };
+
+  return {
+    discountPercent: Math.min(
+      100,
+      Math.max(0, Number(stored.discountPercent) || 0),
+    ),
+    priceRangeMultiplier:
+      Number(stored.priceRangeMultiplier) > 0
+        ? Number(stored.priceRangeMultiplier)
+        : defaultEstimateConfig.priceRangeMultiplier,
+    daysRangeMultiplier:
+      Number(stored.daysRangeMultiplier) > 0
+        ? Number(stored.daysRangeMultiplier)
+        : defaultEstimateConfig.daysRangeMultiplier,
+    products: byId(defaultEstimateConfig.products, stored.products),
+    scopes: byId(defaultEstimateConfig.scopes, stored.scopes),
+    addOns: byId(defaultEstimateConfig.addOns, stored.addOns),
+    disclaimer:
+      typeof stored.disclaimer === "string" && stored.disclaimer.trim()
+        ? stored.disclaimer.trim()
+        : defaultEstimateConfig.disclaimer,
+  };
 }

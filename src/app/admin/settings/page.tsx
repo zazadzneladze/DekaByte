@@ -1,7 +1,9 @@
 import { Suspense } from "react";
 import { adminGetSiteSettings } from "@/db/queries";
 import { siteDefaults } from "@/config/site";
+import { mergeEstimateConfig } from "@/config/estimate";
 import { SettingsForms } from "@/components/admin/settings-forms";
+import { EstimateSettingsForm } from "@/components/admin/estimate-settings-form";
 
 export default function AdminSettingsPage() {
   return (
@@ -32,15 +34,18 @@ async function AdminSettingsContent() {
       settings?.defaultSeoDescription ?? siteDefaults.defaultSeoDescription,
   };
 
+  const estimateInitial = mergeEstimateConfig(settings?.estimateConfig ?? null);
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-semibold tracking-tight">პარამეტრები</h1>
         <p className="text-sm text-muted-foreground">
-          საიტის საკონტაქტო ინფორმაცია და ადმინ პაროლი
+          საკონტაქტო ინფო, ბიუჯეტის ცხრილები და ადმინ პაროლი
         </p>
       </div>
       <SettingsForms initial={initial} />
+      <EstimateSettingsForm initial={estimateInitial} />
     </div>
   );
 }

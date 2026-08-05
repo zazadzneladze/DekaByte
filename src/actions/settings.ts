@@ -12,7 +12,9 @@ import {
   invalidateSiteSettingsCache,
 } from "@/db/queries";
 import { changePasswordSchema } from "@/validators/auth";
+import { estimateConfigSchema } from "@/validators/estimate";
 import { isSafeHttpUrl } from "@/lib/security";
+import type { EstimateConfig } from "@/config/estimate";
 
 export type SettingsActionResult =
   | { ok: true }
@@ -88,6 +90,47 @@ export async function updateSiteSettings(
 
   invalidateSiteSettingsCache();
   revalidatePath("/admin/settings");
+  revalidatePath("/");
+
+  return { ok: true };
+}
+
+export async function updateEstimateConfig(
+  raw: unknown,
+): Promise<SettingsActionResult> {
+  await requireAdmin();
+
+  const parsed = estimateConfigSchema.safeParse(raw);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "ვალიდაცია ვერ გაიარა",
+      fieldErrors: parsed.error.flatten().fieldErrors as Record<
+        string,
+        string[]
+      >,
+    };
+  }
+
+  const config = parsed.data as EstimateConfig;
+  const db = getDb();
+  const existing = await adminGetSiteSettings();
+
+  if (existing) {
+    await db
+      .update(siteSettings)
+      .set({ estimateConfig: config, updatedAt: new Date() })
+      .where(eq(siteSettings.id, 1));
+  } else {
+    return {
+      ok: false,
+      error: "ჯერ შეინახეთ საიტის პარამეტრები, შემდეგ ბიუჯეტის ცხრილები",
+    };
+  }
+
+  invalidateSiteSettingsCache();
+  revalidatePath("/admin/settings");
+  revalidatePath("/estimate");
   revalidatePath("/");
 
   return { ok: true };

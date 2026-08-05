@@ -15,7 +15,7 @@ Next.js App Router, TypeScript strict, Tailwind, shadcn/ui, Neon Postgres, Drizz
 ## Content rules
 - Georgian UI copy; no fake stats/testimonials
 - Contact defaults from `src/config/site.ts` with DB `site_settings` override
-- Pricing only in `src/config/estimate.ts`
+- Pricing defaults in `src/config/estimate.ts`; admin override + discount % in `site_settings.estimate_config`
 
 ## Client portal
 - Invite-by-email: admin sets `client_projects.clientEmail`; Google login email must match

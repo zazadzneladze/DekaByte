@@ -15,6 +15,13 @@
       "when": 1785950000000,
       "tag": "0001_client_portal",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785951000000,
+      "tag": "0002_estimate_config",
+      "breakpoints": true
     }
   ]
 }

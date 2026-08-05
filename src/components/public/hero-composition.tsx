@@ -32,9 +32,9 @@ export function HeroComposition({ className, showcase }: HeroCompositionProps) {
         <>
           <div className="animate-float absolute top-[5%] left-[3%] z-10 w-[78%] overflow-hidden rounded-2xl border border-border/80 bg-surface shadow-lift">
             <div className="flex items-center gap-1.5 border-b border-border bg-off-white/90 px-3 py-2">
-              <span className="size-2 rounded-full bg-[#E2E5EA]" />
-              <span className="size-2 rounded-full bg-[#E2E5EA]" />
-              <span className="size-2 rounded-full bg-[#E2E5EA]" />
+              <span className="size-2 rounded-full bg-[#ff5f57]" />
+              <span className="size-2 rounded-full bg-[#febc2e]" />
+              <span className="size-2 rounded-full bg-[#28c840]" />
               <span className="ml-2 truncate text-[0.65rem] font-medium tracking-wide text-slate">
                 {showcase.title}
               </span>

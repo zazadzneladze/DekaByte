@@ -7,6 +7,7 @@ import {
   clientProjectStatusLabel,
 } from "@/config/client-portal";
 import { PortalChat } from "@/components/portal/chat";
+import { MacBrowserFrame } from "@/components/public/mac-browser-frame";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -52,21 +53,23 @@ export default async function PortalProjectDetailPage({
       {screenshots.length > 0 ? (
         <section className="space-y-3">
           <h2 className="text-sm font-semibold">სქრინშოტები</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {screenshots.map((asset) => (
               <a
                 key={asset.id}
                 href={asset.url}
                 target="_blank"
                 rel="noreferrer"
-                className="overflow-hidden rounded-lg ring-1 ring-border"
+                className="block"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={asset.url}
-                  alt={asset.filename}
-                  className="aspect-video w-full object-cover"
-                />
+                <MacBrowserFrame title={project.title}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={asset.url}
+                    alt={asset.filename}
+                    className="aspect-video w-full object-cover object-top"
+                  />
+                </MacBrowserFrame>
               </a>
             ))}
           </div>

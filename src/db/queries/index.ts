@@ -16,11 +16,17 @@ import {
 } from "@/db/schema";
 import { siteDefaults } from "@/config/site";
 import type { ProjectCategoryId } from "@/config/categories";
+import {
+  defaultEstimateConfig,
+  mergeEstimateConfig,
+  type EstimateConfig,
+} from "@/config/estimate";
 
 export const CACHE_TAGS = {
   projects: "projects",
   featured: "featured-projects-v2",
   siteSettings: "site-settings",
+  estimate: "estimate-config",
   project: (slug: string) => `project:${slug}`,
 } as const;
 
@@ -138,6 +144,25 @@ export function invalidateProjectCaches(slug?: string) {
 
 export function invalidateSiteSettingsCache() {
   updateTag(CACHE_TAGS.siteSettings);
+  updateTag(CACHE_TAGS.estimate);
+}
+
+export async function getEstimateConfig(): Promise<EstimateConfig> {
+  "use cache";
+  cacheTag(CACHE_TAGS.estimate);
+  cacheTag(CACHE_TAGS.siteSettings);
+  cacheLife("hours");
+
+  try {
+    const db = getDb();
+    const row = await db.query.siteSettings.findFirst({
+      where: eq(siteSettings.id, 1),
+      columns: { estimateConfig: true },
+    });
+    return mergeEstimateConfig(row?.estimateConfig ?? null);
+  } catch {
+    return structuredClone(defaultEstimateConfig);
+  }
 }
 
 /** Always-fresh admin reads — never use cache helpers here. */

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { EstimateCalculator } from "@/app/(public)/estimate/estimate-calculator";
 import { SectionLabel } from "@/components/public/section-label";
-import { ESTIMATE_DISCLAIMER } from "@/config/estimate";
+import { getEstimateConfig } from "@/db/queries";
 
 export const metadata: Metadata = {
   title: "ბიუჯეტის შეფასება",
@@ -10,7 +10,9 @@ export const metadata: Metadata = {
     "გაიგეთ პროექტის საწყისი სავარაუდო ბიუჯეტი და ვადა — DekaByte კალკულატორი.",
 };
 
-export default function EstimatePage() {
+export default async function EstimatePage() {
+  const config = await getEstimateConfig();
+
   return (
     <div
       data-hide-mobile-contact
@@ -26,11 +28,16 @@ export default function EstimatePage() {
           სავარაუდო დიაპაზონი.
         </p>
         <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-          {ESTIMATE_DISCLAIMER}
+          {config.disclaimer}
         </p>
+        {config.discountPercent > 0 ? (
+          <p className="mt-3 text-sm font-medium text-electric">
+            მიმდინარე ფასდაკლება: {config.discountPercent}%
+          </p>
+        ) : null}
       </div>
 
-      <EstimateCalculator />
+      <EstimateCalculator config={config} />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import type { EstimateConfig } from "@/config/estimate";
 
 export const projectStatusEnum = pgEnum("project_status", ["draft", "published"]);
 export const projectCategoryEnum = pgEnum("project_category", [
@@ -129,6 +130,7 @@ export const siteSettings = pgTable("site_settings", {
   githubUrl: text("github_url").notNull().default(""),
   defaultSeoTitle: varchar("default_seo_title", { length: 200 }).notNull(),
   defaultSeoDescription: text("default_seo_description").notNull(),
+  estimateConfig: jsonb("estimate_config").$type<EstimateConfig | null>(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "lucide-react";
 
+import { MacBrowserFrame } from "@/components/public/mac-browser-frame";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -73,15 +74,17 @@ export function ProjectGallery({ images, projectTitle }: ProjectGalleryProps) {
                 onClick={() => openAt(i)}
                 className="group flex w-full flex-col gap-2 text-left"
               >
-                <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-secondary shadow-soft ring-1 ring-border/60">
-                  <Image
-                    src={image.url}
-                    alt={image.alt || projectTitle}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    sizes="(max-width: 640px) 100vw, 50vw"
-                  />
-                </div>
+                <MacBrowserFrame title={projectTitle}>
+                  <div className="relative aspect-[16/10] overflow-hidden bg-secondary">
+                    <Image
+                      src={image.url}
+                      alt={image.alt || projectTitle}
+                      fill
+                      className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                      sizes="(max-width: 640px) 100vw, 50vw"
+                    />
+                  </div>
+                </MacBrowserFrame>
                 {image.caption ? (
                   <p className="text-sm text-muted-foreground">{image.caption}</p>
                 ) : null}
@@ -143,16 +146,21 @@ export function ProjectGallery({ images, projectTitle }: ProjectGalleryProps) {
               ) : null}
 
               {current ? (
-                <div className="relative aspect-[16/10] w-full max-w-5xl">
-                  <Image
-                    src={current.url}
-                    alt={current.alt || projectTitle}
-                    fill
-                    className="object-contain"
-                    sizes="96vw"
-                    priority
-                  />
-                </div>
+                <MacBrowserFrame
+                  title={projectTitle}
+                  className="w-full max-w-5xl"
+                >
+                  <div className="relative aspect-[16/10] w-full bg-black">
+                    <Image
+                      src={current.url}
+                      alt={current.alt || projectTitle}
+                      fill
+                      className="object-contain"
+                      sizes="96vw"
+                      priority
+                    />
+                  </div>
+                </MacBrowserFrame>
               ) : null}
             </div>
 

@@ -7,33 +7,32 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import {
-  ESTIMATE_DISCLAIMER,
-  addOns,
   buildEstimateWhatsAppMessage,
   calculateEstimate,
   formatDaysRange,
   formatGelAmount,
   formatGelRange,
-  productTypes,
-  scopeOptions,
+  type EstimateConfig,
   type EstimateResult,
 } from "@/config/estimate";
 import { whatsappDefaultMessage, whatsappHref } from "@/config/site";
 import { trackMetaEvent, TrackedAnchor } from "@/lib/meta-pixel";
 import { cn } from "@/lib/utils";
 
-export function EstimateCalculator() {
-  const [productId, setProductId] = useState(productTypes[0]?.id ?? "landing");
-  const [scopeId, setScopeId] = useState(scopeOptions[0]?.id ?? "small");
+export function EstimateCalculator({ config }: { config: EstimateConfig }) {
+  const [productId, setProductId] = useState(
+    config.products[0]?.id ?? "landing",
+  );
+  const [scopeId, setScopeId] = useState(config.scopes[0]?.id ?? "small");
   const [addOnIds, setAddOnIds] = useState<string[]>([]);
 
   const result: EstimateResult | null = useMemo(() => {
     try {
-      return calculateEstimate({ productId, scopeId, addOnIds });
+      return calculateEstimate({ productId, scopeId, addOnIds }, config);
     } catch {
       return null;
     }
-  }, [productId, scopeId, addOnIds]);
+  }, [productId, scopeId, addOnIds, config]);
 
   const resultSummary = result?.summary;
 
@@ -68,7 +67,7 @@ export function EstimateCalculator() {
             პროდუქტის ტიპი
           </legend>
           <ul className="flex flex-col gap-2">
-            {productTypes.map((product) => (
+            {config.products.map((product) => (
               <li key={product.id}>
                 <label
                   className={cn(
@@ -78,26 +77,27 @@ export function EstimateCalculator() {
                       : "border-border bg-surface hover:border-foreground/20",
                   )}
                 >
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-start gap-3">
                     <input
                       type="radio"
                       name="product"
-                      value={product.id}
+                      className="mt-1"
                       checked={productId === product.id}
                       onChange={() => setProductId(product.id)}
-                      className="size-4 accent-[var(--electric)]"
                     />
-                    <span className="flex flex-1 flex-wrap items-baseline justify-between gap-2">
-                      <span className="font-medium text-foreground">
-                        {product.name}
+                    <span className="flex flex-1 flex-col gap-0.5">
+                      <span className="flex flex-wrap items-baseline justify-between gap-2">
+                        <span className="font-medium text-foreground">
+                          {product.name}
+                        </span>
+                        <span className="text-sm font-medium tabular-nums text-electric">
+                          {formatGelAmount(product.basePrice)}-დან
+                        </span>
                       </span>
-                      <span className="text-sm font-medium tabular-nums text-electric">
-                        {formatGelAmount(product.basePrice)}+
+                      <span className="text-sm text-muted-foreground">
+                        {product.description}
                       </span>
                     </span>
-                  </span>
-                  <span className="pl-6 text-sm text-muted-foreground">
-                    {product.description}
                   </span>
                 </label>
               </li>
@@ -110,11 +110,11 @@ export function EstimateCalculator() {
             მასშტაბი
           </legend>
           <ul className="flex flex-col gap-2">
-            {scopeOptions.map((scope) => (
+            {config.scopes.map((scope) => (
               <li key={scope.id}>
                 <label
                   className={cn(
-                    "flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 transition-colors",
+                    "flex cursor-pointer items-start gap-3 rounded-lg border px-3 py-3 transition-colors",
                     scopeId === scope.id
                       ? "border-electric bg-muted-blue/40"
                       : "border-border bg-surface hover:border-foreground/20",
@@ -123,14 +123,11 @@ export function EstimateCalculator() {
                   <input
                     type="radio"
                     name="scope"
-                    value={scope.id}
+                    className="mt-1"
                     checked={scopeId === scope.id}
                     onChange={() => setScopeId(scope.id)}
-                    className="size-4 accent-[var(--electric)]"
                   />
-                  <span className="text-sm font-medium text-foreground">
-                    {scope.name}
-                  </span>
+                  <span className="font-medium text-foreground">{scope.name}</span>
                 </label>
               </li>
             ))}
@@ -141,8 +138,8 @@ export function EstimateCalculator() {
           <legend className="text-sm font-semibold text-foreground">
             დამატებითი მოდულები
           </legend>
-          <ul className="flex flex-col gap-3">
-            {addOns.map((addon) => {
+          <ul className="flex flex-col gap-2">
+            {config.addOns.map((addon) => {
               const checked = addOnIds.includes(addon.id);
               return (
                 <li key={addon.id}>
@@ -195,9 +192,19 @@ export function EstimateCalculator() {
             <div className="mt-6 flex flex-col gap-5">
               <div>
                 <p className="text-sm text-muted-foreground">ბიუჯეტი</p>
+                {result.discountPercent > 0 ? (
+                  <p className="mt-1 text-sm text-muted-foreground line-through">
+                    {formatGelAmount(result.preDiscountMinPrice)}
+                  </p>
+                ) : null}
                 <p className="text-display mt-1 text-3xl font-semibold text-foreground">
                   {formatGelRange(result.minPrice, result.maxPrice)}
                 </p>
+                {result.discountPercent > 0 ? (
+                  <p className="mt-1 text-sm font-medium text-electric">
+                    ფასდაკლება {result.discountPercent}%
+                  </p>
+                ) : null}
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">ვადა</p>
@@ -229,7 +236,7 @@ export function EstimateCalculator() {
               </dl>
 
               <p className="text-xs leading-relaxed text-muted-foreground">
-                {ESTIMATE_DISCLAIMER}
+                {config.disclaimer}
               </p>
 
               <div className="flex flex-col gap-2 pt-1">
