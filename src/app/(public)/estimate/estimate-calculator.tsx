@@ -12,6 +12,7 @@ import {
   buildEstimateWhatsAppMessage,
   calculateEstimate,
   formatDaysRange,
+  formatGelAmount,
   formatGelRange,
   productTypes,
   scopeOptions,
@@ -86,8 +87,13 @@ export function EstimateCalculator() {
                       onChange={() => setProductId(product.id)}
                       className="size-4 accent-[var(--electric)]"
                     />
-                    <span className="font-medium text-foreground">
-                      {product.name}
+                    <span className="flex flex-1 flex-wrap items-baseline justify-between gap-2">
+                      <span className="font-medium text-foreground">
+                        {product.name}
+                      </span>
+                      <span className="text-sm font-medium tabular-nums text-electric">
+                        {formatGelAmount(product.basePrice)}+
+                      </span>
                     </span>
                   </span>
                   <span className="pl-6 text-sm text-muted-foreground">
@@ -155,9 +161,14 @@ export function EstimateCalculator() {
                       }
                       className="mt-0.5"
                     />
-                    <span className="flex flex-col gap-0.5">
-                      <span className="font-medium text-foreground">
-                        {addon.name}
+                    <span className="flex flex-1 flex-col gap-0.5">
+                      <span className="flex flex-wrap items-baseline justify-between gap-2">
+                        <span className="font-medium text-foreground">
+                          {addon.name}
+                        </span>
+                        <span className="text-sm font-medium tabular-nums text-electric">
+                          +{formatGelAmount(addon.price)}
+                        </span>
                       </span>
                       <span className="text-sm font-normal text-muted-foreground">
                         {addon.description}

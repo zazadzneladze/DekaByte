@@ -39,52 +39,48 @@ export type EstimateResult = {
 };
 
 export const ESTIMATE_DISCLAIMER =
-  "ფასები მითითებულია ლარში (₾) და აჩვენებს საწყის სავარაუდო დიაპაზონს საქართველოს ბაზრისთვის. საბოლოო ღირებულება ზუსტდება პროექტის დეტალური განხილვის შემდეგ.";
+  "კალკულატორი აჩვენებს საწყის სავარაუდო შეფასებას ლარში (₾). საბოლოო ღირებულება ზუსტდება პროექტის დეტალური განხილვის შემდეგ.";
 
-/**
- * Base packages calibrated for Georgian SMB / mid-market studios (GEL).
- * Premium enough to signal quality, without EU-agency sticker shock.
- */
 export const productTypes: ProductType[] = [
   {
     id: "landing",
     name: "სავიზიტო / Landing Page",
-    basePrice: 1500,
-    baseDays: 7,
+    basePrice: 900,
+    baseDays: 5,
     description: "ერთი გვერდისგან შემდგარი, მაღალი კონვერტაციის მქონე წარდგენა.",
   },
   {
     id: "corporate",
     name: "კორპორატიული ვებსაიტი",
-    basePrice: 2800,
-    baseDays: 14,
+    basePrice: 1800,
+    baseDays: 12,
     description: "მრავალგვერდიანი საინფორმაციო ვებსაიტი კომპანიებისთვის.",
   },
   {
     id: "webapp",
     name: "Web Application / სისტემა",
-    basePrice: 5500,
-    baseDays: 25,
+    basePrice: 3200,
+    baseDays: 20,
     description: "რთული ბიზნეს ლოგიკის მქონე ვებ-აპლიკაცია მართვის პანელით.",
   },
   {
     id: "android",
     name: "Android აპლიკაცია",
-    basePrice: 6500,
-    baseDays: 30,
+    basePrice: 4000,
+    baseDays: 25,
     description: "მობილური აპლიკაცია Android პლატფორმისთვის.",
   },
 ];
 
 export const scopeOptions: ScopeOption[] = [
   { id: "small", name: "მცირე (1-3 გვერდი / ეკრანი)", multiplier: 1.0, extraDays: 0 },
-  { id: "medium", name: "საშუალო (4-8 გვერდი / ეკრანი)", multiplier: 1.25, extraDays: 5 },
-  { id: "large", name: "დიდი (9-15 გვერდი / ეკრანი)", multiplier: 1.5, extraDays: 10 },
+  { id: "medium", name: "საშუალო (4-8 გვერდი / ეკრანი)", multiplier: 1.25, extraDays: 4 },
+  { id: "large", name: "დიდი (9-15 გვერდი / ეკრანი)", multiplier: 1.5, extraDays: 8 },
   {
     id: "enterprise",
     name: "მასშტაბური (15+ გვერდი / ეკრანი)",
     multiplier: 1.85,
-    extraDays: 16,
+    extraDays: 14,
   },
 ];
 
@@ -92,41 +88,41 @@ export const addOns: AddOnOption[] = [
   {
     id: "design",
     name: "უნიკალური UI/UX დიზაინი (Figma)",
-    price: 700,
-    days: 5,
+    price: 450,
+    days: 4,
     description: "ნულიდან შექმნილი პერსონალური ვიზუალური დიზაინი შაბლონების გარეშე.",
   },
   {
     id: "admin",
     name: "ადმინისტრირების პანელი (CMS)",
-    price: 1200,
-    days: 7,
+    price: 800,
+    days: 6,
     description: "კონტენტის დამოუკიდებლად მართვისა და სტატისტიკის სისტემა.",
   },
   {
     id: "multilang",
     name: "მრავალენოვანი მხარდაჭერა",
-    price: 450,
-    days: 3,
-    description: "ქართული / ინგლისური / სხვა ენების ადაპტაცია.",
+    price: 300,
+    days: 2,
+    description: "ვებსაიტის ან აპლიკაციის ადაპტაცია რამდენიმე ენაზე.",
   },
   {
     id: "payment",
     name: "ონლაინ გადახდების ინტეგრაცია",
-    price: 800,
-    days: 5,
-    description: "ქართული ბანკების (მაგ. TBC, BOG) ან სხვა გადახდის სისტემის ჩაშენება.",
+    price: 500,
+    days: 4,
+    description: "ქართული ბანკების ან Stripe გადახდის სისტემის ჩაშენება.",
   },
   {
     id: "branding",
     name: "ლოგო და ბრენდინგი",
-    price: 500,
-    days: 4,
+    price: 350,
+    days: 3,
     description: "ბრენდის იდენტობის, ლოგოსა და ფერების პალიტრის შემუშავება.",
   },
 ];
 
-function formatGelAmount(amount: number) {
+export function formatGelAmount(amount: number) {
   return `${amount.toLocaleString("ka-GE")} ₾`;
 }
 
@@ -195,5 +191,3 @@ export function buildEstimateWhatsAppMessage(result: EstimateResult) {
 • სავარაუდო ბიუჯეტი: ${formatGelRange(result.minPrice, result.maxPrice)}
 • სავარაუდო ვადა: ${formatDaysRange(result.minDays, result.maxDays)}.`;
 }
-
-export { formatGelAmount };

@@ -16,10 +16,10 @@ describe("calculateEstimate", () => {
 
     expect(result.productName).toBe("სავიზიტო / Landing Page");
     expect(result.scopeName).toBe("მცირე (1-3 გვერდი / ეკრანი)");
-    expect(result.minPrice).toBe(1500);
-    expect(result.maxPrice).toBe(Math.round(1500 * 1.25));
-    expect(result.minDays).toBe(7);
-    expect(result.maxDays).toBe(Math.round(7 * 1.3));
+    expect(result.minPrice).toBe(900);
+    expect(result.maxPrice).toBe(Math.round(900 * 1.25));
+    expect(result.minDays).toBe(5);
+    expect(result.maxDays).toBe(Math.round(5 * 1.3));
     expect(result.addOnNames).toEqual([]);
   });
 
@@ -30,8 +30,8 @@ describe("calculateEstimate", () => {
       addOnIds: ["design", "admin"],
     });
 
-    const base = 2800 * 1.25 + 700 + 1200;
-    const days = 14 + 5 + 5 + 7;
+    const base = 1800 * 1.25 + 450 + 800;
+    const days = 12 + 4 + 4 + 6;
 
     expect(result.minPrice).toBe(Math.round(base));
     expect(result.maxPrice).toBe(Math.round(base * 1.25));
@@ -50,15 +50,15 @@ describe("calculateEstimate", () => {
       addOnIds: ["multilang", "multilang"],
     });
 
-    expect(result.minPrice).toBe(1500 + 450);
+    expect(result.minPrice).toBe(900 + 300);
     expect(result.addOnNames).toHaveLength(1);
   });
 
   it("formats gel and day ranges with Georgian locale", () => {
-    expect(formatGelRange(1500, 1875)).toBe(
-      `${(1500).toLocaleString("ka-GE")} - ${(1875).toLocaleString("ka-GE")} ₾`,
+    expect(formatGelRange(900, 1125)).toBe(
+      `${(900).toLocaleString("ka-GE")} - ${(1125).toLocaleString("ka-GE")} ₾`,
     );
-    expect(formatDaysRange(7, 9)).toBe("7 - 9 დღე");
+    expect(formatDaysRange(5, 7)).toBe("5 - 7 დღე");
   });
 
   it("includes formatted ranges in summary", () => {

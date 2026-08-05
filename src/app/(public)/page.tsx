@@ -265,6 +265,11 @@ export default async function HomePage() {
               </Reveal>
             ))}
           </ol>
+          <Reveal className="mt-10">
+            <Button variant="outline" render={<Link href="/about" />}>
+              მეტი სტუდიოს შესახებ
+            </Button>
+          </Reveal>
         </div>
       </section>
 

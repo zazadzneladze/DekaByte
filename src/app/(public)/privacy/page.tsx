@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { SectionLabel } from "@/components/public/section-label";
+
 export const metadata: Metadata = {
   title: "კონფიდენციალურობა",
   description:
@@ -9,17 +11,18 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-      <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+    <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <SectionLabel>იურიდიული</SectionLabel>
+      <h1 className="text-display text-3xl font-semibold text-foreground sm:text-5xl">
         კონფიდენციალურობის პოლიტიკა
       </h1>
-      <p className="mt-3 text-sm text-muted-foreground">
+      <p className="mt-4 text-sm text-muted-foreground">
         ბოლო განახლება: 2026 წლის აგვისტო
       </p>
 
-      <div className="mt-10 flex flex-col gap-8 text-base leading-relaxed text-muted-foreground">
+      <div className="mt-12 flex flex-col gap-10 text-base leading-relaxed text-muted-foreground">
         <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-semibold text-foreground">
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">
             1. ვინ ვართ ჩვენ
           </h2>
           <p>
