@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { auth, signOut } from "@/lib/auth";
 import { AdminPushControls } from "@/components/admin/push-controls";
 import { Button } from "@/components/ui/button";
@@ -14,11 +15,7 @@ const NAV = [
   { href: "/admin/settings", label: "პარამეტრები" },
 ] as const;
 
-export default async function AdminAppLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+async function AdminAppShell({ children }: { children: React.ReactNode }) {
   await connection();
   const session = await auth();
 
@@ -72,5 +69,23 @@ export default async function AdminAppLayout({
       </header>
       <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
     </div>
+  );
+}
+
+export default function AdminAppLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
+          იტვირთება…
+        </div>
+      }
+    >
+      <AdminAppShell>{children}</AdminAppShell>
+    </Suspense>
   );
 }
