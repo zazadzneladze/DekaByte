@@ -3,17 +3,43 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 
-const MAX_BYTES = 8 * 1024 * 1024;
-const ALLOWED_TYPES = [
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+const MAX_DOC_BYTES = 20 * 1024 * 1024;
+
+const IMAGE_TYPES = [
   "image/jpeg",
   "image/png",
   "image/webp",
   "image/avif",
 ] as const;
 
-const payloadSchema = z.object({
-  projectId: z.string().uuid(),
-});
+const DOC_TYPES = ["application/pdf", ...IMAGE_TYPES] as const;
+
+const payloadSchema = z.discriminatedUnion("purpose", [
+  z.object({
+    purpose: z.literal("portfolio"),
+    projectId: z.string().uuid(),
+  }),
+  z.object({
+    purpose: z.literal("client-asset"),
+    projectId: z.string().uuid(),
+  }),
+  z.object({
+    purpose: z.literal("client-invoice"),
+    projectId: z.string().uuid(),
+  }),
+  z.object({
+    purpose: z.literal("client-avatar"),
+  }),
+]);
+
+function normalizePayload(raw: unknown): unknown {
+  if (!raw || typeof raw !== "object") return raw;
+  if (!("purpose" in raw) && "projectId" in raw) {
+    return { purpose: "portfolio", ...(raw as object) };
+  }
+  return raw;
+}
 
 export async function POST(request: Request): Promise<NextResponse> {
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
@@ -41,29 +67,73 @@ export async function POST(request: Request): Promise<NextResponse> {
       request,
       token: process.env.BLOB_READ_WRITE_TOKEN,
       onBeforeGenerateToken: async (pathname, clientPayload) => {
-        let projectId: string | undefined;
+        let raw: unknown = null;
         try {
-          const parsed = payloadSchema.safeParse(
-            clientPayload ? JSON.parse(clientPayload) : null,
-          );
-          if (!parsed.success) {
-            throw new Error("projectId აუცილებელია");
-          }
-          projectId = parsed.data.projectId;
+          raw = clientPayload ? JSON.parse(clientPayload) : null;
         } catch {
           throw new Error("არასწორი clientPayload");
         }
 
-        const expectedPrefix = `projects/${projectId}/`;
-        if (!pathname.startsWith(expectedPrefix)) {
-          throw new Error("არასწორი pathname");
+        const parsed = payloadSchema.safeParse(normalizePayload(raw));
+        if (!parsed.success) {
+          throw new Error("არასწორი clientPayload");
         }
 
+        const role = session.user.role;
+        const data = parsed.data;
+
+        if (data.purpose === "portfolio") {
+          if (role !== "admin") throw new Error("უფლება არ გაქვთ");
+          if (!pathname.startsWith(`projects/${data.projectId}/`)) {
+            throw new Error("არასწორი pathname");
+          }
+          return {
+            allowedContentTypes: [...IMAGE_TYPES],
+            maximumSizeInBytes: MAX_IMAGE_BYTES,
+            addRandomSuffix: false,
+            tokenPayload: JSON.stringify(data),
+          };
+        }
+
+        if (data.purpose === "client-asset") {
+          if (role !== "admin") throw new Error("უფლება არ გაქვთ");
+          if (!pathname.startsWith(`client-projects/${data.projectId}/`)) {
+            throw new Error("არასწორი pathname");
+          }
+          return {
+            allowedContentTypes: [...DOC_TYPES],
+            maximumSizeInBytes: MAX_DOC_BYTES,
+            addRandomSuffix: true,
+            tokenPayload: JSON.stringify(data),
+          };
+        }
+
+        if (data.purpose === "client-invoice") {
+          if (role !== "admin") throw new Error("უფლება არ გაქვთ");
+          if (!pathname.startsWith(`client-invoices/${data.projectId}/`)) {
+            throw new Error("არასწორი pathname");
+          }
+          return {
+            allowedContentTypes: ["application/pdf"],
+            maximumSizeInBytes: MAX_DOC_BYTES,
+            addRandomSuffix: true,
+            tokenPayload: JSON.stringify(data),
+          };
+        }
+
+        // client-avatar
+        if (role !== "client") throw new Error("უფლება არ გაქვთ");
+        if (!pathname.startsWith(`client-avatars/${session.user.id}/`)) {
+          throw new Error("არასწორი pathname");
+        }
         return {
-          allowedContentTypes: [...ALLOWED_TYPES],
-          maximumSizeInBytes: MAX_BYTES,
-          addRandomSuffix: false,
-          tokenPayload: JSON.stringify({ projectId }),
+          allowedContentTypes: [...IMAGE_TYPES],
+          maximumSizeInBytes: MAX_IMAGE_BYTES,
+          addRandomSuffix: true,
+          tokenPayload: JSON.stringify({
+            purpose: "client-avatar",
+            userId: session.user.id,
+          }),
         };
       },
     });

@@ -24,8 +24,11 @@ async function AdminLoginContent({
   searchParams: Promise<{ error?: string }>;
 }) {
   const session = await auth();
-  if (session?.user) {
+  if (session?.user?.role === "admin") {
     redirect("/admin");
+  }
+  if (session?.user?.role === "client") {
+    redirect("/portal");
   }
 
   const params = await searchParams;

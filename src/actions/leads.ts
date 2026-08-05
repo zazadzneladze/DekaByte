@@ -13,7 +13,7 @@ export type LeadActionResult =
 
 async function requireAdmin() {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (!session?.user?.id || session.user.role !== "admin") {
     throw new Error("Unauthorized");
   }
   return session.user;

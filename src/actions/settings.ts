@@ -20,7 +20,11 @@ export type SettingsActionResult =
 
 async function requireAdmin() {
   const session = await auth();
-  if (!session?.user?.id || !session.user.email) {
+  if (
+    !session?.user?.id ||
+    !session.user.email ||
+    session.user.role !== "admin"
+  ) {
     throw new Error("Unauthorized");
   }
   return session.user;

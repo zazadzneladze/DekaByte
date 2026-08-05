@@ -89,6 +89,13 @@ export async function submitContact(
       preferredContactMethod: data.preferredContactMethod,
     });
 
+    const { sendAdminPush } = await import("@/lib/push");
+    void sendAdminPush({
+      title: "ახალი ლიდი",
+      body: `${data.name} — ${data.projectType}`,
+      url: "/admin/leads",
+    });
+
     return { ok: true };
   } catch {
     return {

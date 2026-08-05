@@ -1,7 +1,19 @@
 import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { eq, and, desc, asc } from "drizzle-orm";
 import { getDb } from "@/db";
-import { projects, projectImages, siteSettings, leads, adminUsers } from "@/db/schema";
+import {
+  projects,
+  projectImages,
+  siteSettings,
+  leads,
+  adminUsers,
+  clientUsers,
+  clientProjects,
+  clientAssets,
+  clientMessages,
+  clientInvoices,
+  pushSubscriptions,
+} from "@/db/schema";
 import { siteDefaults } from "@/config/site";
 import type { ProjectCategoryId } from "@/config/categories";
 
@@ -183,4 +195,127 @@ export async function adminGetUserByEmail(email: string) {
   return db.query.adminUsers.findFirst({
     where: eq(adminUsers.email, email.toLowerCase()),
   });
+}
+
+/* ——— Client portal ——— */
+
+export async function clientEmailHasProjectAccess(email: string) {
+  const db = getDb();
+  const normalized = email.toLowerCase();
+  const row = await db.query.clientProjects.findFirst({
+    where: eq(clientProjects.clientEmail, normalized),
+    columns: { id: true },
+  });
+  return Boolean(row);
+}
+
+export async function upsertClientUserFromGoogle(input: {
+  email: string;
+  googleSub: string | null;
+  image: string | null;
+}) {
+  const db = getDb();
+  const email = input.email.toLowerCase();
+  const existing = await db.query.clientUsers.findFirst({
+    where: eq(clientUsers.email, email),
+  });
+
+  if (existing) {
+    const [updated] = await db
+      .update(clientUsers)
+      .set({
+        googleSub: input.googleSub ?? existing.googleSub,
+        image: input.image ?? existing.image,
+        updatedAt: new Date(),
+      })
+      .where(eq(clientUsers.id, existing.id))
+      .returning();
+    return updated ?? existing;
+  }
+
+  const [created] = await db
+    .insert(clientUsers)
+    .values({
+      email,
+      googleSub: input.googleSub,
+      image: input.image,
+    })
+    .returning();
+
+  if (!created) {
+    throw new Error("client_users insert failed");
+  }
+  return created;
+}
+
+export async function getClientUserByEmail(email: string) {
+  const db = getDb();
+  return db.query.clientUsers.findFirst({
+    where: eq(clientUsers.email, email.toLowerCase()),
+  });
+}
+
+export async function getClientUserById(id: string) {
+  const db = getDb();
+  return db.query.clientUsers.findFirst({
+    where: eq(clientUsers.id, id),
+  });
+}
+
+export async function portalListProjects(clientEmail: string) {
+  const db = getDb();
+  return db.query.clientProjects.findMany({
+    where: eq(clientProjects.clientEmail, clientEmail.toLowerCase()),
+    orderBy: [desc(clientProjects.updatedAt)],
+  });
+}
+
+export async function portalGetProject(id: string, clientEmail: string) {
+  const db = getDb();
+  return db.query.clientProjects.findFirst({
+    where: and(
+      eq(clientProjects.id, id),
+      eq(clientProjects.clientEmail, clientEmail.toLowerCase()),
+    ),
+    with: {
+      assets: { orderBy: [asc(clientAssets.sortOrder), desc(clientAssets.createdAt)] },
+      messages: { orderBy: [asc(clientMessages.createdAt)] },
+      invoices: { orderBy: [desc(clientInvoices.createdAt)] },
+    },
+  });
+}
+
+export async function adminListClientProjects() {
+  const db = getDb();
+  return db.query.clientProjects.findMany({
+    orderBy: [desc(clientProjects.updatedAt)],
+  });
+}
+
+export async function adminGetClientProject(id: string) {
+  const db = getDb();
+  return db.query.clientProjects.findFirst({
+    where: eq(clientProjects.id, id),
+    with: {
+      assets: { orderBy: [asc(clientAssets.sortOrder), desc(clientAssets.createdAt)] },
+      messages: { orderBy: [asc(clientMessages.createdAt)] },
+      invoices: { orderBy: [desc(clientInvoices.createdAt)] },
+    },
+  });
+}
+
+export async function adminGetClientUserByEmail(email: string) {
+  return getClientUserByEmail(email);
+}
+
+export async function listPushSubscriptions() {
+  const db = getDb();
+  return db.select().from(pushSubscriptions);
+}
+
+export async function deletePushSubscriptionByEndpoint(endpoint: string) {
+  const db = getDb();
+  await db
+    .delete(pushSubscriptions)
+    .where(eq(pushSubscriptions.endpoint, endpoint));
 }

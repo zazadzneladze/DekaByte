@@ -1,10 +1,11 @@
 # DekaByte — Agent notes
 
 ## Product
-Georgian digital product studio site + private admin CMS. Not a client portal. No AI assistant.
+Georgian digital product studio site + private admin CMS + invite-only client portal.
+No AI assistant.
 
 ## Stack
-Next.js App Router, TypeScript strict, Tailwind, shadcn/ui, Neon Postgres, Drizzle ORM, Auth.js (credentials), Vercel Blob.
+Next.js App Router, TypeScript strict, Tailwind, shadcn/ui, Neon Postgres, Drizzle ORM, Auth.js (admin credentials + Google for clients), Vercel Blob, Web Push (admin PWA).
 
 ## Skills to use
 - `frontend-design` for public UI
@@ -15,6 +16,13 @@ Next.js App Router, TypeScript strict, Tailwind, shadcn/ui, Neon Postgres, Drizz
 - Georgian UI copy; no fake stats/testimonials
 - Contact defaults from `src/config/site.ts` with DB `site_settings` override
 - Pricing only in `src/config/estimate.ts`
+
+## Client portal
+- Invite-by-email: admin sets `client_projects.clientEmail`; Google login email must match
+- Routes: `/portal/login`, `/portal/onboarding`, `/portal`, `/portal/projects/[id]`, `/portal/profile`
+- Admin: `/admin/clients` — assets, chat, invoices (manual PDF + status; no Stripe)
+- Separate from public portfolio `projects` table
+- Admin PWA + Web Push for new portal messages and new contact leads (no SMS)
 
 ## Do not
 - Commit secrets or `.env`

@@ -138,6 +138,134 @@ export const leadRateLimits = pgTable("lead_rate_limits", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+/* ——— Client portal ——— */
+
+export const clientProjectStatusEnum = pgEnum("client_project_status", [
+  "upcoming",
+  "in_progress",
+  "review",
+  "done",
+  "archived",
+]);
+
+export const clientAssetKindEnum = pgEnum("client_asset_kind", [
+  "screenshot",
+  "document",
+  "other",
+]);
+
+export const clientMessageRoleEnum = pgEnum("client_message_role", [
+  "admin",
+  "client",
+]);
+
+export const clientInvoiceStatusEnum = pgEnum("client_invoice_status", [
+  "draft",
+  "sent",
+  "paid",
+]);
+
+export const clientUsers = pgTable(
+  "client_users",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
+    displayName: varchar("display_name", { length: 160 }),
+    image: text("image"),
+    avatarUrl: text("avatar_url"),
+    avatarPathname: text("avatar_pathname"),
+    googleSub: varchar("google_sub", { length: 255 }).unique(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("client_users_email_idx").on(t.email)],
+);
+
+export const clientProjects = pgTable(
+  "client_projects",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    title: varchar("title", { length: 200 }).notNull(),
+    status: clientProjectStatusEnum("status").notNull().default("upcoming"),
+    clientEmail: varchar("client_email", { length: 255 }).notNull(),
+    notes: text("notes").notNull().default(""),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("client_projects_email_idx").on(t.clientEmail),
+    index("client_projects_status_idx").on(t.status),
+  ],
+);
+
+export const clientAssets = pgTable(
+  "client_assets",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => clientProjects.id, { onDelete: "cascade" }),
+    url: text("url").notNull(),
+    pathname: text("pathname").notNull(),
+    filename: varchar("filename", { length: 255 }).notNull(),
+    mime: varchar("mime", { length: 120 }).notNull(),
+    size: integer("size"),
+    kind: clientAssetKindEnum("kind").notNull().default("other"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("client_assets_project_id_idx").on(t.projectId)],
+);
+
+export const clientMessages = pgTable(
+  "client_messages",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => clientProjects.id, { onDelete: "cascade" }),
+    authorRole: clientMessageRoleEnum("author_role").notNull(),
+    authorEmail: varchar("author_email", { length: 255 }).notNull(),
+    body: text("body").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("client_messages_project_created_idx").on(t.projectId, t.createdAt)],
+);
+
+export const clientInvoices = pgTable(
+  "client_invoices",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => clientProjects.id, { onDelete: "cascade" }),
+    title: varchar("title", { length: 200 }).notNull(),
+    amountGel: integer("amount_gel").notNull(),
+    status: clientInvoiceStatusEnum("status").notNull().default("draft"),
+    pdfUrl: text("pdf_url"),
+    pdfPathname: text("pdf_pathname"),
+    dueDate: timestamp("due_date", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("client_invoices_project_id_idx").on(t.projectId)],
+);
+
+export const pushSubscriptions = pgTable(
+  "push_subscriptions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    adminUserId: uuid("admin_user_id")
+      .notNull()
+      .references(() => adminUsers.id, { onDelete: "cascade" }),
+    endpoint: text("endpoint").notNull().unique(),
+    p256dh: text("p256dh").notNull(),
+    auth: text("auth").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("push_subscriptions_admin_idx").on(t.adminUserId)],
+);
+
 export const projectsRelations = relations(projects, ({ many }) => ({
   images: many(projectImages),
 }));
@@ -146,5 +274,39 @@ export const projectImagesRelations = relations(projectImages, ({ one }) => ({
   project: one(projects, {
     fields: [projectImages.projectId],
     references: [projects.id],
+  }),
+}));
+
+export const clientProjectsRelations = relations(clientProjects, ({ many }) => ({
+  assets: many(clientAssets),
+  messages: many(clientMessages),
+  invoices: many(clientInvoices),
+}));
+
+export const clientAssetsRelations = relations(clientAssets, ({ one }) => ({
+  project: one(clientProjects, {
+    fields: [clientAssets.projectId],
+    references: [clientProjects.id],
+  }),
+}));
+
+export const clientMessagesRelations = relations(clientMessages, ({ one }) => ({
+  project: one(clientProjects, {
+    fields: [clientMessages.projectId],
+    references: [clientProjects.id],
+  }),
+}));
+
+export const clientInvoicesRelations = relations(clientInvoices, ({ one }) => ({
+  project: one(clientProjects, {
+    fields: [clientInvoices.projectId],
+    references: [clientProjects.id],
+  }),
+}));
+
+export const pushSubscriptionsRelations = relations(pushSubscriptions, ({ one }) => ({
+  admin: one(adminUsers, {
+    fields: [pushSubscriptions.adminUserId],
+    references: [adminUsers.id],
   }),
 }));

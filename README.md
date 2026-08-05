@@ -7,8 +7,8 @@ Production website and private admin CMS for **DekaByte** — a Georgian digital
 - Next.js App Router (Cache Components) · React · TypeScript
 - Tailwind CSS · shadcn/ui · Lucide
 - Neon Postgres · Drizzle ORM · Neon serverless driver
-- Auth.js (Credentials) · bcrypt
-- Vercel Blob · Zod · Vitest · Playwright
+- Auth.js (admin Credentials + Google for client portal) · bcrypt
+- Vercel Blob · Web Push (admin PWA) · Zod · Vitest · Playwright
 
 ## Local setup
 
@@ -16,13 +16,15 @@ Production website and private admin CMS for **DekaByte** — a Georgian digital
 pnpm install
 cp .env.example .env.local
 # fill DATABASE_URL, AUTH_SECRET, ADMIN_EMAIL, ADMIN_INITIAL_PASSWORD, NEXT_PUBLIC_SITE_URL
+# for portal: AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, AUTH_URL
+# for admin push: NEXT_PUBLIC_VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT
 # optionally BLOB_READ_WRITE_TOKEN, NEXT_PUBLIC_META_PIXEL_ID
 pnpm db:migrate
 pnpm db:seed
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Admin: [http://localhost:3000/admin/login](http://localhost:3000/admin/login).
+Open [http://localhost:3000](http://localhost:3000). Admin: [http://localhost:3000/admin/login](http://localhost:3000/admin/login). Client portal: [http://localhost:3000/portal/login](http://localhost:3000/portal/login).
 
 ## Environment variables
 
@@ -30,10 +32,13 @@ Open [http://localhost:3000](http://localhost:3000). Admin: [http://localhost:30
 |----------|----------|---------|
 | `DATABASE_URL` | yes | Neon connection string |
 | `AUTH_SECRET` | yes | Auth.js session secret (`openssl rand -base64 32`) |
+| `AUTH_URL` | production | Canonical origin for Auth.js (e.g. `https://dekabyte-zeta.vercel.app`) |
+| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | client portal | Google OAuth Web client; redirect `{AUTH_URL}/api/auth/callback/google` |
 | `ADMIN_EMAIL` | yes (seed) | Initial admin email |
 | `ADMIN_INITIAL_PASSWORD` | yes (seed) | Initial password (min 10 chars); never commit |
 | `BLOB_READ_WRITE_TOKEN` | for uploads | Vercel Blob write token (server only) |
 | `NEXT_PUBLIC_SITE_URL` | yes | Canonical site URL, no trailing slash |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` / `VAPID_SUBJECT` | admin push | `npx web-push generate-vapid-keys`; subject like `mailto:you@example.com` |
 | `NEXT_PUBLIC_META_PIXEL_ID` | no | Meta Pixel; loads only after consent |
 
 See `.env.example`. Never commit `.env` / `.env.local`.
@@ -64,7 +69,13 @@ Seed also upserts site settings (phone/email from brief) and inserts five portfo
 3. Upload cover/gallery images from Admin → project editor.
 4. Local development uses the same token against the remote store.
 
-Allowed types: JPEG, PNG, WebP, AVIF. Paths: `projects/{projectId}/{uuid}.{ext}`.
+Allowed types: JPEG, PNG, WebP, AVIF (+ PDF for client portal). Paths: `projects/{id}/…`, `client-projects/…`, `client-invoices/…`, `client-avatars/…`.
+
+## Client portal
+
+Invite-only Google sign-in. Admin → კლიენტები: create a project with the client's email, upload files, chat, invoice PDFs (`draft` / `sent` / `paid`). Clients use `/portal` (Google email must match). Onboarding requires display name; avatar optional.
+
+Admin PWA at `/admin`: install + Web Push for new portal messages and new contact leads.
 
 ## Commands
 
@@ -96,7 +107,7 @@ All prices and durations live in [`src/config/estimate.ts`](src/config/estimate.
 
 ## Leads
 
-Contact form saves to Neon (`leads`) and optionally emails you via Resend when `RESEND_API_KEY` is set. Admin → ლიდები: mark read/contacted/archive; open tel / WhatsApp / email.
+Contact form saves to Neon (`leads`) and optionally emails you via Resend when `RESEND_API_KEY` is set. Also sends admin Web Push when VAPID is configured. Admin → ლიდები: mark read/contacted/archive; open tel / WhatsApp / email.
 
 ## Change admin password
 

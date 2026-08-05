@@ -3,17 +3,25 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { auth, signOut } from "@/lib/auth";
+import { AdminPushControls } from "@/components/admin/push-controls";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "ადმინი",
   robots: { index: false, follow: false },
+  manifest: "/admin/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "DekaByte Admin",
+    statusBarStyle: "default",
+  },
 };
 
 const NAV = [
   { href: "/admin", label: "დაფა" },
   { href: "/admin/projects", label: "პროექტები" },
+  { href: "/admin/clients", label: "კლიენტები" },
   { href: "/admin/leads", label: "ლიდები" },
   { href: "/admin/settings", label: "პარამეტრები" },
 ] as const;
@@ -52,6 +60,9 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
             ))}
           </nav>
           <div className="flex items-center gap-2">
+            <AdminPushControls
+              vapidPublicKey={process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? null}
+            />
             <span className="hidden text-xs text-muted-foreground sm:inline">
               {session.user.email}
             </span>
