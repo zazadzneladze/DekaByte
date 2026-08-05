@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { LockIcon } from "lucide-react";
 
 import { Logo } from "@/components/public/logo";
 import { TrackedAnchor } from "@/lib/meta-pixel";
@@ -104,23 +103,12 @@ export function SiteFooter({ settings, className }: SiteFooterProps) {
           <p>
             © {year} {settings.brandName}
           </p>
-          <div className="flex items-center gap-5">
+          <div className="flex gap-5">
             <Link href="/privacy" className="transition-colors hover:text-surface">
               კონფიდენციალურობა
             </Link>
             <Link href="/terms" className="transition-colors hover:text-surface">
               პირობები
-            </Link>
-            <Link
-              href="/portal/login"
-              title="კლიენტის პანელი"
-              aria-label="კლიენტის პანელი"
-              className="inline-flex items-center gap-1.5 text-ink-muted/80 transition-colors hover:text-surface"
-            >
-              <LockIcon className="size-3.5" aria-hidden />
-              <span className="sr-only sm:not-sr-only sm:inline">
-                კლიენტის პანელი
-              </span>
             </Link>
           </div>
         </div>
