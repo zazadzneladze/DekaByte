@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { SectionLabel } from "@/components/public/section-label";
 import { Button } from "@/components/ui/button";
 import { servicesContent } from "@/config/content";
 
@@ -12,40 +13,41 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-      <div className="mb-12 max-w-2xl">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+    <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <div className="mb-16 max-w-2xl">
+        <SectionLabel>რას ვაკეთებთ</SectionLabel>
+        <h1 className="text-display text-3xl font-semibold text-foreground sm:text-5xl">
           მომსახურებები
         </h1>
-        <p className="mt-3 text-base leading-relaxed text-muted-foreground sm:text-lg">
+        <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
           ვქმნით ციფრულ პროდუქტებს, რომლებიც ემსახურება კონკრეტულ ბიზნეს
           ამოცანას — იდეიდან გაშვებამდე.
         </p>
       </div>
 
-      <ul className="flex flex-col gap-14">
+      <ul className="flex flex-col gap-16">
         {servicesContent.map((service, index) => (
           <li
             key={service.id}
             id={service.id}
-            className="scroll-mt-[calc(var(--header-height)+1rem)] border-t border-border pt-8"
+            className="scroll-mt-[calc(var(--header-height)+1rem)] border-t border-border pt-10"
           >
-            <div className="grid gap-6 lg:grid-cols-[12rem_1fr] lg:gap-10">
-              <p className="text-sm font-medium text-electric">
+            <div className="grid gap-6 lg:grid-cols-[10rem_1fr] lg:gap-12">
+              <p className="font-mono text-sm font-medium text-electric">
                 {String(index + 1).padStart(2, "0")}
               </p>
               <div>
-                <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+                <h2 className="text-display text-2xl font-semibold text-foreground sm:text-3xl">
                   {service.title}
                 </h2>
-                <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
+                <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
                   {service.description}
                 </p>
-                <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+                <ul className="mt-8 grid gap-3 sm:grid-cols-2">
                   {service.examples.map((example) => (
                     <li
                       key={example}
-                      className="border-l-2 border-muted-blue pl-3 text-sm text-foreground"
+                      className="border-l-2 border-electric/30 pl-4 text-sm text-foreground"
                     >
                       {example}
                     </li>
@@ -57,18 +59,27 @@ export default function ServicesPage() {
         ))}
       </ul>
 
-      <div className="mt-16 flex flex-col gap-4 border-t border-border pt-10 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-20 flex flex-col gap-5 rounded-2xl bg-ink px-6 py-10 text-surface sm:flex-row sm:items-center sm:justify-between sm:px-10">
         <div className="max-w-xl">
-          <h2 className="text-xl font-semibold text-foreground">
+          <h2 className="text-display text-xl font-semibold sm:text-2xl">
             რომელი მიმართულება გჭირდებათ?
           </h2>
-          <p className="mt-2 text-muted-foreground">
+          <p className="mt-2 text-ink-muted">
             მოგვწერეთ მოკლედ — ან გაიგეთ საწყისი ბიუჯეტი კალკულატორით.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <Button render={<Link href="/contact" />}>პროექტის დაწყება</Button>
-          <Button variant="outline" render={<Link href="/estimate" />}>
+          <Button
+            className="bg-surface text-ink hover:bg-surface/90"
+            render={<Link href="/contact" />}
+          >
+            პროექტის დაწყება
+          </Button>
+          <Button
+            variant="outline"
+            className="border-white/25 bg-transparent text-surface hover:bg-white/10 hover:text-surface"
+            render={<Link href="/estimate" />}
+          >
             ბიუჯეტის დათვლა
           </Button>
         </div>

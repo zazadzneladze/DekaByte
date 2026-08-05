@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { HeroComposition } from "@/components/public/hero-composition";
+import { Reveal } from "@/components/public/reveal";
+import { SectionLabel } from "@/components/public/section-label";
 import {
   Accordion,
   AccordionContent,
@@ -17,12 +19,30 @@ import {
   whyDekabyte,
 } from "@/config/content";
 import { whatsappHref } from "@/config/site";
-import { getFeaturedProjects } from "@/db/queries";
+import { getFeaturedProjects, getPublishedProjects } from "@/db/queries";
 import { TrackedAnchor } from "@/lib/meta-pixel";
 
 export default async function HomePage() {
-  const featured = await getFeaturedProjects();
+  let featured = await getFeaturedProjects();
+  if (featured.length === 0) {
+    featured = (await getPublishedProjects()).slice(0, 3);
+  }
+
   const wa = whatsappHref();
+  const lead = featured[0];
+  const showcaseCover =
+    lead?.coverImageUrl ?? lead?.images[0]?.url ?? null;
+  const showcase =
+    lead && showcaseCover
+      ? {
+          src: showcaseCover,
+          alt:
+            lead.coverImageAlt ||
+            lead.images[0]?.alt ||
+            lead.title,
+          title: lead.title,
+        }
+      : null;
 
   return (
     <>
@@ -30,23 +50,26 @@ export default async function HomePage() {
       <section className="relative overflow-hidden border-b border-border">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,#dbeafe_0%,transparent_45%),linear-gradient(180deg,#f7f8fa_0%,#ffffff_100%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_0%_-10%,#dbeafe_0%,transparent_42%),radial-gradient(ellipse_80%_60%_at_100%_10%,#e8eef8_0%,transparent_40%),linear-gradient(180deg,#f5f6f8_0%,#ffffff_72%)]"
         />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:px-8 lg:py-20">
-          <div className="animate-fade-up flex flex-col gap-6">
-            <p className="text-3xl font-bold tracking-tight text-graphite sm:text-4xl lg:text-5xl">
+        <div
+          aria-hidden="true"
+          className="studio-grain pointer-events-none absolute inset-0"
+        />
+        <div className="relative mx-auto grid min-h-[calc(100svh-var(--header-height))] max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:px-8 lg:py-20">
+          <div className="flex flex-col gap-7">
+            <p className="animate-fade-up text-display text-[2.65rem] font-bold text-graphite sm:text-5xl lg:text-[3.65rem]">
               DekaByte
             </p>
-            <h1 className="max-w-xl text-xl font-semibold leading-snug text-foreground sm:text-2xl">
+            <h1 className="animate-fade-up-delay max-w-xl text-xl font-semibold leading-snug text-foreground sm:text-2xl lg:text-[1.65rem] lg:leading-snug">
               ვებსაიტები, Android აპლიკაციები და ციფრული სისტემები
               ბიზნესისთვის
             </h1>
-            <p className="max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
-              DekaByte ქმნის სწრაფ, თანამედროვე და მომხმარებელზე მორგებულ
-              ციფრულ პროდუქტებს — იდეიდან დიზაინამდე, დეველოპმენტიდან
-              გაშვებამდე.
+            <p className="animate-fade-up-delay-2 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+              ვქმნით სწრაფ, თანამედროვე პროდუქტებს — იდეიდან დიზაინამდე,
+              დეველოპმენტიდან გაშვებამდე.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="animate-fade-up-delay-2 flex flex-wrap gap-3">
               <Button size="lg" render={<Link href="/contact" />}>
                 პროექტის დაწყება
               </Button>
@@ -59,32 +82,36 @@ export default async function HomePage() {
               </Button>
             </div>
           </div>
-          <HeroComposition className="animate-fade-in" />
+          <HeroComposition
+            className="animate-fade-in"
+            showcase={showcase}
+          />
         </div>
       </section>
 
       {/* Featured projects */}
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-        <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <Reveal className="mb-12 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-2xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            <SectionLabel>პორტფოლიო</SectionLabel>
+            <h2 className="text-display text-3xl font-semibold text-foreground sm:text-4xl">
               რჩეული ნამუშევრები
             </h2>
-            <p className="mt-3 text-muted-foreground">
-              შერჩეული პროექტები ჩვენი პორტფოლიოდან.
+            <p className="mt-4 text-muted-foreground">
+              რეალური პროდუქტები — არა დემო შაბლონები.
             </p>
           </div>
           <Button variant="outline" render={<Link href="/work" />}>
             ყველა ნამუშევარი
           </Button>
-        </div>
+        </Reveal>
 
         {featured.length === 0 ? (
           <p className="border-t border-border pt-6 text-muted-foreground">
             რჩეული პროექტები მალე გამოჩნდება.
           </p>
         ) : (
-          <ul className="grid gap-8 lg:gap-10">
+          <ul className="grid gap-12 lg:gap-16">
             {featured.map((project, index) => {
               const cover =
                 project.coverImageUrl ?? project.images[0]?.url ?? null;
@@ -95,20 +122,20 @@ export default async function HomePage() {
               const isLead = index === 0;
 
               return (
-                <li key={project.id}>
+                <Reveal as="li" key={project.id} delayMs={index * 60}>
                   <Link
                     href={`/work/${project.slug}`}
                     className={
                       isLead
-                        ? "group grid gap-6 border-t border-border pt-6 lg:grid-cols-[1.35fr_1fr] lg:gap-10"
-                        : "group grid gap-4 border-t border-border pt-6 sm:grid-cols-[14rem_1fr] sm:gap-6"
+                        ? "group grid gap-7 lg:grid-cols-[1.4fr_1fr] lg:gap-12"
+                        : "group grid gap-5 sm:grid-cols-[15rem_1fr] sm:gap-8"
                     }
                   >
                     <div
                       className={
                         isLead
-                          ? "relative aspect-[16/10] overflow-hidden bg-secondary"
-                          : "relative aspect-[4/3] overflow-hidden bg-secondary sm:aspect-[5/4]"
+                          ? "relative aspect-[16/10] overflow-hidden rounded-2xl bg-secondary shadow-soft ring-1 ring-border/60"
+                          : "relative aspect-[4/3] overflow-hidden rounded-xl bg-secondary shadow-soft ring-1 ring-border/60 sm:aspect-[5/4]"
                       }
                     >
                       {cover ? (
@@ -116,35 +143,39 @@ export default async function HomePage() {
                           src={cover}
                           alt={alt}
                           fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                           sizes={
                             isLead
-                              ? "(max-width: 1024px) 100vw, 60vw"
-                              : "(max-width: 640px) 100vw, 14rem"
+                              ? "(max-width: 1024px) 100vw, 58vw"
+                              : "(max-width: 640px) 100vw, 15rem"
                           }
                           priority={isLead}
+                          fetchPriority={isLead ? "high" : undefined}
                         />
                       ) : null}
                     </div>
-                    <div className="flex flex-col justify-center gap-2">
-                      <p className="text-sm font-medium text-electric">
+                    <div className="flex flex-col justify-center gap-3">
+                      <p className="text-[0.7rem] font-semibold tracking-[0.16em] text-electric uppercase">
                         {categoryLabel(project.category)}
                       </p>
                       <h3
                         className={
                           isLead
-                            ? "text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
-                            : "text-xl font-semibold text-foreground"
+                            ? "text-display text-2xl font-semibold text-foreground sm:text-3xl lg:text-4xl"
+                            : "text-xl font-semibold tracking-tight text-foreground"
                         }
                       >
                         {project.title}
                       </h3>
-                      <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                      <p className="max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
                         {project.shortDescription}
                       </p>
+                      <span className="mt-1 text-sm font-medium text-foreground transition-colors group-hover:text-electric">
+                        დეტალურად →
+                      </span>
                     </div>
                   </Link>
-                </li>
+                </Reveal>
               );
             })}
           </ul>
@@ -153,148 +184,171 @@ export default async function HomePage() {
 
       {/* Services */}
       <section className="border-y border-border bg-surface">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-          <div className="mb-10 max-w-2xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+          <Reveal className="mb-12 max-w-2xl">
+            <SectionLabel>რას ვაკეთებთ</SectionLabel>
+            <h2 className="text-display text-3xl font-semibold text-foreground sm:text-4xl">
               მომსახურებები
             </h2>
-            <p className="mt-3 text-muted-foreground">
+            <p className="mt-4 text-muted-foreground">
               პროდუქტები, რომლებიც ემსახურება ბიზნეს პროცესს — არა დეკორაციას.
             </p>
-          </div>
-          <ul className="grid gap-8 sm:grid-cols-2">
-            {servicesContent.map((service) => (
-              <li key={service.id} className="border-t border-border pt-5">
-                <h3 className="text-lg font-semibold text-foreground">
+          </Reveal>
+          <ul className="grid gap-10 sm:grid-cols-2">
+            {servicesContent.map((service, i) => (
+              <Reveal as="li" key={service.id} delayMs={i * 50} className="border-t border-border pt-6">
+                <p className="mb-3 font-mono text-xs tracking-wider text-electric/80">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h3 className="text-lg font-semibold tracking-tight text-foreground">
                   {service.title}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {service.description}
                 </p>
-              </li>
+              </Reveal>
             ))}
           </ul>
-          <div className="mt-8">
+          <Reveal className="mt-10">
             <Button variant="outline" render={<Link href="/services" />}>
               ყველა მომსახურება
             </Button>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Budget teaser */}
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-        <div className="flex flex-col gap-5 border-t border-border pt-10 sm:flex-row sm:items-center sm:justify-between">
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
+        <Reveal className="flex flex-col gap-6 rounded-2xl bg-secondary/70 px-6 py-10 ring-1 ring-border/50 sm:flex-row sm:items-center sm:justify-between sm:px-10">
           <div className="max-w-xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            <SectionLabel>ბიუჯეტი</SectionLabel>
+            <h2 className="text-display text-2xl font-semibold text-foreground sm:text-3xl">
               გაიგე პროექტის საწყისი ბიუჯეტი
             </h2>
             <p className="mt-3 text-muted-foreground">
-              სწრაფი კალკულატორი საწყისი სავარაუდო შეფასებისთვის — საბოლოო
-              ღირებულება ზუსტდება დეტალური განხილვის შემდეგ.
+              სწრაფი კალკულატორი საწყისი შეფასებისთვის — საბოლოო ღირებულება
+              ზუსტდება განხილვის შემდეგ.
             </p>
           </div>
           <Button size="lg" render={<Link href="/estimate" />}>
             ბიუჯეტის დათვლა
           </Button>
-        </div>
+        </Reveal>
       </section>
 
       {/* Work process */}
       <section className="border-y border-border bg-surface">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-          <div className="mb-10 max-w-2xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+          <Reveal className="mb-12 max-w-2xl">
+            <SectionLabel>პროცესი</SectionLabel>
+            <h2 className="text-display text-3xl font-semibold text-foreground sm:text-4xl">
               როგორ ვმუშაობთ
             </h2>
-            <p className="mt-3 text-muted-foreground">
-              გამჭვირვალე პროცესი იდეიდან გაშვებამდე.
+            <p className="mt-4 text-muted-foreground">
+              გამჭვირვალე გზა იდეიდან გაშვებამდე.
             </p>
-          </div>
-          <ol className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          </Reveal>
+          <ol className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
             {processSteps.map((step, index) => (
-              <li key={step.title} className="flex flex-col gap-2">
-                <span className="text-sm font-medium text-electric">
+              <Reveal as="li" key={step.title} delayMs={index * 70} className="relative flex flex-col gap-3">
+                <span className="font-mono text-sm font-medium text-electric">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <h3 className="font-semibold text-foreground">{step.title}</h3>
+                <h3 className="text-base font-semibold tracking-tight text-foreground">
+                  {step.title}
+                </h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {step.description}
                 </p>
-              </li>
+              </Reveal>
             ))}
           </ol>
         </div>
       </section>
 
       {/* Why DEKABYTE */}
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-        <div className="mb-10 max-w-2xl">
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            რატომ DEKABYTE
+      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+        <Reveal className="mb-12 max-w-2xl">
+          <SectionLabel>განსხვავება</SectionLabel>
+          <h2 className="text-display text-3xl font-semibold text-foreground sm:text-4xl">
+            რატომ DekaByte
           </h2>
-          <p className="mt-3 text-muted-foreground">
+          <p className="mt-4 text-muted-foreground">
             ინდივიდუალური მიდგომა და გამართული ციფრული პროდუქტები.
           </p>
-        </div>
-        <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {whyDekabyte.map((item) => (
-            <li key={item.title}>
-              <h3 className="font-semibold text-foreground">{item.title}</h3>
+        </Reveal>
+        <ul className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          {whyDekabyte.map((item, i) => (
+            <Reveal as="li" key={item.title} delayMs={i * 50} className="border-t border-border pt-6">
+              <h3 className="font-semibold tracking-tight text-foreground">
+                {item.title}
+              </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {item.description}
               </p>
-            </li>
+            </Reveal>
           ))}
         </ul>
       </section>
 
       {/* FAQ */}
       <section className="border-y border-border bg-surface">
-        <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-          <div className="mb-10 max-w-2xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+        <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
+          <Reveal className="mb-10 max-w-2xl">
+            <SectionLabel>FAQ</SectionLabel>
+            <h2 className="text-display text-3xl font-semibold text-foreground sm:text-4xl">
               ხშირად დასმული კითხვები
             </h2>
-            <p className="mt-3 text-muted-foreground">
+            <p className="mt-4 text-muted-foreground">
               მოკლე პასუხები პროცესზე, ვადებსა და მხარდაჭერაზე.
             </p>
-          </div>
-          <Accordion>
-            {faqItems.map((item) => (
-              <AccordionItem key={item.id} value={item.id}>
-                <AccordionTrigger className="text-base">
-                  {item.question}
-                </AccordionTrigger>
-                <AccordionContent>
-                  <p className="leading-relaxed text-muted-foreground">
-                    {item.answer}
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          </Reveal>
+          <Reveal>
+            <Accordion>
+              {faqItems.map((item) => (
+                <AccordionItem key={item.id} value={item.id}>
+                  <AccordionTrigger className="text-base">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <p className="leading-relaxed text-muted-foreground">
+                      {item.answer}
+                    </p>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </Reveal>
         </div>
       </section>
 
-      {/* Contact CTA */}
-      <section className="bg-off-white">
-        <div className="mx-auto flex max-w-6xl flex-col items-start gap-5 px-4 py-16 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <div className="max-w-xl">
-            <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+      {/* Contact CTA — dark studio band */}
+      <section className="relative overflow-hidden bg-ink text-surface">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgb(37_99_235/0.22)_0%,transparent_50%)]"
+        />
+        <div className="relative mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-20 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-24">
+          <Reveal className="max-w-xl">
+            <h2 className="text-display text-3xl font-semibold sm:text-4xl">
               გაქვს პროექტის იდეა?
             </h2>
-            <p className="mt-2 text-muted-foreground">
+            <p className="mt-3 text-ink-muted">
               მოგვწერეთ მოკლე აღწერა — ერთად განვსაზღვრავთ შემდეგ ნაბიჯებს.
             </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Button size="lg" render={<Link href="/contact" />}>
+          </Reveal>
+          <Reveal className="flex flex-wrap gap-3">
+            <Button
+              size="lg"
+              className="bg-surface text-ink hover:bg-surface/90"
+              render={<Link href="/contact" />}
+            >
               პროექტის დაწყება
             </Button>
             <Button
               size="lg"
               variant="outline"
+              className="border-white/25 bg-transparent text-surface hover:bg-white/10 hover:text-surface"
               render={
                 <TrackedAnchor
                   href={wa}
@@ -306,7 +360,7 @@ export default async function HomePage() {
             >
               WhatsApp-ში მოწერა
             </Button>
-          </div>
+          </Reveal>
         </div>
       </section>
     </>

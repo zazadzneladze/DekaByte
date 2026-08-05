@@ -51,15 +51,15 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-40 border-b border-transparent bg-surface/85 backdrop-blur-md transition-[border-color,box-shadow] duration-200",
-        scrolled && "border-border shadow-soft",
+        "fixed inset-x-0 top-0 z-40 border-b border-transparent bg-surface/80 backdrop-blur-xl transition-[border-color,box-shadow,background-color] duration-300",
+        scrolled && "border-border/80 bg-surface/92 shadow-soft",
       )}
       style={{ height: "var(--header-height)" }}
     >
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Logo />
 
-        <nav aria-label="მთავარი ნავიგაცია" className="hidden items-center gap-1 md:flex">
+        <nav aria-label="მთავარი ნავიგაცია" className="hidden items-center gap-0.5 md:flex">
           {NAV_ITEMS.map((item) => {
             const active = isActivePath(pathname, item.href);
             return (
@@ -68,11 +68,17 @@ export function SiteHeader() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "rounded-lg px-3 py-1.5 text-sm font-medium text-slate transition-colors hover:bg-secondary hover:text-foreground",
-                  active && "bg-secondary text-foreground",
+                  "relative rounded-lg px-3 py-2 text-[0.8125rem] font-medium tracking-wide text-slate transition-colors hover:text-foreground",
+                  active && "text-foreground",
                 )}
               >
                 {item.label}
+                {active ? (
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-3 -bottom-0.5 h-px bg-electric"
+                  />
+                ) : null}
               </Link>
             );
           })}

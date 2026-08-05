@@ -56,7 +56,7 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
   }
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-12">
       <div
         role="tablist"
         aria-label="კატეგორიის ფილტრი"
@@ -84,34 +84,34 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
           ამ კატეგორიაში გამოქვეყნებული პროექტები ჯერ არ არის.
         </p>
       ) : (
-        <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-12">
           {filtered.map((project) => {
             const cover = project.coverImageUrl ?? project.imageUrl;
             const alt =
               project.coverImageAlt || project.imageAlt || project.title;
 
             return (
-              <li key={project.id} className="border-t border-border pt-5">
+              <li key={project.id}>
                 <Link
                   href={`/work/${project.slug}`}
                   className="group flex flex-col gap-4"
                 >
-                  <div className="relative aspect-[16/10] overflow-hidden bg-secondary">
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-secondary shadow-soft ring-1 ring-border/60">
                     {cover ? (
                       <Image
                         src={cover}
                         alt={alt}
                         fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     ) : null}
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <p className="text-sm font-medium text-electric">
+                  <div className="flex flex-col gap-2">
+                    <p className="text-[0.7rem] font-semibold tracking-[0.14em] text-electric uppercase">
                       {categoryLabel(project.category)}
                     </p>
-                    <h2 className="text-lg font-semibold text-foreground group-hover:underline group-hover:underline-offset-4">
+                    <h2 className="text-lg font-semibold tracking-tight text-foreground transition-colors group-hover:text-electric">
                       {project.title}
                     </h2>
                     <p className="text-sm leading-relaxed text-muted-foreground">
@@ -144,10 +144,10 @@ function FilterChip({
       aria-selected={active}
       onClick={onClick}
       className={cn(
-        "rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors",
+        "rounded-lg border px-4 py-1.5 text-sm font-medium transition-colors",
         active
           ? "border-graphite bg-graphite text-surface"
-          : "border-border bg-surface text-muted-foreground hover:border-foreground/20 hover:text-foreground",
+          : "border-border bg-surface text-muted-foreground hover:border-foreground/25 hover:text-foreground",
       )}
     >
       {children}

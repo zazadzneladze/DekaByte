@@ -32,26 +32,26 @@ export function SiteFooter({ settings, className }: SiteFooterProps) {
   const mail = mailtoHref(settings.email);
 
   return (
-    <footer
-      className={cn("border-t border-border bg-surface", className)}
-    >
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr] lg:px-8">
-        <div className="flex flex-col gap-3">
-          <Logo />
-          <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
+    <footer className={cn("bg-ink text-surface", className)}>
+      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-14 sm:px-6 lg:grid-cols-[1.35fr_1fr_1fr] lg:px-8 lg:py-16">
+        <div className="flex flex-col gap-4">
+          <Logo onDark />
+          <p className="max-w-sm text-sm leading-relaxed text-ink-muted">
             {settings.brandName} — ვებსაიტები, Web Applications, ადმინ
             სისტემები და Android აპლიკაციები.
           </p>
         </div>
 
         <div className="flex flex-col gap-3">
-          <p className="text-sm font-semibold text-foreground">ნავიგაცია</p>
-          <ul className="flex flex-col gap-2">
+          <p className="text-[0.7rem] font-semibold tracking-[0.16em] text-ink-muted uppercase">
+            ნავიგაცია
+          </p>
+          <ul className="flex flex-col gap-2.5">
             {FOOTER_NAV.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  className="text-sm text-surface/80 transition-colors hover:text-surface"
                 >
                   {item.label}
                 </Link>
@@ -61,13 +61,15 @@ export function SiteFooter({ settings, className }: SiteFooterProps) {
         </div>
 
         <div className="flex flex-col gap-3">
-          <p className="text-sm font-semibold text-foreground">კონტაქტი</p>
-          <ul className="flex flex-col gap-2 text-sm">
+          <p className="text-[0.7rem] font-semibold tracking-[0.16em] text-ink-muted uppercase">
+            კონტაქტი
+          </p>
+          <ul className="flex flex-col gap-2.5 text-sm">
             <li>
               <TrackedAnchor
                 href={tel}
                 event="phone_click"
-                className="text-muted-foreground transition-colors hover:text-foreground"
+                className="text-surface/80 transition-colors hover:text-surface"
               >
                 {settings.phoneDisplay}
               </TrackedAnchor>
@@ -78,7 +80,7 @@ export function SiteFooter({ settings, className }: SiteFooterProps) {
                 event="whatsapp_click"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground transition-colors hover:text-foreground"
+                className="text-surface/80 transition-colors hover:text-surface"
               >
                 WhatsApp
               </TrackedAnchor>
@@ -86,7 +88,7 @@ export function SiteFooter({ settings, className }: SiteFooterProps) {
             <li>
               <a
                 href={mail}
-                className="text-muted-foreground transition-colors hover:text-foreground"
+                className="text-surface/80 transition-colors hover:text-surface"
               >
                 {settings.email}
               </a>
@@ -95,22 +97,16 @@ export function SiteFooter({ settings, className }: SiteFooterProps) {
         </div>
       </div>
 
-      <div className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-5 text-xs text-ink-muted sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <p>
             © {year} {settings.brandName}
           </p>
-          <div className="flex gap-4">
-            <Link
-              href="/privacy"
-              className="transition-colors hover:text-foreground"
-            >
+          <div className="flex gap-5">
+            <Link href="/privacy" className="transition-colors hover:text-surface">
               კონფიდენციალურობა
             </Link>
-            <Link
-              href="/terms"
-              className="transition-colors hover:text-foreground"
-            >
+            <Link href="/terms" className="transition-colors hover:text-surface">
               პირობები
             </Link>
           </div>

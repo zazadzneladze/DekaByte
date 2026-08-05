@@ -2,20 +2,21 @@
 
 ## Visual direction
 
-Graphite / off-white / electric blue. A calm studio surface: light page field, dark type, one blue accent for actions and focus. Not dark-mode-first, not purple gradients, not cream-and-serif templates.
+Graphite / off-white / electric blue studio. Light page field, dark type, one blue accent. Closing bands (footer, final CTA) use deep ink — not a dark-mode site. Not purple gradients, not cream-and-serif templates.
 
-Signature: layered product mock (web panel + admin fragment + Android frame) in the hero — real interface shapes, no fake analytics percentages.
+Signature: hero layers real portfolio screenshots (when available) inside web + admin + Android chrome. Grain mesh + scroll reveals for presence. No fake analytics percentages.
 
 ## Brand colors
 
 | Token | Hex | Role |
 | --- | --- | --- |
-| Graphite | `#1A1D23` | Primary text, logo mark |
-| Slate | `#3D4450` | Secondary text |
-| Off-white | `#F7F8FA` | Page background |
-| Surface | `#FFFFFF` | Panels, header, cards when needed |
-| Electric blue | `#2563EB` | Primary actions, links, focus ring |
+| Graphite | `#12151A` | Primary text, logo mark |
+| Slate | `#4A5160` | Secondary text |
+| Off-white | `#F5F6F8` | Page background |
+| Surface | `#FFFFFF` | Panels, header |
+| Electric blue | `#1D4ED8` | Primary actions, links, focus ring |
 | Muted blue | `#DBEAFE` | Soft accent / muted fill |
+| Ink | `#0E1116` | Footer / closing CTA band |
 
 CSS variables live in `src/app/globals.css` (`:root` + Tailwind v4 `@theme inline`). Semantic shadcn tokens map onto this palette. Light mode is the default; `.dark` exists for optional surfaces only.
 
