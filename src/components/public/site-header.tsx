@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MenuIcon } from "lucide-react";
+import { LockIcon, MenuIcon } from "lucide-react";
 
 import { Logo } from "@/components/public/logo";
 import { Button } from "@/components/ui/button";
@@ -85,13 +85,24 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <Button
             size="sm"
             className="hidden sm:inline-flex"
             render={<Link href="/contact" />}
           >
             დაიწყე პროექტი
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-slate hover:text-foreground"
+            render={<Link href="/portal/login" />}
+            aria-label="კლიენტის პანელი"
+            title="კლიენტის პანელი"
+          >
+            <LockIcon aria-hidden="true" />
           </Button>
 
           <Sheet open={open} onOpenChange={setOpen}>
@@ -137,12 +148,22 @@ export function SiteHeader() {
                   );
                 })}
               </nav>
-              <div className="mt-auto border-t border-border p-4">
+              <div className="mt-auto space-y-2 border-t border-border p-4">
                 <Button
                   className="w-full"
                   render={<Link href="/contact" onClick={() => setOpen(false)} />}
                 >
                   დაიწყე პროექტი
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  render={
+                    <Link href="/portal/login" onClick={() => setOpen(false)} />
+                  }
+                >
+                  <LockIcon aria-hidden="true" />
+                  კლიენტის პანელი
                 </Button>
               </div>
             </SheetContent>
