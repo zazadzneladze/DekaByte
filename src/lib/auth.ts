@@ -153,6 +153,20 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         token.needsOnboarding = Boolean(user.needsOnboarding);
       }
 
+      // Backfill role for sessions created before role was introduced
+      if (!token.role && token.email) {
+        try {
+          const admin = await adminGetUserByEmail(String(token.email));
+          if (admin?.isActive) {
+            token.role = "admin";
+            token.id = admin.id;
+            token.needsOnboarding = false;
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+
       if (trigger === "update" && session) {
         const patch =
           session.user && typeof session.user === "object"
@@ -174,10 +188,12 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token.id && token.email && token.role) {
-        session.user.id = token.id;
+      if (session.user && token.email) {
+        session.user.id = token.id ?? session.user.id ?? "";
         session.user.email = token.email;
-        session.user.role = token.role;
+        if (token.role) {
+          session.user.role = token.role;
+        }
         session.user.displayName = token.displayName ?? null;
         session.user.image = token.picture ?? null;
         session.user.needsOnboarding = Boolean(token.needsOnboarding);

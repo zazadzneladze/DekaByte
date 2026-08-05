@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { ProjectGallery } from "@/components/public/project-gallery";
+import { MacBrowserFrame } from "@/components/public/mac-browser-frame";
 import { SectionLabel } from "@/components/public/section-label";
 import { Button } from "@/components/ui/button";
 import { categoryLabel } from "@/config/categories";
@@ -136,17 +137,19 @@ async function ProjectDetailContent({ params }: PageProps) {
 
       {cover ? (
         <div className="mx-auto max-w-6xl sm:mt-10 sm:px-6 lg:px-8">
-          <div className="relative aspect-[16/9] overflow-hidden bg-secondary shadow-lift ring-1 ring-border/60 sm:rounded-2xl">
-            <Image
-              src={cover}
-              alt={project.coverImageAlt || project.title}
-              fill
-              priority
-              fetchPriority="high"
-              className="object-cover"
-              sizes="(max-width: 1152px) 100vw, 1152px"
-            />
-          </div>
+          <MacBrowserFrame title={project.title} className="shadow-lift">
+            <div className="relative aspect-[16/9] overflow-hidden bg-secondary">
+              <Image
+                src={cover}
+                alt={project.coverImageAlt || project.title}
+                fill
+                priority
+                fetchPriority="high"
+                className="object-cover object-top"
+                sizes="(max-width: 1152px) 100vw, 1152px"
+              />
+            </div>
+          </MacBrowserFrame>
         </div>
       ) : null}
 
@@ -276,17 +279,19 @@ async function ProjectDetailContent({ params }: PageProps) {
                     href={`/work/${item.slug}`}
                     className="group flex flex-col gap-3"
                   >
-                    <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-secondary shadow-soft ring-1 ring-border/60">
-                      {img ? (
-                        <Image
-                          src={img}
-                          alt={alt}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                          sizes="(max-width: 640px) 100vw, 33vw"
-                        />
-                      ) : null}
-                    </div>
+                    <MacBrowserFrame title={item.title}>
+                      <div className="relative aspect-[16/10] overflow-hidden bg-secondary">
+                        {img ? (
+                          <Image
+                            src={img}
+                            alt={alt}
+                            fill
+                            className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                            sizes="(max-width: 640px) 100vw, 33vw"
+                          />
+                        ) : null}
+                      </div>
+                    </MacBrowserFrame>
                     <p className="text-[0.65rem] font-semibold tracking-[0.14em] text-electric uppercase">
                       {categoryLabel(item.category)}
                     </p>

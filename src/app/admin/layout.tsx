@@ -30,7 +30,7 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
   await connection();
   const session = await auth();
 
-  if (!session?.user) {
+  if (!session?.user || session.user.role !== "admin") {
     return (
       <div className="min-h-screen bg-background text-foreground">{children}</div>
     );
@@ -48,7 +48,7 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
           </Link>
           <nav className="flex flex-1 flex-wrap items-center gap-1">
             {NAV.map((item) => (
-              <Link
+              <a
                 key={item.href}
                 href={item.href}
                 className={cn(
@@ -56,7 +56,7 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
                 )}
               >
                 {item.label}
-              </Link>
+              </a>
             ))}
           </nav>
           <div className="flex items-center gap-2">

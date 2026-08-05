@@ -8,6 +8,8 @@ import {
 } from "@/actions/push";
 import { Button } from "@/components/ui/button";
 
+const SW_URL = "/admin/sw.js";
+
 function urlBase64ToUint8Array(base64String: string) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -25,6 +27,19 @@ function pushSupported() {
     "serviceWorker" in navigator &&
     "PushManager" in window &&
     "Notification" in window
+  );
+}
+
+/** Unregister legacy root-scoped /sw.js that broke soft navigation. */
+async function unregisterLegacyRootWorkers() {
+  const regs = await navigator.serviceWorker.getRegistrations();
+  await Promise.all(
+    regs.map(async (reg) => {
+      const script = reg.active?.scriptURL || reg.installing?.scriptURL || "";
+      if (script.endsWith("/sw.js") && !script.includes("/admin/")) {
+        await reg.unregister();
+      }
+    }),
   );
 }
 
@@ -54,16 +69,21 @@ export function AdminPushControls({ vapidPublicKey }: Props) {
 
     let cancelled = false;
     void (async () => {
-      if (!supported || !vapidPublicKey) {
+      if (!supported) {
         if (!cancelled) setReady(true);
         return;
       }
       try {
-        const reg = await navigator.serviceWorker.register("/sw.js");
-        const sub = await reg.pushManager.getSubscription();
-        if (!cancelled) {
-          setSubscribed(Boolean(sub));
-          setPermission(Notification.permission);
+        await unregisterLegacyRootWorkers();
+        if (vapidPublicKey) {
+          const reg = await navigator.serviceWorker.register(SW_URL, {
+            scope: "/admin",
+          });
+          const sub = await reg.pushManager.getSubscription();
+          if (!cancelled) {
+            setSubscribed(Boolean(sub));
+            setPermission(Notification.permission);
+          }
         }
       } catch {
         /* ignore */
@@ -85,7 +105,10 @@ export function AdminPushControls({ vapidPublicKey }: Props) {
     }
     startTransition(async () => {
       try {
-        const reg = await navigator.serviceWorker.register("/sw.js");
+        await unregisterLegacyRootWorkers();
+        const reg = await navigator.serviceWorker.register(SW_URL, {
+          scope: "/admin",
+        });
         const permissionResult = await Notification.requestPermission();
         setPermission(permissionResult);
         if (permissionResult !== "granted") {

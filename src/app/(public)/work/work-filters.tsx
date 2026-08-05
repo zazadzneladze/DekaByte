@@ -10,6 +10,7 @@ import {
   categoryLabel,
   type ProjectCategoryId,
 } from "@/config/categories";
+import { MacBrowserFrame } from "@/components/public/mac-browser-frame";
 import { cn } from "@/lib/utils";
 
 export type WorkListItem = {
@@ -96,17 +97,19 @@ export function WorkFilters({ projects }: WorkFiltersProps) {
                   href={`/work/${project.slug}`}
                   className="group flex flex-col gap-4"
                 >
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-secondary shadow-soft ring-1 ring-border/60">
-                    {cover ? (
-                      <Image
-                        src={cover}
-                        alt={alt}
-                        fill
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                    ) : null}
-                  </div>
+                  <MacBrowserFrame title={project.title}>
+                    <div className="relative aspect-[16/10] overflow-hidden bg-secondary">
+                      {cover ? (
+                        <Image
+                          src={cover}
+                          alt={alt}
+                          fill
+                          className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
+                      ) : null}
+                    </div>
+                  </MacBrowserFrame>
                   <div className="flex flex-col gap-2">
                     <p className="text-[0.7rem] font-semibold tracking-[0.14em] text-electric uppercase">
                       {categoryLabel(project.category)}

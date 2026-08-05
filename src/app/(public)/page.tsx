@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { HeroComposition } from "@/components/public/hero-composition";
+import { MacBrowserFrame } from "@/components/public/mac-browser-frame";
 import { Reveal } from "@/components/public/reveal";
 import { SectionLabel } from "@/components/public/section-label";
 import {
@@ -133,29 +134,31 @@ export default async function HomePage() {
                         : "group grid gap-5 sm:grid-cols-[15rem_1fr] sm:gap-8"
                     }
                   >
-                    <div
-                      className={
-                        isLead
-                          ? "relative aspect-[16/10] overflow-hidden rounded-2xl bg-secondary shadow-soft ring-1 ring-border/60"
-                          : "relative aspect-[4/3] overflow-hidden rounded-xl bg-secondary shadow-soft ring-1 ring-border/60 sm:aspect-[5/4]"
-                      }
-                    >
-                      {cover ? (
-                        <Image
-                          src={cover}
-                          alt={alt}
-                          fill
-                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                          sizes={
-                            isLead
-                              ? "(max-width: 1024px) 100vw, 58vw"
-                              : "(max-width: 640px) 100vw, 15rem"
-                          }
-                          priority={isLead}
-                          fetchPriority={isLead ? "high" : undefined}
-                        />
-                      ) : null}
-                    </div>
+                    <MacBrowserFrame title={project.title}>
+                      <div
+                        className={
+                          isLead
+                            ? "relative aspect-[16/10] overflow-hidden bg-secondary"
+                            : "relative aspect-[4/3] overflow-hidden bg-secondary sm:aspect-[5/4]"
+                        }
+                      >
+                        {cover ? (
+                          <Image
+                            src={cover}
+                            alt={alt}
+                            fill
+                            className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                            sizes={
+                              isLead
+                                ? "(max-width: 1024px) 100vw, 58vw"
+                                : "(max-width: 640px) 100vw, 15rem"
+                            }
+                            priority={isLead}
+                            fetchPriority={isLead ? "high" : undefined}
+                          />
+                        ) : null}
+                      </div>
+                    </MacBrowserFrame>
                     <div className="flex flex-col justify-center gap-3">
                       <p className="text-[0.7rem] font-semibold tracking-[0.16em] text-electric uppercase">
                         {categoryLabel(project.category)}
