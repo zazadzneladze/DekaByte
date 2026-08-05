@@ -1,6 +1,0 @@
-{
-  "name": "DEKABYTE",
-  "description": "DEKABYTE-ის ოფიციალური ვებსაიტი — ვქმნით ვებსაიტებსა და Android აპლიკაციებს, რომლებიც ბიზნესს ზრდაში ეხმარება.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
