@@ -25,8 +25,9 @@ async function PortalLoginContent({
   if (session?.user?.role === "client") {
     redirect(session.user.needsOnboarding ? "/portal/onboarding" : "/portal");
   }
+  // Admin credentials session must not block portal Google login UI
   if (session?.user?.role === "admin") {
-    redirect("/admin");
+    // stay on login — user may still want to open portal with Google
   }
 
   const params = await searchParams;

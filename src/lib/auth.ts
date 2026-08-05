@@ -9,6 +9,7 @@ import { adminUsers } from "@/db/schema";
 import {
   adminGetUserByEmail,
   clientEmailHasProjectAccess,
+  getClientUserByEmail,
   upsertClientUserFromGoogle,
 } from "@/db/queries";
 import { loginSchema } from "@/validators/auth";
@@ -143,28 +144,14 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
 
       return true;
     },
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user, account, trigger, session }) {
       if (user) {
         token.id = user.id;
-        token.email = user.email ?? undefined;
-        token.role = user.role;
-        token.displayName = user.displayName ?? null;
-        token.picture = user.image ?? null;
+        token.email = user.email ?? token.email;
+        token.role = user.role ?? token.role;
+        token.displayName = user.displayName ?? token.displayName ?? null;
+        token.picture = user.image ?? token.picture ?? null;
         token.needsOnboarding = Boolean(user.needsOnboarding);
-      }
-
-      // Backfill role for sessions created before role was introduced
-      if (!token.role && token.email) {
-        try {
-          const admin = await adminGetUserByEmail(String(token.email));
-          if (admin?.isActive) {
-            token.role = "admin";
-            token.id = admin.id;
-            token.needsOnboarding = false;
-          }
-        } catch {
-          /* ignore */
-        }
       }
 
       if (trigger === "update" && session) {
@@ -182,6 +169,37 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         }
         if (typeof patch.needsOnboarding === "boolean") {
           token.needsOnboarding = patch.needsOnboarding;
+        }
+      }
+
+      const email = token.email ? String(token.email).toLowerCase() : null;
+
+      // Persist / repair role. Never upgrade an active client session to admin
+      // just because the same Gmail is also an admin_users row.
+      if (email && (account?.provider === "google" || !token.role)) {
+        try {
+          if (account?.provider === "google" || token.role === "client") {
+            const allowed = await clientEmailHasProjectAccess(email);
+            if (allowed) {
+              const row = await getClientUserByEmail(email);
+              if (row) {
+                token.id = row.id;
+                token.role = "client";
+                token.displayName = row.displayName;
+                token.picture = row.avatarUrl || row.image;
+                token.needsOnboarding = !row.displayName?.trim();
+              }
+            }
+          } else if (!token.role) {
+            const admin = await adminGetUserByEmail(email);
+            if (admin?.isActive) {
+              token.role = "admin";
+              token.id = admin.id;
+              token.needsOnboarding = false;
+            }
+          }
+        } catch {
+          /* ignore lookup errors */
         }
       }
 

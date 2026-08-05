@@ -21,7 +21,6 @@ export const authConfig = {
 
       if (isAdminArea) {
         if (isAdminLogin) return true;
-        // Static assets under /admin (matcher usually excludes these)
         if (
           pathname.endsWith(".js") ||
           pathname.endsWith(".webmanifest") ||
@@ -30,14 +29,16 @@ export const authConfig = {
           return true;
         }
         if (auth?.user?.role === "admin") return true;
-        // Legacy JWT without role — let the Node layout backfill + enforce
         if (auth?.user?.email) return true;
         return false;
       }
 
       if (isPortalArea) {
         if (isPortalLogin) return true;
-        return auth?.user?.role === "client";
+        if (auth?.user?.role === "client") return true;
+        // Never send portal users to /admin/login (default pages.signIn) —
+        // that caused an infinite redirect loop with dual admin/client emails.
+        return Response.redirect(new URL("/portal/login", request.nextUrl));
       }
 
       return true;
