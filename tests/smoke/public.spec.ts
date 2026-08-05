@@ -23,7 +23,7 @@ test.describe("public smoke", () => {
   test("estimate calculator", async ({ page }) => {
     await page.goto("/estimate");
     await expect(
-      page.getByText(/საწყის სავარაუდო შეფასებას/).first(),
+      page.getByText(/საწყის სავარაუდო დიაპაზონს|საწყის სავარაუდო შეფასებას/).first(),
     ).toBeVisible();
   });
 
@@ -33,8 +33,10 @@ test.describe("public smoke", () => {
     await expect(page.getByRole("textbox", { name: /სახელი/ })).toBeVisible();
   });
 
-  test("services, privacy, terms", async ({ page }) => {
+  test("services, about, privacy, terms", async ({ page }) => {
     await page.goto("/services");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.goto("/about");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await page.goto("/privacy");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();

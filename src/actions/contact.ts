@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 
 import { getDb } from "@/db";
 import { leads } from "@/db/schema";
+import { notifyNewLead } from "@/lib/email";
 import { checkLeadRateLimit, recordLeadAttempt } from "@/lib/rate-limit";
 import { hashIp } from "@/lib/security";
 import { contactSchema } from "@/validators/contact";
@@ -77,6 +78,15 @@ export async function submitContact(
       status: "new",
       source: "contact_form",
       ipHash,
+    });
+
+    void notifyNewLead({
+      name: data.name,
+      phone: data.phone,
+      email: data.email,
+      projectType: data.projectType,
+      message: data.message,
+      preferredContactMethod: data.preferredContactMethod,
     });
 
     return { ok: true };

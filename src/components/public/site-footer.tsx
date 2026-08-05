@@ -21,6 +21,7 @@ type SiteFooterProps = {
 const FOOTER_NAV = [
   { href: "/work", label: "ნამუშევრები" },
   { href: "/services", label: "მომსახურებები" },
+  { href: "/about", label: "ჩვენს შესახებ" },
   { href: "/estimate", label: "ბიუჯეტი" },
   { href: "/contact", label: "კონტაქტი" },
 ] as const;

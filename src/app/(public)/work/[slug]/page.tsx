@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { ProjectGallery } from "@/components/public/project-gallery";
 import { SectionLabel } from "@/components/public/section-label";
 import { Button } from "@/components/ui/button";
 import { categoryLabel } from "@/config/categories";
@@ -15,6 +16,7 @@ import {
   getAdjacentPublishedProjects,
   getPublishedProjectBySlug,
   getPublishedProjects,
+  getRelatedPublishedProjects,
 } from "@/db/queries";
 import { MetaViewEvent, TrackedAnchor } from "@/lib/meta-pixel";
 import { JsonLdScript, projectJsonLd } from "@/lib/seo";
@@ -59,6 +61,11 @@ async function ProjectDetailContent({ params }: PageProps) {
   if (!project) notFound();
 
   const { prev, next } = await getAdjacentPublishedProjects(slug);
+  const related = await getRelatedPublishedProjects(
+    slug,
+    project.category,
+    3,
+  );
   const cover = project.coverImageUrl;
   const gallery = project.images;
   const wa = whatsappHref(whatsappProjectMessage(project.title));
@@ -195,32 +202,7 @@ async function ProjectDetailContent({ params }: PageProps) {
           ) : null}
 
           {gallery.length > 0 ? (
-            <section>
-              <SectionLabel>გალერეა</SectionLabel>
-              <h2 className="mb-5 text-xl font-semibold tracking-tight text-foreground">
-                ეკრანები
-              </h2>
-              <ul className="grid gap-5 sm:grid-cols-2">
-                {gallery.map((image) => (
-                  <li key={image.id} className="flex flex-col gap-2">
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-secondary shadow-soft ring-1 ring-border/60">
-                      <Image
-                        src={image.url}
-                        alt={image.alt || project.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 100vw, 50vw"
-                      />
-                    </div>
-                    {image.caption ? (
-                      <p className="text-sm text-muted-foreground">
-                        {image.caption}
-                      </p>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <ProjectGallery images={gallery} projectTitle={project.title} />
           ) : null}
         </div>
 
@@ -276,9 +258,52 @@ async function ProjectDetailContent({ params }: PageProps) {
         </aside>
       </div>
 
+      {related.length > 0 ? (
+        <section className="mx-auto max-w-6xl border-t border-border px-4 py-14 sm:px-6 lg:px-8">
+          <SectionLabel>მსგავსი</SectionLabel>
+          <h2 className="text-display mb-8 text-2xl font-semibold text-foreground sm:text-3xl">
+            იგივე მიმართულება
+          </h2>
+          <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((item) => {
+              const img =
+                item.coverImageUrl ?? item.images[0]?.url ?? null;
+              const alt =
+                item.coverImageAlt || item.images[0]?.alt || item.title;
+              return (
+                <li key={item.id}>
+                  <Link
+                    href={`/work/${item.slug}`}
+                    className="group flex flex-col gap-3"
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-secondary shadow-soft ring-1 ring-border/60">
+                      {img ? (
+                        <Image
+                          src={img}
+                          alt={alt}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                          sizes="(max-width: 640px) 100vw, 33vw"
+                        />
+                      ) : null}
+                    </div>
+                    <p className="text-[0.65rem] font-semibold tracking-[0.14em] text-electric uppercase">
+                      {categoryLabel(item.category)}
+                    </p>
+                    <h3 className="font-semibold tracking-tight text-foreground group-hover:text-electric">
+                      {item.title}
+                    </h3>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
+
       <nav
         aria-label="მეზობელი პროექტები"
-        className="mx-auto flex max-w-6xl flex-col gap-6 border-t border-border px-4 pt-10 sm:flex-row sm:justify-between sm:px-6 lg:px-8"
+        className="mx-auto flex max-w-6xl flex-col gap-6 border-t border-border px-4 pt-10 pb-4 sm:flex-row sm:justify-between sm:px-6 lg:px-8"
       >
         {prev ? (
           <Link

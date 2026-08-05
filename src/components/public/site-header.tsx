@@ -21,6 +21,7 @@ const NAV_ITEMS = [
   { href: "/", label: "მთავარი" },
   { href: "/work", label: "ნამუშევრები" },
   { href: "/services", label: "მომსახურებები" },
+  { href: "/about", label: "ჩვენს შესახებ" },
   { href: "/estimate", label: "ბიუჯეტი" },
   { href: "/contact", label: "კონტაქტი" },
 ] as const;

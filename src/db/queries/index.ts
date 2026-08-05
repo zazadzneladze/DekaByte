@@ -108,6 +108,16 @@ export async function getAdjacentPublishedProjects(slug: string) {
   };
 }
 
+/** Same-category published projects for case-study cross-links. */
+export async function getRelatedPublishedProjects(
+  slug: string,
+  category: ProjectCategoryId,
+  limit = 3,
+) {
+  const list = await getPublishedProjects(category);
+  return list.filter((p) => p.slug !== slug).slice(0, limit);
+}
+
 export function invalidateProjectCaches(slug?: string) {
   updateTag(CACHE_TAGS.projects);
   updateTag(CACHE_TAGS.featured);

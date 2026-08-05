@@ -96,7 +96,7 @@ All prices and durations live in [`src/config/estimate.ts`](src/config/estimate.
 
 ## Leads
 
-Contact form saves to Neon (`leads`). Admin → ლიდები: mark read/contacted/archive; open tel / WhatsApp / email. No outbound email integration in v1.
+Contact form saves to Neon (`leads`) and optionally emails you via Resend when `RESEND_API_KEY` is set. Admin → ლიდები: mark read/contacted/archive; open tel / WhatsApp / email.
 
 ## Change admin password
 
