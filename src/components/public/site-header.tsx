@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LockIcon, MenuIcon } from "lucide-react";
 
 import { Logo } from "@/components/public/logo";
+import { UserAvatar } from "@/components/public/user-avatar";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -40,9 +40,10 @@ export type HeaderAccount = {
 
 type SiteHeaderProps = {
   account?: HeaderAccount;
+  logoSrc?: string | null;
 };
 
-export function SiteHeader({ account = null }: SiteHeaderProps) {
+export function SiteHeader({ account = null, logoSrc = null }: SiteHeaderProps) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -69,7 +70,7 @@ export function SiteHeader({ account = null }: SiteHeaderProps) {
       style={{ height: "var(--header-height)" }}
     >
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <Logo href="/" size="sm" />
+        <Logo href="/" size="sm" src={logoSrc} />
 
         <nav
           aria-label="მთავარი ნავიგაცია"
@@ -101,26 +102,12 @@ export function SiteHeader({ account = null }: SiteHeaderProps) {
 
         <div className="flex items-center gap-1.5 sm:gap-2">
           {account ? (
-            <Link
+            <UserAvatar
+              image={account.image}
+              label={account.label}
               href={account.href}
-              className="relative size-9 overflow-hidden rounded-full ring-1 ring-border transition-opacity hover:opacity-90"
-              title={account.label}
-              aria-label={account.label}
-            >
-              {account.image ? (
-                <Image
-                  src={account.image}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="36px"
-                />
-              ) : (
-                <span className="flex size-full items-center justify-center bg-secondary text-xs font-semibold text-graphite">
-                  {account.label.slice(0, 1).toUpperCase()}
-                </span>
-              )}
-            </Link>
+              size={36}
+            />
           ) : (
             <Button
               variant="ghost"
@@ -150,7 +137,7 @@ export function SiteHeader({ account = null }: SiteHeaderProps) {
             <SheetContent side="right" className="w-[min(20rem,100%)] gap-0 p-0">
               <SheetHeader className="border-b border-border p-4">
                 <SheetTitle className="sr-only">ნავიგაცია</SheetTitle>
-                <Logo href="/" size="sm" />
+                <Logo href="/" size="sm" src={logoSrc} />
               </SheetHeader>
               <nav
                 aria-label="მობილური ნავიგაცია"

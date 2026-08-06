@@ -38,6 +38,7 @@ export type PublicSiteSettings = {
   githubUrl: string;
   defaultSeoTitle: string;
   defaultSeoDescription: string;
+  logoUrl?: string | null;
 };
 
 export type AdminSessionUser = {

@@ -29,6 +29,13 @@
       "when": 1785970000000,
       "tag": "0003_client_progress",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1785980000000,
+      "tag": "0004_site_logo",
+      "breakpoints": true
     }
   ]
 }

@@ -3,6 +3,7 @@ import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/lib/auth";
 import { userIsAdmin } from "@/lib/roles";
+import { getPublicSiteSettings } from "@/db/queries";
 import { Logo } from "@/components/public/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +34,7 @@ async function AdminLoginContent({
     redirect("/portal");
   }
 
+  const settings = await getPublicSiteSettings();
   const params = await searchParams;
   const showError = params.error === "CredentialsSignin" || params.error === "1";
 
@@ -64,7 +66,7 @@ async function AdminLoginContent({
       />
       <div className="relative w-full max-w-sm space-y-6 rounded-2xl border border-border/80 bg-card/95 p-6 shadow-[0_8px_32px_rgb(18_21_26/0.06)]">
         <div className="flex flex-col items-center gap-4 text-center">
-          <Logo href="/" size="md" />
+          <Logo href="/" size="md" src={settings.logoUrl} />
           <div className="space-y-1">
             <h1 className="text-lg font-semibold tracking-tight">
               ადმინ შესვლა

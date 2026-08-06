@@ -19,7 +19,7 @@ function HeaderFallback() {
   );
 }
 
-async function HeaderWithAccount() {
+async function HeaderWithAccount({ logoSrc }: { logoSrc?: string | null }) {
   const session = await auth();
   const account =
     session?.user &&
@@ -32,7 +32,7 @@ async function HeaderWithAccount() {
         }
       : null;
 
-  return <SiteHeader account={account} />;
+  return <SiteHeader account={account} logoSrc={logoSrc} />;
 }
 
 export default async function PublicLayout({
@@ -65,7 +65,7 @@ export default async function PublicLayout({
         გადასვლა ძირითად კონტენტზე
       </a>
       <Suspense fallback={<HeaderFallback />}>
-        <HeaderWithAccount />
+        <HeaderWithAccount logoSrc={settings.logoUrl} />
       </Suspense>
       <div className="flex min-h-full flex-1 flex-col pt-header">
         <main id="main-content" className="flex-1 outline-none" tabIndex={-1}>

@@ -31,6 +31,9 @@ const payloadSchema = z.discriminatedUnion("purpose", [
   z.object({
     purpose: z.literal("client-avatar"),
   }),
+  z.object({
+    purpose: z.literal("site-logo"),
+  }),
 ]);
 
 function normalizePayload(raw: unknown): unknown {
@@ -117,6 +120,19 @@ export async function POST(request: Request): Promise<NextResponse> {
           return {
             allowedContentTypes: ["application/pdf"],
             maximumSizeInBytes: MAX_DOC_BYTES,
+            addRandomSuffix: true,
+            tokenPayload: JSON.stringify(data),
+          };
+        }
+
+        if (data.purpose === "site-logo") {
+          if (!isAdmin) throw new Error("უფლება არ გაქვთ");
+          if (!pathname.startsWith("brand/logo")) {
+            throw new Error("არასწორი pathname");
+          }
+          return {
+            allowedContentTypes: [...IMAGE_TYPES],
+            maximumSizeInBytes: MAX_IMAGE_BYTES,
             addRandomSuffix: true,
             tokenPayload: JSON.stringify(data),
           };

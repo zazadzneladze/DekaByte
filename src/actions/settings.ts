@@ -13,6 +13,7 @@ import {
 } from "@/db/queries";
 import { changePasswordSchema } from "@/validators/auth";
 import { estimateConfigSchema } from "@/validators/estimate";
+import { deleteBlobSafe } from "@/lib/blob";
 import { isSafeHttpUrl } from "@/lib/security";
 import type { EstimateConfig } from "@/config/estimate";
 
@@ -83,6 +84,51 @@ export async function updateSiteSettings(
   invalidateSiteSettingsCache();
   revalidatePath("/admin/settings");
   revalidatePath("/");
+
+  return { ok: true };
+}
+
+export async function updateSiteLogo(raw: unknown): Promise<SettingsActionResult> {
+  await requireAdmin();
+
+  const parsed = z
+    .object({
+      logoUrl: z.string().url().nullable(),
+      logoPathname: z.string().nullable(),
+    })
+    .safeParse(raw);
+
+  if (!parsed.success) {
+    return { ok: false, error: "არასწორი ლოგოს მონაცემები" };
+  }
+
+  const db = getDb();
+  const existing = await adminGetSiteSettings();
+
+  if (existing?.logoPathname && existing.logoPathname !== parsed.data.logoPathname) {
+    await deleteBlobSafe(existing.logoPathname);
+  }
+
+  if (existing) {
+    await db
+      .update(siteSettings)
+      .set({
+        logoUrl: parsed.data.logoUrl,
+        logoPathname: parsed.data.logoPathname,
+        updatedAt: new Date(),
+      })
+      .where(eq(siteSettings.id, 1));
+  } else {
+    return { ok: false, error: "ჯერ შეინახეთ საიტის პარამეტრები" };
+  }
+
+  invalidateSiteSettingsCache();
+  revalidatePath("/admin/settings");
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath("/portal");
+  revalidatePath("/admin/login");
+  revalidatePath("/portal/login");
 
   return { ok: true };
 }

@@ -54,6 +54,7 @@ export async function getPublicSiteSettings() {
       githubUrl: row.githubUrl,
       defaultSeoTitle: row.defaultSeoTitle,
       defaultSeoDescription: row.defaultSeoDescription,
+      logoUrl: row.logoUrl,
     };
   } catch {
     return { ...siteDefaults };

@@ -131,6 +131,8 @@ export const siteSettings = pgTable("site_settings", {
   githubUrl: text("github_url").notNull().default(""),
   defaultSeoTitle: varchar("default_seo_title", { length: 200 }).notNull(),
   defaultSeoDescription: text("default_seo_description").notNull(),
+  logoUrl: text("logo_url"),
+  logoPathname: text("logo_pathname"),
   estimateConfig: jsonb("estimate_config").$type<EstimateConfig | null>(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

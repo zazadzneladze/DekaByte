@@ -4,6 +4,7 @@ import { siteDefaults } from "@/config/site";
 import { mergeEstimateConfig } from "@/config/estimate";
 import { SettingsForms } from "@/components/admin/settings-forms";
 import { EstimateSettingsForm } from "@/components/admin/estimate-settings-form";
+import { LogoUploader } from "@/components/admin/logo-uploader";
 
 export default function AdminSettingsPage() {
   return (
@@ -41,9 +42,13 @@ async function AdminSettingsContent() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">პარამეტრები</h1>
         <p className="text-sm text-muted-foreground">
-          საკონტაქტო ინფო, ბიუჯეტის ცხრილები და ადმინ პაროლი
+          ლოგო, საკონტაქტო ინფო, ბიუჯეტის ცხრილები და ადმინ პაროლი
         </p>
       </div>
+      <LogoUploader
+        initialUrl={settings?.logoUrl ?? null}
+        initialPathname={settings?.logoPathname ?? null}
+      />
       <SettingsForms initial={initial} />
       <EstimateSettingsForm initial={estimateInitial} />
     </div>
