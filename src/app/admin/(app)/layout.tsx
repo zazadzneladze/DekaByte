@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { auth, signOut } from "@/lib/auth";
+import { userIsAdmin } from "@/lib/session";
 import { AdminPushControls } from "@/components/admin/push-controls";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -19,7 +20,7 @@ async function AdminAppShell({ children }: { children: React.ReactNode }) {
   await connection();
   const session = await auth();
 
-  if (!session?.user || session.user.role !== "admin") {
+  if (!session?.user || !userIsAdmin(session.user)) {
     redirect("/admin/login");
   }
 

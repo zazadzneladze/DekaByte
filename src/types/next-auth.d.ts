@@ -9,6 +9,10 @@ declare module "next-auth" {
       id: string;
       email: string;
       role: AppRole;
+      /** True when email is an active admin_users row (even if role is client). */
+      isAdmin?: boolean;
+      /** admin_users.id when dual-role; used by admin actions. */
+      adminId?: string | null;
       displayName?: string | null;
       image?: string | null;
       needsOnboarding?: boolean;
@@ -19,6 +23,8 @@ declare module "next-auth" {
     id: string;
     email: string;
     role: AppRole;
+    isAdmin?: boolean;
+    adminId?: string | null;
     displayName?: string | null;
     image?: string | null;
     needsOnboarding?: boolean;
@@ -30,6 +36,8 @@ declare module "next-auth/jwt" {
     id?: string;
     email?: string;
     role?: AppRole;
+    isAdmin?: boolean;
+    adminId?: string | null;
     displayName?: string | null;
     picture?: string | null;
     needsOnboarding?: boolean;

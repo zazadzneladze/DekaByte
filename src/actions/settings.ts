@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { compare, hash } from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { auth } from "@/lib/auth";
+import { requireAdminSession } from "@/lib/session";
 import { getDb } from "@/db";
 import { adminUsers, siteSettings } from "@/db/schema";
 import {
@@ -21,15 +21,7 @@ export type SettingsActionResult =
   | { ok: false; error: string; fieldErrors?: Record<string, string[]> };
 
 async function requireAdmin() {
-  const session = await auth();
-  if (
-    !session?.user?.id ||
-    !session.user.email ||
-    session.user.role !== "admin"
-  ) {
-    throw new Error("Unauthorized");
-  }
-  return session.user;
+  return requireAdminSession();
 }
 
 const optionalUrl = z

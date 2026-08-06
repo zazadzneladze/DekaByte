@@ -82,6 +82,8 @@ const providers = [
         id: user.id,
         email: user.email,
         role: "admin" as const,
+        isAdmin: true,
+        adminId: user.id,
         displayName: null,
         image: null,
         needsOnboarding: false,
@@ -142,6 +144,10 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
       user.image = row.avatarUrl || row.image;
       user.needsOnboarding = !row.displayName?.trim();
 
+      const admin = await adminGetUserByEmail(email);
+      user.isAdmin = Boolean(admin?.isActive);
+      user.adminId = admin?.isActive ? admin.id : null;
+
       return true;
     },
     async jwt({ token, user, account, trigger, session }) {
@@ -152,6 +158,13 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         token.displayName = user.displayName ?? token.displayName ?? null;
         token.picture = user.image ?? token.picture ?? null;
         token.needsOnboarding = Boolean(user.needsOnboarding);
+        token.isAdmin = Boolean(user.isAdmin ?? user.role === "admin");
+        token.adminId =
+          typeof user.adminId === "string"
+            ? user.adminId
+            : user.role === "admin"
+              ? user.id
+              : (token.adminId ?? null);
       }
 
       if (trigger === "update" && session) {
@@ -174,27 +187,39 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
 
       const email = token.email ? String(token.email).toLowerCase() : null;
 
-      // Persist / repair role. Never upgrade an active client session to admin
-      // just because the same Gmail is also an admin_users row.
-      if (email && (account?.provider === "google" || !token.role)) {
+      // Persist / repair role. Keep client as active role for Google sessions,
+      // but still attach isAdmin/adminId when the same email is an admin.
+      if (
+        email &&
+        (account?.provider === "google" ||
+          !token.role ||
+          token.role === "client")
+      ) {
         try {
           if (account?.provider === "google" || token.role === "client") {
-            const allowed = await clientEmailHasProjectAccess(email);
-            if (allowed) {
-              const row = await getClientUserByEmail(email);
-              if (row) {
-                token.id = row.id;
-                token.role = "client";
-                token.displayName = row.displayName;
-                token.picture = row.avatarUrl || row.image;
-                token.needsOnboarding = !row.displayName?.trim();
+            if (account?.provider === "google" || !token.id) {
+              const allowed = await clientEmailHasProjectAccess(email);
+              if (allowed) {
+                const row = await getClientUserByEmail(email);
+                if (row) {
+                  token.id = row.id;
+                  token.role = "client";
+                  token.displayName = row.displayName;
+                  token.picture = row.avatarUrl || row.image;
+                  token.needsOnboarding = !row.displayName?.trim();
+                }
               }
             }
+            const admin = await adminGetUserByEmail(email);
+            token.isAdmin = Boolean(admin?.isActive);
+            token.adminId = admin?.isActive ? admin.id : null;
           } else if (!token.role) {
             const admin = await adminGetUserByEmail(email);
             if (admin?.isActive) {
               token.role = "admin";
               token.id = admin.id;
+              token.isAdmin = true;
+              token.adminId = admin.id;
               token.needsOnboarding = false;
             }
           }
@@ -212,6 +237,9 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         if (token.role) {
           session.user.role = token.role;
         }
+        session.user.isAdmin = Boolean(token.isAdmin);
+        session.user.adminId =
+          typeof token.adminId === "string" ? token.adminId : null;
         session.user.displayName = token.displayName ?? null;
         session.user.image = token.picture ?? null;
         session.user.needsOnboarding = Boolean(token.needsOnboarding);

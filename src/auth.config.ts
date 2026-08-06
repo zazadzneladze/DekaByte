@@ -1,6 +1,10 @@
 import type { NextAuthConfig } from "next-auth";
 import type { AppRole } from "@/types/next-auth";
 
+function userIsAdmin(user: { role?: string; isAdmin?: boolean } | null | undefined) {
+  return user?.role === "admin" || user?.isAdmin === true;
+}
+
 /**
  * Edge-compatible Auth.js config (no Node-only imports).
  * Providers live in `src/lib/auth.ts`.
@@ -24,6 +28,9 @@ export const authConfig = {
         if (token.role === "admin" || token.role === "client") {
           session.user.role = token.role as AppRole;
         }
+        session.user.isAdmin = Boolean(token.isAdmin);
+        session.user.adminId =
+          typeof token.adminId === "string" ? token.adminId : null;
         session.user.displayName =
           typeof token.displayName === "string" ? token.displayName : null;
         session.user.image =
@@ -49,9 +56,7 @@ export const authConfig = {
         ) {
           return true;
         }
-        if (auth?.user?.role === "admin") return true;
-        // Fallback while JWT role is present but session mapping lagged
-        if (auth?.user?.email) return true;
+        if (userIsAdmin(auth?.user)) return true;
         return false;
       }
 

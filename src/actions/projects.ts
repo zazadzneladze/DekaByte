@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
+import { userIsAdmin } from "@/lib/session";
 import { getDb } from "@/db";
 import { projects, projectImages } from "@/db/schema";
 import {
@@ -20,7 +21,7 @@ export type ActionResult<T = undefined> =
 
 async function requireAdmin() {
   const session = await auth();
-  if (!session?.user?.id || session.user.role !== "admin") {
+  if (!session?.user?.id || !userIsAdmin(session.user)) {
     throw new Error("Unauthorized");
   }
   return session.user;

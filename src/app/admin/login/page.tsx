@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/lib/auth";
+import { userIsAdmin } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,7 +25,7 @@ async function AdminLoginContent({
   searchParams: Promise<{ error?: string }>;
 }) {
   const session = await auth();
-  if (session?.user?.role === "admin") {
+  if (userIsAdmin(session?.user)) {
     redirect("/admin");
   }
   if (session?.user?.role === "client") {

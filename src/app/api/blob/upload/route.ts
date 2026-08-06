@@ -80,10 +80,11 @@ export async function POST(request: Request): Promise<NextResponse> {
         }
 
         const role = session.user.role;
+        const isAdmin = role === "admin" || session.user.isAdmin === true;
         const data = parsed.data;
 
         if (data.purpose === "portfolio") {
-          if (role !== "admin") throw new Error("უფლება არ გაქვთ");
+          if (!isAdmin) throw new Error("უფლება არ გაქვთ");
           if (!pathname.startsWith(`projects/${data.projectId}/`)) {
             throw new Error("არასწორი pathname");
           }
@@ -96,7 +97,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         }
 
         if (data.purpose === "client-asset") {
-          if (role !== "admin") throw new Error("უფლება არ გაქვთ");
+          if (!isAdmin) throw new Error("უფლება არ გაქვთ");
           if (!pathname.startsWith(`client-projects/${data.projectId}/`)) {
             throw new Error("არასწორი pathname");
           }
@@ -109,7 +110,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         }
 
         if (data.purpose === "client-invoice") {
-          if (role !== "admin") throw new Error("უფლება არ გაქვთ");
+          if (!isAdmin) throw new Error("უფლება არ გაქვთ");
           if (!pathname.startsWith(`client-invoices/${data.projectId}/`)) {
             throw new Error("არასწორი pathname");
           }
