@@ -1,12 +1,8 @@
 import "server-only";
 import { auth } from "@/lib/auth";
+import { userIsAdmin } from "@/lib/roles";
 
-export function userIsAdmin(user: {
-  role?: string;
-  isAdmin?: boolean;
-} | null | undefined) {
-  return user?.role === "admin" || user?.isAdmin === true;
-}
+export { userIsAdmin } from "@/lib/roles";
 
 export async function requireAdminSession() {
   const session = await auth();

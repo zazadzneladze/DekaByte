@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -7,6 +6,7 @@ import { auth, signOut } from "@/lib/auth";
 import { userIsAdmin } from "@/lib/session";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { AdminPushControls } from "@/components/admin/push-controls";
+import { Logo } from "@/components/public/logo";
 import { Button } from "@/components/ui/button";
 
 async function AdminAppShell({ children }: { children: React.ReactNode }) {
@@ -25,15 +25,7 @@ async function AdminAppShell({ children }: { children: React.ReactNode }) {
       />
       <header className="sticky top-0 z-40 border-b border-border/80 bg-card/90 backdrop-blur-md">
         <div className="relative mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-2.5 sm:px-6">
-          <Link
-            href="/admin"
-            className="mr-1 text-sm font-semibold tracking-tight text-graphite"
-          >
-            DekaByte
-            <span className="ml-1.5 font-normal text-muted-foreground">
-              Admin
-            </span>
-          </Link>
+          <Logo href="/" size="sm" className="mr-1" />
           <AdminNav />
           <div className="ml-auto flex items-center gap-1.5">
             <AdminPushControls

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -31,7 +32,17 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function SiteHeader() {
+export type HeaderAccount = {
+  href: string;
+  image: string | null;
+  label: string;
+} | null;
+
+type SiteHeaderProps = {
+  account?: HeaderAccount;
+};
+
+export function SiteHeader({ account = null }: SiteHeaderProps) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -58,9 +69,12 @@ export function SiteHeader() {
       style={{ height: "var(--header-height)" }}
     >
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <Logo />
+        <Logo href="/" size="sm" />
 
-        <nav aria-label="მთავარი ნავიგაცია" className="hidden items-center gap-0.5 md:flex">
+        <nav
+          aria-label="მთავარი ნავიგაცია"
+          className="hidden items-center gap-0.5 md:flex"
+        >
           {NAV_ITEMS.map((item) => {
             const active = isActivePath(pathname, item.href);
             return (
@@ -86,24 +100,39 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2">
-          <Button
-            size="sm"
-            className="hidden sm:inline-flex"
-            render={<Link href="/contact" />}
-          >
-            დაიწყე პროექტი
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-slate hover:text-foreground"
-            render={<Link href="/portal/login" />}
-            aria-label="კლიენტის პანელი"
-            title="კლიენტის პანელი"
-          >
-            <LockIcon aria-hidden="true" />
-          </Button>
+          {account ? (
+            <Link
+              href={account.href}
+              className="relative size-9 overflow-hidden rounded-full ring-1 ring-border transition-opacity hover:opacity-90"
+              title={account.label}
+              aria-label={account.label}
+            >
+              {account.image ? (
+                <Image
+                  src={account.image}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  sizes="36px"
+                />
+              ) : (
+                <span className="flex size-full items-center justify-center bg-secondary text-xs font-semibold text-graphite">
+                  {account.label.slice(0, 1).toUpperCase()}
+                </span>
+              )}
+            </Link>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-slate hover:text-foreground"
+              render={<Link href="/portal/login" />}
+              aria-label="კლიენტის პანელი"
+              title="კლიენტის პანელი"
+            >
+              <LockIcon aria-hidden="true" />
+            </Button>
+          )}
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
@@ -121,7 +150,7 @@ export function SiteHeader() {
             <SheetContent side="right" className="w-[min(20rem,100%)] gap-0 p-0">
               <SheetHeader className="border-b border-border p-4">
                 <SheetTitle className="sr-only">ნავიგაცია</SheetTitle>
-                <Logo />
+                <Logo href="/" size="sm" />
               </SheetHeader>
               <nav
                 aria-label="მობილური ნავიგაცია"
@@ -149,22 +178,33 @@ export function SiteHeader() {
                 })}
               </nav>
               <div className="mt-auto space-y-2 border-t border-border p-4">
-                <Button
-                  className="w-full"
-                  render={<Link href="/contact" onClick={() => setOpen(false)} />}
-                >
-                  დაიწყე პროექტი
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  render={
-                    <Link href="/portal/login" onClick={() => setOpen(false)} />
-                  }
-                >
-                  <LockIcon aria-hidden="true" />
-                  კლიენტის პანელი
-                </Button>
+                {account ? (
+                  <Button
+                    className="w-full"
+                    render={
+                      <Link
+                        href={account.href}
+                        onClick={() => setOpen(false)}
+                      />
+                    }
+                  >
+                    ჩემი პანელი
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    render={
+                      <Link
+                        href="/portal/login"
+                        onClick={() => setOpen(false)}
+                      />
+                    }
+                  >
+                    <LockIcon aria-hidden="true" />
+                    კლიენტის პანელი
+                  </Button>
+                )}
               </div>
             </SheetContent>
           </Sheet>

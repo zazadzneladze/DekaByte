@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { LogOut } from "lucide-react";
 import { auth, signOut } from "@/lib/auth";
+import { Logo } from "@/components/public/logo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -30,15 +31,7 @@ async function PortalShell({ children }: { children: React.ReactNode }) {
       />
       <header className="sticky top-0 z-40 border-b border-border/80 bg-card/90 backdrop-blur-md">
         <div className="relative mx-auto flex max-w-3xl flex-wrap items-center gap-2 px-4 py-2.5 sm:px-6">
-          <Link
-            href="/portal"
-            className="mr-1 text-sm font-semibold tracking-tight text-graphite"
-          >
-            DekaByte
-            <span className="ml-1.5 font-normal text-muted-foreground">
-              პორტალი
-            </span>
-          </Link>
+          <Logo href="/" size="sm" className="mr-1" />
           <nav className="flex flex-1 flex-wrap items-center gap-0.5">
             <Link
               href="/portal"

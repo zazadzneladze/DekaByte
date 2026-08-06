@@ -36,7 +36,7 @@ export function SiteFooter({ settings, className }: SiteFooterProps) {
     <footer className={cn("bg-ink text-surface", className)}>
       <div className="mx-auto grid max-w-6xl gap-12 px-4 py-14 sm:px-6 lg:grid-cols-[1.35fr_1fr_1fr] lg:px-8 lg:py-16">
         <div className="flex flex-col gap-4">
-          <Logo onDark />
+          <Logo href="/" size="md" />
           <p className="max-w-sm text-sm leading-relaxed text-ink-muted">
             {settings.brandName} — ვებსაიტები, Web Applications, ადმინ
             სისტემები და Android აპლიკაციები.

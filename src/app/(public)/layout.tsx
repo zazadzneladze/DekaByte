@@ -5,6 +5,8 @@ import { MobileContactBar } from "@/components/public/mobile-contact-bar";
 import { SiteFooter } from "@/components/public/site-footer";
 import { SiteHeader } from "@/components/public/site-header";
 import { getPublicSiteSettings } from "@/db/queries";
+import { auth } from "@/lib/auth";
+import { userIsAdmin } from "@/lib/roles";
 import {
   JsonLdScript,
   organizationJsonLd,
@@ -23,6 +25,23 @@ export default async function PublicLayout({
   children: React.ReactNode;
 }) {
   const settings = await getPublicSiteSettings();
+  const session = await auth();
+
+  const account =
+    session?.user &&
+    (session.user.role === "client" || userIsAdmin(session.user))
+      ? {
+          href:
+            session.user.role === "client"
+              ? "/portal"
+              : "/admin",
+          image: session.user.image ?? null,
+          label:
+            session.user.displayName ||
+            session.user.email ||
+            "პროფილი",
+        }
+      : null;
 
   return (
     <>
@@ -47,7 +66,7 @@ export default async function PublicLayout({
         გადასვლა ძირითად კონტენტზე
       </a>
       <Suspense fallback={<HeaderFallback />}>
-        <SiteHeader />
+        <SiteHeader account={account} />
       </Suspense>
       <div className="flex min-h-full flex-1 flex-col pt-header">
         <main id="main-content" className="flex-1 outline-none" tabIndex={-1}>

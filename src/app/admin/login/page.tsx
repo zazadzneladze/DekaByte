@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import { auth, signIn } from "@/lib/auth";
-import { userIsAdmin } from "@/lib/session";
+import { userIsAdmin } from "@/lib/roles";
+import { Logo } from "@/components/public/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -56,17 +57,26 @@ async function AdminLoginContent({
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-sm space-y-6 rounded-xl border border-border bg-card p-6 shadow-sm">
-        <div className="space-y-1">
-          <h1 className="text-lg font-semibold tracking-tight">ადმინ შესვლა</h1>
-          <p className="text-sm text-muted-foreground">
-            შეიყვანეთ თქვენი ელფოსტა და პაროლი
-          </p>
+    <div className="relative flex min-h-screen items-center justify-center px-4">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,#dbeafe_0%,transparent_50%),linear-gradient(180deg,#f5f6f8_0%,#ffffff_70%)]"
+      />
+      <div className="relative w-full max-w-sm space-y-6 rounded-2xl border border-border/80 bg-card/95 p-6 shadow-[0_8px_32px_rgb(18_21_26/0.06)]">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <Logo href="/" size="md" />
+          <div className="space-y-1">
+            <h1 className="text-lg font-semibold tracking-tight">
+              ადმინ შესვლა
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              შეიყვანეთ თქვენი ელფოსტა და პაროლი
+            </p>
+          </div>
         </div>
 
         <form action={loginAction} className="space-y-4">
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 text-left">
             <Label htmlFor="email">ელფოსტა</Label>
             <Input
               id="email"
@@ -76,7 +86,7 @@ async function AdminLoginContent({
               required
             />
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 text-left">
             <Label htmlFor="password">პაროლი</Label>
             <Input
               id="password"
