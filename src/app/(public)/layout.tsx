@@ -19,29 +19,28 @@ function HeaderFallback() {
   );
 }
 
+async function HeaderWithAccount() {
+  const session = await auth();
+  const account =
+    session?.user &&
+    (session.user.role === "client" || userIsAdmin(session.user))
+      ? {
+          href: session.user.role === "client" ? "/portal" : "/admin",
+          image: session.user.image ?? null,
+          label:
+            session.user.displayName || session.user.email || "პროფილი",
+        }
+      : null;
+
+  return <SiteHeader account={account} />;
+}
+
 export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const settings = await getPublicSiteSettings();
-  const session = await auth();
-
-  const account =
-    session?.user &&
-    (session.user.role === "client" || userIsAdmin(session.user))
-      ? {
-          href:
-            session.user.role === "client"
-              ? "/portal"
-              : "/admin",
-          image: session.user.image ?? null,
-          label:
-            session.user.displayName ||
-            session.user.email ||
-            "პროფილი",
-        }
-      : null;
 
   return (
     <>
@@ -66,7 +65,7 @@ export default async function PublicLayout({
         გადასვლა ძირითად კონტენტზე
       </a>
       <Suspense fallback={<HeaderFallback />}>
-        <SiteHeader account={account} />
+        <HeaderWithAccount />
       </Suspense>
       <div className="flex min-h-full flex-1 flex-col pt-header">
         <main id="main-content" className="flex-1 outline-none" tabIndex={-1}>
