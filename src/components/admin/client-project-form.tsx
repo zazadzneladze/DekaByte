@@ -112,7 +112,7 @@ export function ClientProjectForm({ mode, projectId, initial }: Props) {
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="status">სტატუსი</Label>
+          <Label htmlFor="status">სტადია</Label>
           <select
             id="status"
             value={status}

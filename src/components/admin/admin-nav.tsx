@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/admin", label: "დაფა" },
-  { href: "/admin/projects", label: "პროექტები" },
+  { href: "/admin/projects", label: "პორტფოლიო" },
   { href: "/admin/clients", label: "კლიენტები" },
   { href: "/admin/leads", label: "ლიდები" },
   { href: "/admin/settings", label: "პარამეტრები" },

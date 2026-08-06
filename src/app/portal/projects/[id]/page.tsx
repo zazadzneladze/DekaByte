@@ -9,6 +9,7 @@ import {
 } from "@/config/client-portal";
 import { PortalChat } from "@/components/portal/chat";
 import { ProgressBar, ProgressRing } from "@/components/portal/progress";
+import { ProjectStages } from "@/components/portal/project-stages";
 import { MacBrowserFrame } from "@/components/public/mac-browser-frame";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -69,6 +70,11 @@ export default async function PortalProjectDetailPage({
             </div>
           </div>
         </div>
+
+        <section className="space-y-3">
+          <h2 className="text-sm font-semibold tracking-tight">სტადიები</h2>
+          <ProjectStages status={project.status} />
+        </section>
       </div>
 
       {screenshots.length > 0 ? (

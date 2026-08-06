@@ -62,15 +62,28 @@ async function AdminProjectsContent({
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">პროექტები</h1>
+          <h1 className="text-xl font-semibold tracking-tight">პორტფოლიო</h1>
           <p className="text-sm text-muted-foreground">
-            {filtered.length} / {all.length}
+            {filtered.length} / {all.length} · საჯარო საიტის ნამუშევრები
           </p>
         </div>
-        <Button render={<Link href="/admin/projects/new" />}>
-          პროექტის დამატება
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" render={<Link href="/admin/clients" />}>
+            კლიენტის პროექტები
+          </Button>
+          <Button render={<Link href="/admin/projects/new" />}>
+            პროექტის დამატება
+          </Button>
+        </div>
       </div>
+
+      <p className="rounded-xl border border-border/80 bg-muted-blue/40 px-4 py-3 text-sm text-muted-foreground">
+        კლიენტის კაბინეტის პროექტები (invite / სტადიები / %) აქ არ ჩანს — იხილე{" "}
+        <Link href="/admin/clients" className="font-medium text-electric underline-offset-2 hover:underline">
+          კლიენტები
+        </Link>
+        .
+      </p>
 
       <form className="grid gap-2 rounded-xl border border-border bg-card p-3 sm:grid-cols-[1fr_auto_auto_auto]">
         <Input

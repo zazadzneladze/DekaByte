@@ -51,13 +51,25 @@ async function AdminClientsContent({
             კლიენტის პროექტები
           </h1>
           <p className="text-sm text-muted-foreground">
-            {filtered.length} / {all.length} · invite-by-email პორტალი
+            {filtered.length} / {all.length} · პორტალის invite + სტადიები
           </p>
         </div>
         <Button render={<Link href="/admin/clients/new" />}>
           ახალი პროექტი
         </Button>
       </div>
+
+      <p className="rounded-xl border border-border/80 bg-card px-4 py-3 text-sm text-muted-foreground">
+        სტადიები: მომავალი → მიმდინარე → განხილვა → დასრულებული. საჯარო პორტფოლიო
+        ცალკეა —{" "}
+        <Link
+          href="/admin/projects"
+          className="font-medium text-electric underline-offset-2 hover:underline"
+        >
+          პორტფოლიო
+        </Link>
+        .
+      </p>
 
       <form className="grid gap-2 rounded-xl border border-border bg-card p-3 sm:grid-cols-[1fr_auto_auto]">
         <Input
@@ -70,7 +82,7 @@ async function AdminClientsContent({
           defaultValue={status ?? "all"}
           className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm"
         >
-          <option value="all">ყველა სტატუსი</option>
+          <option value="all">ყველა სტადია</option>
           {CLIENT_PROJECT_STATUSES.map((s) => (
             <option key={s.id} value={s.id}>
               {s.label}
@@ -88,7 +100,7 @@ async function AdminClientsContent({
             <tr>
               <th className="px-3 py-2 font-medium">სათაური</th>
               <th className="px-3 py-2 font-medium">კლიენტი</th>
-              <th className="px-3 py-2 font-medium">სტატუსი</th>
+              <th className="px-3 py-2 font-medium">სტადია</th>
               <th className="px-3 py-2 font-medium">%</th>
               <th className="px-3 py-2 font-medium">განახლება</th>
             </tr>
