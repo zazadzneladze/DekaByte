@@ -23,6 +23,7 @@ const assetKindIds = CLIENT_ASSET_KINDS.map((s) => s.id) as [
 export const clientProjectSchema = z.object({
   title: z.string().trim().min(2, "სათაური აუცილებელია").max(200),
   status: z.enum(statusIds),
+  progressPercent: z.coerce.number().int().min(0).max(100).default(0),
   clientEmail: z
     .string()
     .trim()

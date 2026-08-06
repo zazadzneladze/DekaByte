@@ -53,6 +53,7 @@ export async function createClientProject(
     .values({
       title: parsed.data.title,
       status: parsed.data.status,
+      progressPercent: parsed.data.progressPercent,
       clientEmail: parsed.data.clientEmail,
       notes: parsed.data.notes ?? "",
     })
@@ -87,6 +88,7 @@ export async function updateClientProject(
     .set({
       title: parsed.data.title,
       status: parsed.data.status,
+      progressPercent: parsed.data.progressPercent,
       clientEmail: parsed.data.clientEmail,
       notes: parsed.data.notes ?? "",
       updatedAt: new Date(),

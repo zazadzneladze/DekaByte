@@ -55,6 +55,7 @@ export default async function AdminClientProjectPage({
         initial={{
           title: project.title,
           status: project.status,
+          progressPercent: project.progressPercent,
           clientEmail: project.clientEmail,
           notes: project.notes,
         }}

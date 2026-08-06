@@ -10,6 +10,7 @@ import {
 } from "@/actions/clients";
 import {
   CLIENT_PROJECT_STATUSES,
+  defaultProgressForStatus,
   type ClientProjectStatus,
 } from "@/config/client-portal";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,7 @@ type Props = {
   initial?: {
     title: string;
     status: ClientProjectStatus;
+    progressPercent: number;
     clientEmail: string;
     notes: string;
   };
@@ -35,12 +37,26 @@ export function ClientProjectForm({ mode, projectId, initial }: Props) {
   const [status, setStatus] = useState<ClientProjectStatus>(
     initial?.status ?? "upcoming",
   );
+  const [progressPercent, setProgressPercent] = useState(
+    initial?.progressPercent ?? defaultProgressForStatus("upcoming"),
+  );
   const [clientEmail, setClientEmail] = useState(initial?.clientEmail ?? "");
   const [notes, setNotes] = useState(initial?.notes ?? "");
 
+  function onStatusChange(next: ClientProjectStatus) {
+    setStatus(next);
+    setProgressPercent(defaultProgressForStatus(next));
+  }
+
   function submit() {
     startTransition(async () => {
-      const payload = { title, status, clientEmail, notes };
+      const payload = {
+        title,
+        status,
+        progressPercent,
+        clientEmail,
+        notes,
+      };
       const result =
         mode === "create"
           ? await createClientProject(payload)
@@ -74,7 +90,7 @@ export function ClientProjectForm({ mode, projectId, initial }: Props) {
   }
 
   return (
-    <div className="space-y-4 rounded-xl border border-border bg-card p-4">
+    <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-5 shadow-[0_1px_2px_rgb(18_21_26/0.04)]">
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-1.5 sm:col-span-2">
           <Label htmlFor="title">სათაური</Label>
@@ -100,7 +116,9 @@ export function ClientProjectForm({ mode, projectId, initial }: Props) {
           <select
             id="status"
             value={status}
-            onChange={(e) => setStatus(e.target.value as ClientProjectStatus)}
+            onChange={(e) =>
+              onStatusChange(e.target.value as ClientProjectStatus)
+            }
             className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm"
           >
             {CLIENT_PROJECT_STATUSES.map((s) => (
@@ -109,6 +127,30 @@ export function ClientProjectForm({ mode, projectId, initial }: Props) {
               </option>
             ))}
           </select>
+        </div>
+        <div className="space-y-2 sm:col-span-2">
+          <div className="flex items-center justify-between gap-2">
+            <Label htmlFor="progress">გაკეთებული %</Label>
+            <span className="text-sm font-semibold tabular-nums text-electric">
+              {progressPercent}%
+            </span>
+          </div>
+          <input
+            id="progress"
+            type="range"
+            min={0}
+            max={100}
+            step={1}
+            value={progressPercent}
+            onChange={(e) => setProgressPercent(Number(e.target.value))}
+            className="w-full accent-[var(--electric)]"
+          />
+          <div className="h-2 overflow-hidden rounded-full bg-secondary">
+            <div
+              className="h-full rounded-full bg-electric transition-[width]"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
         </div>
         <div className="space-y-1.5 sm:col-span-2">
           <Label htmlFor="notes">შიდა შენიშვნები</Label>

@@ -20,6 +20,7 @@ export const projectCategoryEnum = pgEnum("project_category", [
   "android",
   "ui_ux",
   "ai_tools",
+  "systems",
 ]);
 export const leadStatusEnum = pgEnum("lead_status", [
   "new",
@@ -189,6 +190,7 @@ export const clientProjects = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     title: varchar("title", { length: 200 }).notNull(),
     status: clientProjectStatusEnum("status").notNull().default("upcoming"),
+    progressPercent: integer("progress_percent").notNull().default(0),
     clientEmail: varchar("client_email", { length: 255 }).notNull(),
     notes: text("notes").notNull().default(""),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

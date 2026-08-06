@@ -89,6 +89,7 @@ async function AdminClientsContent({
               <th className="px-3 py-2 font-medium">სათაური</th>
               <th className="px-3 py-2 font-medium">კლიენტი</th>
               <th className="px-3 py-2 font-medium">სტატუსი</th>
+              <th className="px-3 py-2 font-medium">%</th>
               <th className="px-3 py-2 font-medium">განახლება</th>
             </tr>
           </thead>
@@ -114,6 +115,9 @@ async function AdminClientsContent({
                     {clientProjectStatusLabel(project.status)}
                   </Badge>
                 </td>
+                <td className="px-3 py-2.5 tabular-nums text-muted-foreground">
+                  {project.progressPercent}%
+                </td>
                 <td className="px-3 py-2.5 text-muted-foreground">
                   {new Intl.DateTimeFormat("ka-GE", {
                     dateStyle: "medium",
@@ -124,7 +128,7 @@ async function AdminClientsContent({
             {filtered.length === 0 ? (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={5}
                   className="px-3 py-8 text-center text-muted-foreground"
                 >
                   პროექტები არ მოიძებნა

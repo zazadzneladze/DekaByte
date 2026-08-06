@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { LogOut } from "lucide-react";
 import { auth, signOut } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -22,17 +23,27 @@ async function PortalShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-3 px-4 py-2.5">
-          <Link href="/portal" className="mr-2 text-sm font-semibold tracking-tight">
-            DekaByte პორტალი
+    <div className="relative min-h-screen bg-background text-foreground">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(ellipse_90%_70%_at_100%_-10%,rgb(219_234_254/0.7)_0%,transparent_55%),linear-gradient(180deg,rgb(245_246_248)_0%,transparent_100%)]"
+      />
+      <header className="sticky top-0 z-40 border-b border-border/80 bg-card/90 backdrop-blur-md">
+        <div className="relative mx-auto flex max-w-3xl flex-wrap items-center gap-2 px-4 py-2.5 sm:px-6">
+          <Link
+            href="/portal"
+            className="mr-1 text-sm font-semibold tracking-tight text-graphite"
+          >
+            DekaByte
+            <span className="ml-1.5 font-normal text-muted-foreground">
+              პორტალი
+            </span>
           </Link>
-          <nav className="flex flex-1 flex-wrap items-center gap-1">
+          <nav className="flex flex-1 flex-wrap items-center gap-0.5">
             <Link
               href="/portal"
               className={cn(
-                "rounded-md px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
+                "rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
               )}
             >
               პროექტები
@@ -40,7 +51,7 @@ async function PortalShell({ children }: { children: React.ReactNode }) {
             <Link
               href="/portal/profile"
               className={cn(
-                "rounded-md px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
+                "rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
               )}
             >
               პროფილი
@@ -49,15 +60,15 @@ async function PortalShell({ children }: { children: React.ReactNode }) {
               <Link
                 href="/admin"
                 className={cn(
-                  "rounded-md px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
+                  "rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
                 )}
               >
                 Admin
               </Link>
             ) : null}
           </nav>
-          <div className="flex items-center gap-2">
-            <span className="hidden text-xs text-muted-foreground sm:inline">
+          <div className="flex items-center gap-1.5">
+            <span className="hidden max-w-[9rem] truncate text-xs text-muted-foreground sm:inline">
               {session.user.displayName || session.user.email}
             </span>
             <form
@@ -66,14 +77,22 @@ async function PortalShell({ children }: { children: React.ReactNode }) {
                 await signOut({ redirectTo: "/portal/login" });
               }}
             >
-              <Button type="submit" variant="outline" size="sm">
-                გასვლა
+              <Button
+                type="submit"
+                variant="ghost"
+                size="icon-sm"
+                title="გასვლა"
+                aria-label="გასვლა"
+              >
+                <LogOut />
               </Button>
             </form>
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-3xl px-4 py-6">{children}</main>
+      <main className="relative mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        {children}
+      </main>
     </div>
   );
 }

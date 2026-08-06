@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import { Bell, BellOff, Download } from "lucide-react";
 import { toast } from "sonner";
 import {
   removePushSubscription,
@@ -30,7 +31,6 @@ function pushSupported() {
   );
 }
 
-/** Unregister legacy root-scoped /sw.js that broke soft navigation. */
 async function unregisterLegacyRootWorkers() {
   const regs = await navigator.serviceWorker.getRegistrations();
   await Promise.all(
@@ -49,9 +49,10 @@ type Props = {
 
 export function AdminPushControls({ vapidPublicKey }: Props) {
   const supported = pushSupported();
-  const [permission, setPermission] = useState<NotificationPermission | "unknown">(
-    () =>
-      typeof Notification !== "undefined" ? Notification.permission : "unknown",
+  const [permission, setPermission] = useState<
+    NotificationPermission | "unknown"
+  >(() =>
+    typeof Notification !== "undefined" ? Notification.permission : "unknown",
   );
   const [subscribed, setSubscribed] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -132,7 +133,9 @@ export function AdminPushControls({ vapidPublicKey }: Props) {
         toast.success("ნოტიფიკაციები ჩართულია");
       } catch (err) {
         toast.error(
-          err instanceof Error ? err.message : "ნოტიფიკაციების ჩართვა ვერ მოხერხდა",
+          err instanceof Error
+            ? err.message
+            : "ნოტიფიკაციების ჩართვა ვერ მოხერხდა",
         );
       }
     });
@@ -162,39 +165,52 @@ export function AdminPushControls({ vapidPublicKey }: Props) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex items-center gap-1">
       {deferredPrompt ? (
         <Button
           type="button"
-          size="sm"
+          size="icon-sm"
           variant="outline"
+          title="აპის ინსტალაცია"
+          aria-label="აპის ინსტალაცია"
           onClick={() => {
             void deferredPrompt.prompt();
             setDeferredPrompt(null);
           }}
         >
-          აპის ინსტალაცია
+          <Download />
         </Button>
       ) : null}
       {supported && vapidPublicKey ? (
         subscribed ? (
           <Button
             type="button"
-            size="sm"
+            size="icon-sm"
             variant="outline"
             disabled={pending}
+            title="ნოტიფიკაციების გამორთვა"
+            aria-label="ნოტიფიკაციების გამორთვა"
+            aria-pressed={true}
             onClick={disablePush}
           >
-            ნოტიფიკაციების გამორთვა
+            <BellOff />
           </Button>
         ) : (
           <Button
             type="button"
-            size="sm"
+            size="icon-sm"
+            variant={permission === "denied" ? "outline" : "secondary"}
             disabled={pending || permission === "denied"}
+            title={
+              permission === "denied"
+                ? "ნოტიფიკაციები დაბლოკილია ბრაუზერში"
+                : "ნოტიფიკაციების ჩართვა"
+            }
+            aria-label="ნოტიფიკაციების ჩართვა"
+            aria-pressed={false}
             onClick={enablePush}
           >
-            ნოტიფიკაციების ჩართვა
+            <Bell />
           </Button>
         )
       ) : null}

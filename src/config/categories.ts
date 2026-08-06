@@ -1,9 +1,10 @@
 export const PROJECT_CATEGORIES = [
-  { id: "websites", label: "ვებსაიტები" },
-  { id: "web_apps", label: "Web Applications" },
-  { id: "android", label: "Android" },
-  { id: "ui_ux", label: "UI/UX" },
-  { id: "ai_tools", label: "AI Tools" },
+  { id: "websites", label: "ვებსაიტები", short: "ვები" },
+  { id: "web_apps", label: "Web Applications", short: "Web App" },
+  { id: "android", label: "Android", short: "Android" },
+  { id: "ui_ux", label: "UI/UX", short: "UI/UX" },
+  { id: "ai_tools", label: "AI Tools", short: "AI" },
+  { id: "systems", label: "ციფრული სისტემები", short: "სისტემები" },
 ] as const;
 
 export type ProjectCategoryId = (typeof PROJECT_CATEGORIES)[number]["id"];

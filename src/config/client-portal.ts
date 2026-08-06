@@ -35,6 +35,24 @@ export function clientProjectStatusLabel(status: ClientProjectStatus) {
   );
 }
 
+/** Sensible defaults when admin sets status without touching the slider. */
+export function defaultProgressForStatus(status: ClientProjectStatus) {
+  switch (status) {
+    case "upcoming":
+      return 8;
+    case "in_progress":
+      return 45;
+    case "review":
+      return 78;
+    case "done":
+      return 100;
+    case "archived":
+      return 100;
+    default:
+      return 0;
+  }
+}
+
 export function clientInvoiceStatusLabel(status: ClientInvoiceStatus) {
   return (
     CLIENT_INVOICE_STATUSES.find((s) => s.id === status)?.label ?? status
