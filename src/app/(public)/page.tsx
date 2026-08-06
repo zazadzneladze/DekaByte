@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { HeroComposition } from "@/components/public/hero-composition";
+import { HeroCube } from "@/components/public/hero-cube";
 import { MacBrowserFrame } from "@/components/public/mac-browser-frame";
 import { Reveal } from "@/components/public/reveal";
 import { SectionLabel } from "@/components/public/section-label";
@@ -32,20 +32,6 @@ export default async function HomePage() {
   }
 
   const wa = whatsappHref(whatsappDefaultMessage);
-  const lead = featured[0];
-  const showcaseCover =
-    lead?.coverImageUrl ?? lead?.images[0]?.url ?? null;
-  const showcase =
-    lead && showcaseCover
-      ? {
-          src: showcaseCover,
-          alt:
-            lead.coverImageAlt ||
-            lead.images[0]?.alt ||
-            lead.title,
-          title: lead.title,
-        }
-      : null;
 
   return (
     <>
@@ -85,10 +71,7 @@ export default async function HomePage() {
               </Button>
             </div>
           </div>
-          <HeroComposition
-            className="animate-fade-in"
-            showcase={showcase}
-          />
+          <HeroCube className="animate-fade-in" />
         </div>
       </section>
 

@@ -45,6 +45,16 @@ async function PortalShell({ children }: { children: React.ReactNode }) {
             >
               პროფილი
             </Link>
+            {session.user.isAdmin ? (
+              <Link
+                href="/admin"
+                className={cn(
+                  "rounded-md px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground",
+                )}
+              >
+                Admin
+              </Link>
+            ) : null}
           </nav>
           <div className="flex items-center gap-2">
             <span className="hidden text-xs text-muted-foreground sm:inline">
