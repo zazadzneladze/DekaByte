@@ -3,6 +3,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Noto_Sans_Georgian } from "next/font/google";
 
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { getSiteUrl, siteDefaults } from "@/config/site";
 
@@ -44,10 +45,13 @@ export default function RootLayout({
     <html
       lang="ka"
       className={`${notoSansGeorgian.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col font-sans">
-        {children}
-        <Toaster position="top-center" richColors closeButton />
+        <ThemeProvider>
+          {children}
+          <Toaster position="top-center" richColors closeButton />
+        </ThemeProvider>
         <Analytics />
         <SpeedInsights />
       </body>

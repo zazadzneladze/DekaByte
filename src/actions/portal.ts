@@ -16,6 +16,14 @@ import {
   clientMessageSchema,
   clientProfileSchema,
 } from "@/validators/client-portal";
+import { clampSignatureTransform } from "@/lib/invoice-signature";
+import { z } from "zod";
+
+const clientSignatureTransformSchema = z.object({
+  offsetX: z.coerce.number().int().min(-80).max(80).default(0),
+  offsetY: z.coerce.number().int().min(-40).max(48).default(0),
+  rotate: z.coerce.number().int().min(-45).max(45).default(0),
+});
 
 export type PortalActionResult<T = undefined> =
   | { ok: true; data: T }
@@ -58,6 +66,12 @@ export async function updateClientProfile(
     .update(clientUsers)
     .set({
       displayName: parsed.data.displayName,
+      phone:
+        parsed.data.phone !== undefined ? parsed.data.phone : existing.phone,
+      address:
+        parsed.data.address !== undefined
+          ? parsed.data.address
+          : existing.address,
       avatarUrl:
         parsed.data.avatarUrl !== undefined
           ? parsed.data.avatarUrl
@@ -118,6 +132,105 @@ export async function clearClientAvatar(): Promise<PortalActionResult> {
   return { ok: true, data: undefined };
 }
 
+export async function updateClientSignature(
+  raw: unknown,
+): Promise<PortalActionResult> {
+  const user = await requireClientSession();
+  const parsed = z
+    .object({
+      url: z.string().url(),
+      pathname: z.string().min(1),
+      transform: clientSignatureTransformSchema.optional(),
+    })
+    .safeParse(raw);
+
+  if (!parsed.success) {
+    return { ok: false, error: "არასწორი ხელმოწერის მონაცემები" };
+  }
+
+  const db = getDb();
+  const existing = await getClientUserById(user.id);
+  if (!existing) return { ok: false, error: "პროფილი ვერ მოიძებნა" };
+
+  if (
+    existing.invoiceSignaturePathname &&
+    existing.invoiceSignaturePathname !== parsed.data.pathname
+  ) {
+    await deleteBlobSafe(existing.invoiceSignaturePathname);
+  }
+
+  const transform = clampSignatureTransform(
+    parsed.data.transform ?? existing.invoiceSignatureTransform ?? undefined,
+  );
+
+  await db
+    .update(clientUsers)
+    .set({
+      invoiceSignatureUrl: parsed.data.url,
+      invoiceSignaturePathname: parsed.data.pathname,
+      invoiceSignatureTransform: transform,
+      updatedAt: new Date(),
+    })
+    .where(eq(clientUsers.id, user.id));
+
+  revalidatePath("/portal/profile");
+  revalidatePath("/admin/clients");
+  return { ok: true, data: undefined };
+}
+
+export async function updateClientSignatureTransform(
+  raw: unknown,
+): Promise<PortalActionResult> {
+  const user = await requireClientSession();
+  const parsed = z
+    .object({ transform: clientSignatureTransformSchema })
+    .safeParse(raw);
+
+  if (!parsed.success) {
+    return { ok: false, error: "არასწორი პოზიცია" };
+  }
+
+  const db = getDb();
+  const existing = await getClientUserById(user.id);
+  if (!existing?.invoiceSignatureUrl) {
+    return { ok: false, error: "ჯერ ატვირთეთ ხელმოწერა" };
+  }
+
+  await db
+    .update(clientUsers)
+    .set({
+      invoiceSignatureTransform: clampSignatureTransform(parsed.data.transform),
+      updatedAt: new Date(),
+    })
+    .where(eq(clientUsers.id, user.id));
+
+  revalidatePath("/portal/profile");
+  revalidatePath("/admin/clients");
+  return { ok: true, data: undefined };
+}
+
+export async function clearClientSignature(): Promise<PortalActionResult> {
+  const user = await requireClientSession();
+  const db = getDb();
+  const existing = await getClientUserById(user.id);
+  if (!existing) return { ok: false, error: "პროფილი ვერ მოიძებნა" };
+
+  await deleteBlobSafe(existing.invoiceSignaturePathname);
+  await db
+    .update(clientUsers)
+    .set({
+      invoiceSignatureUrl: null,
+      invoiceSignaturePathname: null,
+      invoiceSignatureTransform: null,
+      updatedAt: new Date(),
+    })
+    .where(eq(clientUsers.id, user.id));
+
+  revalidatePath("/portal/profile");
+  revalidatePath("/admin/clients");
+  return { ok: true, data: undefined };
+}
+
 export async function sendClientMessage(
   raw: unknown,
 ): Promise<PortalActionResult<{ id: string }>> {
@@ -156,6 +269,7 @@ export async function sendClientMessage(
     projectTitle: project.title,
     clientLabel: label,
     projectId: project.id,
+    messageBody: parsed.data.body,
   });
 
   revalidatePath(`/portal/projects/${project.id}`);

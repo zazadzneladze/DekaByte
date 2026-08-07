@@ -10,10 +10,10 @@ export type ClientInvoiceStatus = "draft" | "sent" | "paid";
 export type ClientAssetKind = "screenshot" | "document" | "other";
 
 export const CLIENT_PROJECT_STATUSES = [
-  { id: "upcoming" as const, label: "მომავალი" },
-  { id: "in_progress" as const, label: "მიმდინარე" },
-  { id: "review" as const, label: "განხილვა" },
-  { id: "done" as const, label: "დასრულებული" },
+  { id: "upcoming" as const, label: "ბრიფი" },
+  { id: "in_progress" as const, label: "განვითარება" },
+  { id: "review" as const, label: "რევიუ" },
+  { id: "done" as const, label: "გაშვებული" },
   { id: "archived" as const, label: "არქივი" },
 ] satisfies { id: ClientProjectStatus; label: string }[];
 

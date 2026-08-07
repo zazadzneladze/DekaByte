@@ -1,10 +1,12 @@
 import { ImageResponse } from "next/og";
+import { getBrandMarkDataUri } from "@/lib/brand-mark-data-uri";
 
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
-/** Browser tab favicon — DB mark on graphite. */
-export default function Icon() {
+/** Browser tab favicon — square brand mark on graphite. */
+export default async function Icon() {
+  const mark = await getBrandMarkDataUri();
   return new ImageResponse(
     (
       <div
@@ -15,14 +17,10 @@ export default function Icon() {
           alignItems: "center",
           justifyContent: "center",
           background: "#12151A",
-          borderRadius: 8,
-          color: "#F5F6F8",
-          fontSize: 14,
-          fontWeight: 700,
-          fontFamily: "system-ui, sans-serif",
+          borderRadius: 6,
         }}
       >
-        Db
+        <img src={mark} alt="" width={26} height={26} />
       </div>
     ),
     { ...size },

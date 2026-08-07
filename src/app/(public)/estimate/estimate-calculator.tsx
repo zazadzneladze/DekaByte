@@ -74,7 +74,7 @@ export function EstimateCalculator({ config }: { config: EstimateConfig }) {
                     "flex cursor-pointer flex-col gap-1 rounded-lg border px-3 py-3 transition-colors",
                     productId === product.id
                       ? "border-electric bg-muted-blue/40"
-                      : "border-border bg-surface hover:border-foreground/20",
+                      : "border-border bg-card hover:border-foreground/20",
                   )}
                 >
                   <span className="flex items-start gap-3">
@@ -117,7 +117,7 @@ export function EstimateCalculator({ config }: { config: EstimateConfig }) {
                     "flex cursor-pointer items-start gap-3 rounded-lg border px-3 py-3 transition-colors",
                     scopeId === scope.id
                       ? "border-electric bg-muted-blue/40"
-                      : "border-border bg-surface hover:border-foreground/20",
+                      : "border-border bg-card hover:border-foreground/20",
                   )}
                 >
                   <input
@@ -148,7 +148,7 @@ export function EstimateCalculator({ config }: { config: EstimateConfig }) {
                       "flex cursor-pointer items-start gap-3 rounded-lg border px-3 py-3 transition-colors",
                       checked
                         ? "border-electric bg-muted-blue/40"
-                        : "border-border bg-surface hover:border-foreground/20",
+                        : "border-border bg-card hover:border-foreground/20",
                     )}
                   >
                     <Checkbox
@@ -180,7 +180,7 @@ export function EstimateCalculator({ config }: { config: EstimateConfig }) {
       </div>
 
       <div className="lg:sticky lg:top-[calc(var(--header-height)+1.5rem)] lg:self-start">
-        <div className="rounded-2xl border border-border/80 bg-surface p-5 shadow-lift ring-1 ring-border/40 sm:p-6">
+        <div className="rounded-2xl border border-border/80 bg-card p-5 shadow-lift ring-1 ring-border/40 sm:p-6">
           <p className="text-[0.7rem] font-semibold tracking-[0.14em] text-electric uppercase">
             შედეგი
           </p>

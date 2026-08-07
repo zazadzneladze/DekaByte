@@ -1,10 +1,12 @@
 import { ImageResponse } from "next/og";
+import { getBrandMarkDataUri } from "@/lib/brand-mark-data-uri";
 
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
-/** iOS home-screen icon. */
-export default function AppleIcon() {
+/** iOS / Add to Home Screen — same mark as favicon. */
+export default async function AppleIcon() {
+  const mark = await getBrandMarkDataUri();
   return new ImageResponse(
     (
       <div
@@ -15,14 +17,9 @@ export default function AppleIcon() {
           alignItems: "center",
           justifyContent: "center",
           background: "#12151A",
-          color: "#F5F6F8",
-          fontSize: 72,
-          fontWeight: 700,
-          fontFamily: "system-ui, sans-serif",
-          letterSpacing: "-0.04em",
         }}
       >
-        Db
+        <img src={mark} alt="" width={148} height={148} />
       </div>
     ),
     { ...size },

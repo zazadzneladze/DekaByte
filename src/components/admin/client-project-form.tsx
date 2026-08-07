@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 type Props = {
   mode: "create" | "edit";
   projectId?: string;
+  embedded?: boolean;
   initial?: {
     title: string;
     status: ClientProjectStatus;
@@ -30,7 +31,7 @@ type Props = {
   };
 };
 
-export function ClientProjectForm({ mode, projectId, initial }: Props) {
+export function ClientProjectForm({ mode, projectId, embedded, initial }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [title, setTitle] = useState(initial?.title ?? "");
@@ -89,29 +90,31 @@ export function ClientProjectForm({ mode, projectId, initial }: Props) {
     });
   }
 
-  return (
-    <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-5 shadow-[0_1px_2px_rgb(18_21_26/0.04)]">
+  const body = (
+    <>
       <div className="grid gap-3 sm:grid-cols-2">
-        <div className="space-y-1.5 sm:col-span-2">
+        <div className="flex flex-col gap-1.5 sm:col-span-2">
           <Label htmlFor="title">სათაური</Label>
           <Input
             id="title"
+            className={embedded ? "h-9" : undefined}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
           />
         </div>
-        <div className="space-y-1.5">
+        <div className="flex flex-col gap-1.5 sm:col-span-2 lg:col-span-1">
           <Label htmlFor="clientEmail">კლიენტის ელფოსტა (invite)</Label>
           <Input
             id="clientEmail"
             type="email"
+            className="h-9"
             value={clientEmail}
             onChange={(e) => setClientEmail(e.target.value)}
             required
           />
         </div>
-        <div className="space-y-1.5">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="status">სტადია</Label>
           <select
             id="status"
@@ -119,7 +122,7 @@ export function ClientProjectForm({ mode, projectId, initial }: Props) {
             onChange={(e) =>
               onStatusChange(e.target.value as ClientProjectStatus)
             }
-            className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm"
+            className="h-9 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm"
           >
             {CLIENT_PROJECT_STATUSES.map((s) => (
               <option key={s.id} value={s.id}>
@@ -128,10 +131,10 @@ export function ClientProjectForm({ mode, projectId, initial }: Props) {
             ))}
           </select>
         </div>
-        <div className="space-y-2 sm:col-span-2">
+        <div className="flex flex-col gap-2 sm:col-span-2">
           <div className="flex items-center justify-between gap-2">
             <Label htmlFor="progress">გაკეთებული %</Label>
-            <span className="text-sm font-semibold tabular-nums text-electric">
+            <span className="text-sm font-semibold tabular-nums text-primary">
               {progressPercent}%
             </span>
           </div>
@@ -143,26 +146,20 @@ export function ClientProjectForm({ mode, projectId, initial }: Props) {
             step={1}
             value={progressPercent}
             onChange={(e) => setProgressPercent(Number(e.target.value))}
-            className="w-full accent-[var(--electric)]"
+            className="h-2 w-full cursor-pointer accent-primary"
           />
-          <div className="h-2 overflow-hidden rounded-full bg-secondary">
-            <div
-              className="h-full rounded-full bg-electric transition-[width]"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
         </div>
-        <div className="space-y-1.5 sm:col-span-2">
+        <div className="flex flex-col gap-1.5 sm:col-span-2">
           <Label htmlFor="notes">შიდა შენიშვნები</Label>
           <Textarea
             id="notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            rows={4}
+            rows={embedded ? 3 : 4}
           />
         </div>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 pt-1">
         <Button type="button" disabled={pending} onClick={submit}>
           {pending ? "ინახება…" : "შენახვა"}
         </Button>
@@ -177,6 +174,14 @@ export function ClientProjectForm({ mode, projectId, initial }: Props) {
           </Button>
         ) : null}
       </div>
+    </>
+  );
+
+  if (embedded) return body;
+
+  return (
+    <div className="flex flex-col gap-4 rounded-2xl border border-border/80 bg-card p-5 shadow-sm">
+      {body}
     </div>
   );
 }

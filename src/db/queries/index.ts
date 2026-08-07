@@ -12,6 +12,7 @@ import {
   clientAssets,
   clientMessages,
   clientInvoices,
+  clientPushSubscriptions,
   pushSubscriptions,
 } from "@/db/schema";
 import { siteDefaults } from "@/config/site";
@@ -194,17 +195,31 @@ export async function adminGetLead(id: string) {
 
 export async function adminGetDashboardStats() {
   const db = getDb();
-  const allProjects = await db.select().from(projects);
-  const allLeads = await db.select().from(leads);
+  const [allProjects, allLeads, clientProjectRows, threads] = await Promise.all([
+    db.select().from(projects),
+    db.select().from(leads),
+    db.select().from(clientProjects),
+    adminListMessageThreads(),
+  ]);
+
+  const unreadMessages = threads.reduce((sum, t) => sum + t.unreadCount, 0);
+  const activeClientProjects = clientProjectRows.filter(
+    (p) => p.status !== "done",
+  ).length;
+
   return {
     totalProjects: allProjects.length,
     publishedProjects: allProjects.filter((p) => p.status === "published").length,
     draftProjects: allProjects.filter((p) => p.status === "draft").length,
     featuredProjects: allProjects.filter((p) => p.featured).length,
     newLeads: allLeads.filter((l) => l.status === "new").length,
+    clientProjects: clientProjectRows.length,
+    activeClientProjects,
+    unreadMessages,
     recentLeads: allLeads
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice(0, 5),
+    recentThreads: threads.slice(0, 5),
   };
 }
 
@@ -334,6 +349,67 @@ export async function adminGetClientUserByEmail(email: string) {
   return getClientUserByEmail(email);
 }
 
+export type AdminMessageThread = {
+  projectId: string;
+  projectTitle: string;
+  clientEmail: string;
+  lastMessageAt: Date;
+  lastBody: string;
+  unreadCount: number;
+};
+
+export async function adminListMessageThreads(): Promise<AdminMessageThread[]> {
+  const db = getDb();
+  const projectsList = await db.query.clientProjects.findMany({
+    with: {
+      messages: {
+        orderBy: [desc(clientMessages.createdAt)],
+      },
+    },
+    orderBy: [desc(clientProjects.updatedAt)],
+  });
+
+  const threads: AdminMessageThread[] = [];
+  for (const project of projectsList) {
+    const clientMsgs = project.messages.filter((m) => m.authorRole === "client");
+    if (clientMsgs.length === 0) continue;
+    const last = clientMsgs[0]!;
+    const readAt = project.adminMessagesReadAt;
+    const unreadCount = clientMsgs.filter(
+      (m) => !readAt || m.createdAt > readAt,
+    ).length;
+    threads.push({
+      projectId: project.id,
+      projectTitle: project.title,
+      clientEmail: project.clientEmail,
+      lastMessageAt: last.createdAt,
+      lastBody: last.body,
+      unreadCount,
+    });
+  }
+
+  return threads.sort(
+    (a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime(),
+  );
+}
+
+export async function adminGetInboxBadgeCount() {
+  const db = getDb();
+  const [threads, newLeadRows] = await Promise.all([
+    adminListMessageThreads(),
+    db
+      .select()
+      .from(leads)
+      .where(eq(leads.status, "new")),
+  ]);
+  const unreadMessages = threads.reduce((sum, t) => sum + t.unreadCount, 0);
+  return {
+    unreadMessages,
+    newLeads: newLeadRows.length,
+    total: unreadMessages + newLeadRows.length,
+  };
+}
+
 export async function listPushSubscriptions() {
   const db = getDb();
   return db.select().from(pushSubscriptions);
@@ -344,4 +420,19 @@ export async function deletePushSubscriptionByEndpoint(endpoint: string) {
   await db
     .delete(pushSubscriptions)
     .where(eq(pushSubscriptions.endpoint, endpoint));
+}
+
+export async function listClientPushSubscriptions(clientUserId: string) {
+  const db = getDb();
+  return db
+    .select()
+    .from(clientPushSubscriptions)
+    .where(eq(clientPushSubscriptions.clientUserId, clientUserId));
+}
+
+export async function deleteClientPushSubscriptionByEndpoint(endpoint: string) {
+  const db = getDb();
+  await db
+    .delete(clientPushSubscriptions)
+    .where(eq(clientPushSubscriptions.endpoint, endpoint));
 }

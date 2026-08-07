@@ -87,7 +87,7 @@ export function MobileContactBar({ settings }: MobileContactBarProps) {
         bottom: "max(0.75rem, env(safe-area-inset-bottom))",
       }}
     >
-      <div className="pointer-events-auto mx-auto flex w-[min(22rem,calc(100%-1.5rem))] items-center gap-1 rounded-xl border border-border bg-surface/95 p-1.5 shadow-lift backdrop-blur-md">
+      <div className="pointer-events-auto mx-auto flex w-[min(22rem,calc(100%-1.5rem))] items-center gap-1 rounded-xl border border-border bg-card/95 p-1.5 shadow-lift backdrop-blur-md">
         <Button
           variant="ghost"
           size="icon"

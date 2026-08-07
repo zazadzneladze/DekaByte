@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { HeroCube } from "@/components/public/hero-cube";
+import { HeroVisual } from "@/components/public/hero-visual";
 import { MacBrowserFrame } from "@/components/public/mac-browser-frame";
 import { Reveal } from "@/components/public/reveal";
 import { SectionLabel } from "@/components/public/section-label";
@@ -39,17 +39,28 @@ export default async function HomePage() {
       <section className="relative overflow-hidden border-b border-border">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_0%_-10%,#dbeafe_0%,transparent_42%),radial-gradient(ellipse_80%_60%_at_100%_10%,#e8eef8_0%,transparent_40%),linear-gradient(180deg,#f5f6f8_0%,#ffffff_72%)]"
+          className="hero-gradient pointer-events-none absolute inset-0"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_at_center,black_15%,transparent_72%)] opacity-30 dark:opacity-20"
         />
         <div
           aria-hidden="true"
           className="studio-grain pointer-events-none absolute inset-0"
         />
-        <div className="relative mx-auto grid min-h-[calc(100svh-var(--header-height))] max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:px-8 lg:py-20">
-          <div className="flex flex-col gap-7">
-            <p className="animate-fade-up text-display text-[2.65rem] font-bold text-graphite sm:text-5xl lg:text-[3.65rem]">
-              DekaByte
+        <div className="relative mx-auto grid min-h-[calc(100svh-var(--header-height))] max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:px-8 lg:py-20">
+          <div className="flex flex-col gap-6 lg:gap-7">
+            <SectionLabel className="animate-fade-up mb-0">
+              ციფრული სტუდიო
+            </SectionLabel>
+            <p className="animate-fade-up text-display text-[2.65rem] font-bold tracking-tight text-foreground sm:text-5xl lg:text-[3.65rem]">
+              Deka<span className="text-electric">Byte</span>
             </p>
+            <div
+              aria-hidden="true"
+              className="animate-fade-up h-px w-16 bg-electric/70"
+            />
             <h1 className="animate-fade-up-delay max-w-xl text-xl font-semibold leading-snug text-foreground sm:text-2xl lg:text-[1.65rem] lg:leading-snug">
               ვებსაიტები, Android აპლიკაციები და ციფრული სისტემები
               ბიზნესისთვის
@@ -58,7 +69,7 @@ export default async function HomePage() {
               ვქმნით სწრაფ, თანამედროვე პროდუქტებს — იდეიდან დიზაინამდე,
               დეველოპმენტიდან გაშვებამდე.
             </p>
-            <div className="animate-fade-up-delay-2 flex flex-wrap gap-3">
+            <div className="animate-fade-up-delay-2 flex flex-wrap gap-3 pt-1">
               <Button size="lg" render={<Link href="/contact" />}>
                 პროექტის დაწყება
               </Button>
@@ -71,7 +82,7 @@ export default async function HomePage() {
               </Button>
             </div>
           </div>
-          <HeroCube className="animate-fade-in" />
+          <HeroVisual className="animate-fade-in" />
         </div>
       </section>
 
@@ -171,7 +182,7 @@ export default async function HomePage() {
       </section>
 
       {/* Services */}
-      <section className="border-y border-border bg-surface">
+      <section className="section-band">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
           <Reveal className="mb-12 max-w-2xl">
             <SectionLabel>რას ვაკეთებთ</SectionLabel>
@@ -225,7 +236,7 @@ export default async function HomePage() {
       </section>
 
       {/* Work process */}
-      <section className="border-y border-border bg-surface">
+      <section className="section-band">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
           <Reveal className="mb-12 max-w-2xl">
             <SectionLabel>პროცესი</SectionLabel>
@@ -285,7 +296,7 @@ export default async function HomePage() {
       </section>
 
       {/* FAQ */}
-      <section className="border-y border-border bg-surface">
+      <section className="section-band">
         <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
           <Reveal className="mb-10 max-w-2xl">
             <SectionLabel>FAQ</SectionLabel>
@@ -316,10 +327,10 @@ export default async function HomePage() {
       </section>
 
       {/* Contact CTA — dark studio band */}
-      <section className="relative overflow-hidden bg-ink text-surface">
+      <section className="relative overflow-hidden cta-band">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgb(37_99_235/0.22)_0%,transparent_50%)]"
+          className="cta-band-glow pointer-events-none absolute inset-0"
         />
         <div className="relative mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-20 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-24">
           <Reveal className="max-w-xl">

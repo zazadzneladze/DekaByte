@@ -1,18 +1,15 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   adminGetClientProject,
   adminGetClientUserByEmail,
+  adminGetSiteSettings,
 } from "@/db/queries";
-import { clientProjectStatusLabel } from "@/config/client-portal";
-import { ClientProjectForm } from "@/components/admin/client-project-form";
-import {
-  ClientAssetsPanel,
-  ClientChatPanel,
-  ClientInvoicesPanel,
-} from "@/components/admin/client-project-panels";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { clampSignatureTransform } from "@/lib/invoice-signature";
+import { mergeInvoiceBankConfig } from "@/config/invoice";
+import { ClientProjectWorkspace } from "@/components/admin/client-project-workspace";
+
+/** Chromium PDF generation needs headroom on Vercel (pack download + render). */
+export const maxDuration = 120;
 
 export default async function AdminClientProjectPage({
   params,
@@ -23,51 +20,50 @@ export default async function AdminClientProjectPage({
   const project = await adminGetClientProject(id);
   if (!project) notFound();
 
-  const clientUser = await adminGetClientUserByEmail(project.clientEmail);
+  const [clientUser, siteSettings] = await Promise.all([
+    adminGetClientUserByEmail(project.clientEmail),
+    adminGetSiteSettings(),
+  ]);
+
+  const supplierSignature = {
+    url: siteSettings?.invoiceSupplierSignatureUrl ?? null,
+    transform: clampSignatureTransform(
+      siteSettings?.invoiceSupplierSignatureTransform,
+    ),
+  };
+  const clientSignature = {
+    clientUserId: clientUser?.id ?? null,
+    url: clientUser?.invoiceSignatureUrl ?? null,
+    transform: clampSignatureTransform(clientUser?.invoiceSignatureTransform),
+  };
+  const bankConfig = mergeInvoiceBankConfig(
+    siteSettings?.invoiceBankConfig ?? null,
+  );
+
+  const canPromote =
+    project.progressPercent >= 100 || project.status === "done";
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="space-y-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-xl font-semibold tracking-tight">
-              {project.title}
-            </h1>
-            <Badge variant="secondary">
-              {clientProjectStatusLabel(project.status)}
-            </Badge>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {project.clientEmail}
-            {clientUser?.displayName
-              ? ` · ${clientUser.displayName}`
-              : " · სახელი ჯერ არ დაყენებულა"}
-          </p>
-        </div>
-        <Button variant="outline" render={<Link href="/admin/clients" />}>
-          სია
-        </Button>
-      </div>
-
-      <ClientProjectForm
-        mode="edit"
-        projectId={project.id}
-        initial={{
-          title: project.title,
-          status: project.status,
-          progressPercent: project.progressPercent,
-          clientEmail: project.clientEmail,
-          notes: project.notes,
-        }}
-      />
-
-      <ClientAssetsPanel projectId={project.id} assets={project.assets} />
-      <ClientChatPanel
-        projectId={project.id}
-        messages={project.messages}
-        clientDisplayName={clientUser?.displayName}
-      />
-      <ClientInvoicesPanel projectId={project.id} invoices={project.invoices} />
-    </div>
+    <ClientProjectWorkspace
+      project={{
+        id: project.id,
+        title: project.title,
+        status: project.status,
+        progressPercent: project.progressPercent,
+        clientEmail: project.clientEmail,
+        notes: project.notes,
+        portfolioProjectId: project.portfolioProjectId,
+        assets: project.assets,
+        messages: project.messages,
+        invoices: project.invoices,
+      }}
+      clientDisplayName={clientUser?.displayName ?? null}
+      clientPhone={clientUser?.phone ?? null}
+      clientAddress={clientUser?.address ?? null}
+      supplierSignature={supplierSignature}
+      clientSignature={clientSignature}
+      bankConfig={bankConfig}
+      canPromote={canPromote}
+    />
   );
 }

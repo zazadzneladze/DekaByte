@@ -44,7 +44,7 @@ export function CookieConsent() {
         bottom: "max(0.75rem, env(safe-area-inset-bottom))",
       }}
     >
-      <div className="mx-auto flex max-w-xl flex-col gap-3 rounded-xl border border-border bg-surface p-3 shadow-lift sm:flex-row sm:items-center sm:gap-4 sm:p-4">
+      <div className="mx-auto flex max-w-xl flex-col gap-3 rounded-xl border border-border bg-card p-3 shadow-lift sm:flex-row sm:items-center sm:gap-4 sm:p-4">
         <p className="flex-1 text-sm leading-relaxed text-muted-foreground">
           ვიყენებთ ანალიტიკურ ქუქიებს (Meta Pixel) საიტის გაუმჯობესებისთვის.
           შეგიძლიათ დაეთანხმოთ ან უარყოთ.

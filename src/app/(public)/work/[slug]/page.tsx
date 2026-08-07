@@ -219,7 +219,7 @@ async function ProjectDetailContent({ params }: PageProps) {
                 {project.technologies.map((tech) => (
                   <li
                     key={tech}
-                    className="rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-medium text-muted-foreground"
+                    className="rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground"
                   >
                     {tech}
                   </li>

@@ -69,14 +69,14 @@ export function ProjectStages({
               {stage.label}
             </p>
             {current ? (
-              <p className="mt-0.5 text-[0.7rem] text-electric">მიმდინარე</p>
+              <p className="mt-0.5 text-[0.7rem] text-electric">აქტიური</p>
             ) : done ? (
               <p className="mt-0.5 text-[0.7rem] text-muted-foreground">
                 გავლილი
               </p>
             ) : (
               <p className="mt-0.5 text-[0.7rem] text-muted-foreground/70">
-                მომავალი
+                შემდეგი
               </p>
             )}
           </li>

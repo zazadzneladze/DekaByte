@@ -5,6 +5,7 @@ import { auth, signIn } from "@/lib/auth";
 import { userIsAdmin } from "@/lib/roles";
 import { getPublicSiteSettings } from "@/db/queries";
 import { Logo } from "@/components/public/logo";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,9 +61,12 @@ async function AdminLoginContent({
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
+      <div className="absolute right-4 top-4 z-10">
+        <ModeToggle />
+      </div>
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,#dbeafe_0%,transparent_50%),linear-gradient(180deg,#f5f6f8_0%,#ffffff_70%)]"
+        className="page-gradient pointer-events-none absolute inset-0"
       />
       <div className="relative w-full max-w-sm space-y-6 rounded-2xl border border-border/80 bg-card/95 p-6 shadow-[0_8px_32px_rgb(18_21_26/0.06)]">
         <div className="flex flex-col items-center gap-4 text-center">

@@ -1,0 +1,25 @@
+{
+  "name": "DekaByte Portal",
+  "short_name": "Portal",
+  "description": "DekaByte კლიენტის პორტალი",
+  "start_url": "/portal",
+  "scope": "/portal",
+  "display": "standalone",
+  "background_color": "#f5f6f8",
+  "theme_color": "#12151a",
+  "lang": "ka",
+  "icons": [
+    {
+      "src": "/icons/admin-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/admin-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

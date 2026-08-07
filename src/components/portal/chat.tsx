@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { sendClientMessage } from "@/actions/portal";
 import { Button } from "@/components/ui/button";
@@ -19,19 +19,32 @@ export function PortalChat({
   projectId,
   messages,
   displayName,
+  embedded = false,
 }: {
   projectId: string;
   messages: Message[];
   displayName?: string | null;
+  embedded?: boolean;
 }) {
   const router = useRouter();
   const [body, setBody] = useState("");
   const [pending, startTransition] = useTransition();
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = listRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [messages.length]);
 
   return (
-    <section className="space-y-3">
-      <h2 className="text-sm font-semibold">შეტყობინებები</h2>
-      <div className="max-h-80 space-y-2 overflow-y-auto rounded-lg bg-secondary/40 p-3">
+    <section className={embedded ? "space-y-3" : "space-y-3"}>
+      {!embedded ? (
+        <h2 className="text-sm font-semibold">შეტყობინებები</h2>
+      ) : null}
+      <div
+        ref={listRef}
+        className="max-h-80 space-y-2 overflow-y-auto rounded-lg bg-secondary/40 p-3"
+      >
         {messages.length === 0 ? (
           <p className="text-sm text-muted-foreground">ჯერ ცარიელია</p>
         ) : (
@@ -80,7 +93,7 @@ export function PortalChat({
           });
         }}
       >
-        გაგზავნა
+        {pending ? "იგზავნება…" : "გაგზავნა"}
       </Button>
     </section>
   );

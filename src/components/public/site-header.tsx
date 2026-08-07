@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { LockIcon, MenuIcon } from "lucide-react";
 
 import { Logo } from "@/components/public/logo";
+import { HeroVisualToggle } from "@/components/public/hero-visual-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
 import { UserAvatar } from "@/components/public/user-avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,8 +66,8 @@ export function SiteHeader({ account = null, logoSrc = null }: SiteHeaderProps) 
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-40 border-b border-transparent bg-surface/80 backdrop-blur-xl transition-[border-color,box-shadow,background-color] duration-300",
-        scrolled && "border-border/80 bg-surface/92 shadow-soft",
+        "fixed inset-x-0 top-0 z-40 border-b border-transparent bg-background/75 backdrop-blur-xl transition-[border-color,box-shadow,background-color] duration-300",
+        scrolled && "border-border/80 bg-background/90 shadow-soft",
       )}
       style={{ height: "var(--header-height)" }}
     >
@@ -101,6 +103,8 @@ export function SiteHeader({ account = null, logoSrc = null }: SiteHeaderProps) 
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-2">
+          <ModeToggle className="hidden sm:inline-flex" />
+          <HeroVisualToggle />
           {account ? (
             <UserAvatar
               image={account.image}
@@ -165,6 +169,16 @@ export function SiteHeader({ account = null, logoSrc = null }: SiteHeaderProps) 
                 })}
               </nav>
               <div className="mt-auto space-y-2 border-t border-border p-4">
+              <div className="flex items-center justify-between gap-2 pb-1">
+                    <p className="text-xs text-muted-foreground">თემა</p>
+                    <ModeToggle />
+                  </div>
+                {pathname === "/" ? (
+                  <div className="flex items-center justify-between gap-2 pb-1">
+                    <p className="text-xs text-muted-foreground">Hero ვიზუალი</p>
+                    <HeroVisualToggle />
+                  </div>
+                ) : null}
                 {account ? (
                   <Button
                     className="w-full"

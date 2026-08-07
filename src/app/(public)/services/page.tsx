@@ -59,8 +59,9 @@ export default function ServicesPage() {
         ))}
       </ul>
 
-      <div className="mt-20 flex flex-col gap-5 rounded-2xl bg-ink px-6 py-10 text-surface sm:flex-row sm:items-center sm:justify-between sm:px-10">
-        <div className="max-w-xl">
+      <div className="relative mt-20 overflow-hidden rounded-2xl cta-band px-6 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-10 flex flex-col gap-5">
+        <div aria-hidden className="cta-band-glow pointer-events-none absolute inset-0" />
+        <div className="relative max-w-xl">
           <h2 className="text-display text-xl font-semibold sm:text-2xl">
             რომელი მიმართულება გჭირდებათ?
           </h2>
@@ -68,7 +69,7 @@ export default function ServicesPage() {
             მოგვწერეთ მოკლედ — ან გაიგეთ საწყისი ბიუჯეტი კალკულატორით.
           </p>
         </div>
-        <div className="flex flex-wrap gap-3">
+        <div className="relative flex flex-wrap gap-3">
           <Button
             className="bg-surface text-ink hover:bg-surface/90"
             render={<Link href="/contact" />}

@@ -15,7 +15,10 @@ import { changePasswordSchema } from "@/validators/auth";
 import { estimateConfigSchema } from "@/validators/estimate";
 import { deleteBlobSafe } from "@/lib/blob";
 import { isSafeHttpUrl } from "@/lib/security";
+import { clampSignatureTransform } from "@/lib/invoice-signature";
 import type { EstimateConfig } from "@/config/estimate";
+import type { InvoiceBankConfig } from "@/config/invoice";
+import { invoiceBankConfigSchema } from "@/validators/invoice-bank";
 
 export type SettingsActionResult =
   | { ok: true }
@@ -170,6 +173,160 @@ export async function updateEstimateConfig(
   revalidatePath("/admin/settings");
   revalidatePath("/estimate");
   revalidatePath("/");
+
+  return { ok: true };
+}
+
+export async function updateInvoiceBankConfig(
+  raw: unknown,
+): Promise<SettingsActionResult> {
+  await requireAdmin();
+
+  const parsed = invoiceBankConfigSchema.safeParse(raw);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "ვალიდაცია ვერ გაიარა",
+      fieldErrors: parsed.error.flatten().fieldErrors as Record<
+        string,
+        string[]
+      >,
+    };
+  }
+
+  const config = parsed.data as InvoiceBankConfig;
+  const db = getDb();
+  const existing = await adminGetSiteSettings();
+
+  if (existing) {
+    await db
+      .update(siteSettings)
+      .set({ invoiceBankConfig: config, updatedAt: new Date() })
+      .where(eq(siteSettings.id, 1));
+  } else {
+    return {
+      ok: false,
+      error: "ჯერ შეინახეთ საიტის პარამეტრები, შემდეგ საბანკო რეკვიზიტები",
+    };
+  }
+
+  invalidateSiteSettingsCache();
+  revalidatePath("/admin/settings");
+  revalidatePath("/admin/clients");
+
+  return { ok: true };
+}
+
+const signatureTransformSchema = z.object({
+  offsetX: z.coerce.number().int().min(-80).max(80),
+  offsetY: z.coerce.number().int().min(-40).max(48),
+  rotate: z.coerce.number().int().min(-45).max(45),
+});
+
+export async function updateInvoiceSupplierSignature(raw: unknown): Promise<SettingsActionResult> {
+  await requireAdmin();
+
+  const parsed = z
+    .object({
+      url: z.string().url(),
+      pathname: z.string().min(1),
+      transform: signatureTransformSchema,
+    })
+    .safeParse(raw);
+
+  if (!parsed.success) {
+    return { ok: false, error: "არასწორი ხელმოწერის მონაცემები" };
+  }
+
+  const db = getDb();
+  const existing = await adminGetSiteSettings();
+  if (!existing) {
+    return { ok: false, error: "ჯერ შეინახეთ საიტის პარამეტრები" };
+  }
+
+  if (
+    existing.invoiceSupplierSignaturePathname &&
+    existing.invoiceSupplierSignaturePathname !== parsed.data.pathname
+  ) {
+    await deleteBlobSafe(existing.invoiceSupplierSignaturePathname);
+  }
+
+  await db
+    .update(siteSettings)
+    .set({
+      invoiceSupplierSignatureUrl: parsed.data.url,
+      invoiceSupplierSignaturePathname: parsed.data.pathname,
+      invoiceSupplierSignatureTransform: clampSignatureTransform(
+        parsed.data.transform,
+      ),
+      updatedAt: new Date(),
+    })
+    .where(eq(siteSettings.id, 1));
+
+  invalidateSiteSettingsCache();
+  revalidatePath("/admin/settings");
+  revalidatePath("/admin/clients");
+
+  return { ok: true };
+}
+
+export async function updateInvoiceSupplierSignatureTransform(
+  raw: unknown,
+): Promise<SettingsActionResult> {
+  await requireAdmin();
+
+  const parsed = signatureTransformSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { ok: false, error: "არასწორი პოზიცია" };
+  }
+
+  const db = getDb();
+  const existing = await adminGetSiteSettings();
+  if (!existing?.invoiceSupplierSignatureUrl) {
+    return { ok: false, error: "ჯერ ატვირთეთ ხელმოწერა" };
+  }
+
+  await db
+    .update(siteSettings)
+    .set({
+      invoiceSupplierSignatureTransform: clampSignatureTransform(parsed.data),
+      updatedAt: new Date(),
+    })
+    .where(eq(siteSettings.id, 1));
+
+  invalidateSiteSettingsCache();
+  revalidatePath("/admin/settings");
+  revalidatePath("/admin/clients");
+
+  return { ok: true };
+}
+
+export async function clearInvoiceSupplierSignature(): Promise<SettingsActionResult> {
+  await requireAdmin();
+
+  const db = getDb();
+  const existing = await adminGetSiteSettings();
+  if (!existing) {
+    return { ok: false, error: "პარამეტრები ვერ მოიძებნა" };
+  }
+
+  if (existing.invoiceSupplierSignaturePathname) {
+    await deleteBlobSafe(existing.invoiceSupplierSignaturePathname);
+  }
+
+  await db
+    .update(siteSettings)
+    .set({
+      invoiceSupplierSignatureUrl: null,
+      invoiceSupplierSignaturePathname: null,
+      invoiceSupplierSignatureTransform: null,
+      updatedAt: new Date(),
+    })
+    .where(eq(siteSettings.id, 1));
+
+  invalidateSiteSettingsCache();
+  revalidatePath("/admin/settings");
+  revalidatePath("/admin/clients");
 
   return { ok: true };
 }

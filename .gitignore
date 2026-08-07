@@ -41,6 +41,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# local script artifacts (invoice previews, temp exports)
+scripts/_*
+scripts/_invoice_unzip/
+
 # testing artifacts
 test-results/
 playwright-report/

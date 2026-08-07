@@ -106,7 +106,7 @@ export function ContactForm() {
 
   if (success) {
     return (
-      <Alert className="border-border bg-surface p-5">
+      <Alert className="border-border bg-card p-5">
         <AlertTitle className="text-base">შეტყობინება მიღებულია</AlertTitle>
         <AlertDescription className="mt-2">
           თქვენი მოთხოვნა შენახულია. მალე დაგიკავშირდებით მითითებული

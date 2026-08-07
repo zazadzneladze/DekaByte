@@ -36,6 +36,62 @@
       "when": 1785980000000,
       "tag": "0004_site_logo",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1786054292165,
+      "tag": "0005_sloppy_korath",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786059000000,
+      "tag": "0006_invoice_pdf",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1786062000000,
+      "tag": "0007_invoice_extras",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1786065000000,
+      "tag": "0008_invoice_supplier_signature",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1786068000000,
+      "tag": "0009_invoice_bank_config",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1786071000000,
+      "tag": "0010_client_project_signature",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1786074000000,
+      "tag": "0011_client_user_signature",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1786077000000,
+      "tag": "0012_client_push_subscriptions",
+      "breakpoints": true
     }
   ]
 }

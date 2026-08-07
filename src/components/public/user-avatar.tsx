@@ -9,6 +9,7 @@ type UserAvatarProps = {
   href?: string;
   className?: string;
   size?: number;
+  badgeCount?: number;
 };
 
 export function UserAvatar({
@@ -17,31 +18,41 @@ export function UserAvatar({
   href,
   className,
   size = 36,
+  badgeCount = 0,
 }: UserAvatarProps) {
   const initial = (label.trim().charAt(0) || "?").toUpperCase();
+  const showBadge = badgeCount > 0;
+  const badgeLabel = badgeCount > 99 ? "99+" : String(badgeCount);
+
   const inner = (
     <span
-      className={cn(
-        "relative inline-flex shrink-0 overflow-hidden rounded-full ring-1 ring-border bg-secondary",
-        className,
-      )}
+      className={cn("relative inline-flex shrink-0", className)}
       style={{ width: size, height: size }}
       title={label}
-      aria-label={label}
+      aria-label={
+        showBadge ? `${label} · ${badgeCount} შეტყობინება` : label
+      }
     >
-      {image ? (
-        <Image
-          src={image}
-          alt=""
-          fill
-          className="object-cover"
-          sizes={`${size}px`}
-        />
-      ) : (
-        <span className="flex size-full items-center justify-center text-xs font-semibold text-graphite">
-          {initial}
+      <span className="relative inline-flex size-full overflow-hidden rounded-full bg-secondary ring-1 ring-border">
+        {image ? (
+          <Image
+            src={image}
+            alt=""
+            fill
+            className="object-cover"
+            sizes={`${size}px`}
+          />
+        ) : (
+          <span className="flex size-full items-center justify-center text-xs font-semibold text-graphite">
+            {initial}
+          </span>
+        )}
+      </span>
+      {showBadge ? (
+        <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-electric px-1 text-[0.6rem] font-semibold text-white ring-2 ring-card">
+          {badgeLabel}
         </span>
-      )}
+      ) : null}
     </span>
   );
 

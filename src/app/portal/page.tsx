@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { portalListProjects } from "@/db/queries";
 import { clientProjectStatusLabel } from "@/config/client-portal";
-import { ProgressBar, ProgressRing } from "@/components/portal/progress";
+import { ProgressRing } from "@/components/portal/progress";
 import { ProjectStages } from "@/components/portal/project-stages";
 import { Badge } from "@/components/ui/badge";
 
@@ -55,7 +55,6 @@ export default async function PortalHomePage() {
                         {clientProjectStatusLabel(project.status)}
                       </Badge>
                     </div>
-                    <ProgressBar value={project.progressPercent} />
                     <p className="text-xs text-muted-foreground">
                       გაკეთებულია {project.progressPercent}%
                     </p>

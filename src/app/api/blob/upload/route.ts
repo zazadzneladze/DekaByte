@@ -34,6 +34,13 @@ const payloadSchema = z.discriminatedUnion("purpose", [
   z.object({
     purpose: z.literal("site-logo"),
   }),
+  z.object({
+    purpose: z.literal("invoice-supplier-signature"),
+  }),
+  z.object({
+    purpose: z.literal("client-signature"),
+    clientUserId: z.string().uuid(),
+  }),
 ]);
 
 function normalizePayload(raw: unknown): unknown {
@@ -117,10 +124,13 @@ export async function POST(request: Request): Promise<NextResponse> {
           if (!pathname.startsWith(`client-invoices/${data.projectId}/`)) {
             throw new Error("არასწორი pathname");
           }
+          const isSignature = pathname.includes("/signatures/");
           return {
-            allowedContentTypes: ["application/pdf"],
-            maximumSizeInBytes: MAX_DOC_BYTES,
-            addRandomSuffix: true,
+            allowedContentTypes: isSignature
+              ? [...IMAGE_TYPES]
+              : ["application/pdf"],
+            maximumSizeInBytes: isSignature ? MAX_IMAGE_BYTES : MAX_DOC_BYTES,
+            addRandomSuffix: isSignature,
             tokenPayload: JSON.stringify(data),
           };
         }
@@ -134,6 +144,39 @@ export async function POST(request: Request): Promise<NextResponse> {
             allowedContentTypes: [...IMAGE_TYPES],
             maximumSizeInBytes: MAX_IMAGE_BYTES,
             addRandomSuffix: true,
+            tokenPayload: JSON.stringify(data),
+          };
+        }
+
+        if (data.purpose === "invoice-supplier-signature") {
+          if (!isAdmin) throw new Error("უფლება არ გაქვთ");
+          if (!pathname.startsWith("brand/invoice-supplier-signature")) {
+            throw new Error("არასწორი pathname");
+          }
+          return {
+            allowedContentTypes: [...IMAGE_TYPES],
+            maximumSizeInBytes: MAX_IMAGE_BYTES,
+            addRandomSuffix: false,
+            tokenPayload: JSON.stringify(data),
+          };
+        }
+
+        if (data.purpose === "client-signature") {
+          const isOwnClientSignature =
+            role === "client" && data.clientUserId === session.user.id;
+          if (!isAdmin && !isOwnClientSignature) {
+            throw new Error("უფლება არ გაქვთ");
+          }
+          if (
+            !pathname.startsWith(`client-signatures/${data.clientUserId}/`)
+          ) {
+            throw new Error("არასწორი pathname");
+          }
+          return {
+            allowedContentTypes: [...IMAGE_TYPES],
+            maximumSizeInBytes: MAX_IMAGE_BYTES,
+            addRandomSuffix: false,
+            allowOverwrite: true,
             tokenPayload: JSON.stringify(data),
           };
         }

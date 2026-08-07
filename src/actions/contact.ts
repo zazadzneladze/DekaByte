@@ -68,17 +68,20 @@ export async function submitContact(
     await recordLeadAttempt(ipHash);
 
     const db = getDb();
-    await db.insert(leads).values({
-      name: data.name,
-      phone: data.phone ?? null,
-      email: data.email ?? null,
-      projectType: data.projectType,
-      message: data.message,
-      preferredContactMethod: data.preferredContactMethod ?? null,
-      status: "new",
-      source: "contact_form",
-      ipHash,
-    });
+    const [lead] = await db
+      .insert(leads)
+      .values({
+        name: data.name,
+        phone: data.phone ?? null,
+        email: data.email ?? null,
+        projectType: data.projectType,
+        message: data.message,
+        preferredContactMethod: data.preferredContactMethod ?? null,
+        status: "new",
+        source: "contact_form",
+        ipHash,
+      })
+      .returning({ id: leads.id });
 
     void notifyNewLead({
       name: data.name,
@@ -89,11 +92,13 @@ export async function submitContact(
       preferredContactMethod: data.preferredContactMethod,
     });
 
-    const { sendAdminPush } = await import("@/lib/push");
+    const { pushPreview, sendAdminPush } = await import("@/lib/push");
+    const preview = pushPreview(data.message);
     void sendAdminPush({
-      title: "ახალი ლიდი",
-      body: `${data.name} — ${data.projectType}`,
-      url: "/admin/leads",
+      title: data.name,
+      body: `ახალი ლიდი · ${data.projectType}\n${preview}`,
+      url: lead ? `/admin/leads/${lead.id}` : "/admin/leads",
+      tag: lead ? `lead-${lead.id}` : "lead-new",
     });
 
     return { ok: true };

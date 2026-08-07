@@ -150,7 +150,7 @@ function FilterChip({
         "rounded-lg border px-4 py-1.5 text-sm font-medium transition-colors",
         active
           ? "border-graphite bg-graphite text-surface"
-          : "border-border bg-surface text-muted-foreground hover:border-foreground/25 hover:text-foreground",
+          : "border-border bg-card text-muted-foreground hover:border-foreground/25 hover:text-foreground",
       )}
     >
       {children}

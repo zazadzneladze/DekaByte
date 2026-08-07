@@ -27,7 +27,7 @@ export default function AboutPage() {
       <section className="relative overflow-hidden border-b border-border">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_0%_0%,#dbeafe_0%,transparent_45%),linear-gradient(180deg,#f5f6f8_0%,#ffffff_70%)]"
+          className="page-gradient pointer-events-none absolute inset-0"
         />
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
           <SectionLabel>სტუდიო</SectionLabel>
@@ -77,7 +77,7 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      <section className="border-y border-border bg-surface">
+      <section className="section-band">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
           <Reveal className="mb-12 max-w-2xl">
             <SectionLabel>პროცესი</SectionLabel>
@@ -137,7 +137,11 @@ export default function AboutPage() {
         </ul>
       </section>
 
-      <section className="relative overflow-hidden bg-ink text-surface">
+      <section className="relative overflow-hidden cta-band">
+        <div
+          aria-hidden
+          className="cta-band-glow pointer-events-none absolute inset-0"
+        />
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgb(37_99_235/0.22)_0%,transparent_50%)]"

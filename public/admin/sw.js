@@ -13,6 +13,7 @@ self.addEventListener("push", (event) => {
     title: "DekaByte",
     body: "ახალი შეტყობინება",
     url: "/admin",
+    tag: "dekabyte-admin",
   };
   try {
     if (event.data) {
@@ -26,6 +27,8 @@ self.addEventListener("push", (event) => {
     self.registration.showNotification(data.title, {
       body: data.body,
       data: { url: data.url || "/admin" },
+      tag: data.tag || "dekabyte-admin",
+      renotify: true,
       icon: "/icons/admin-192.png",
       badge: "/icons/admin-192.png",
     }),

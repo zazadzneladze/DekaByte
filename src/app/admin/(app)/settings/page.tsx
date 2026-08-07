@@ -2,9 +2,15 @@ import { Suspense } from "react";
 import { adminGetSiteSettings } from "@/db/queries";
 import { siteDefaults } from "@/config/site";
 import { mergeEstimateConfig } from "@/config/estimate";
+import { mergeInvoiceBankConfig } from "@/config/invoice";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { AdminSettingsTabs } from "@/components/admin/admin-settings-tabs";
 import { SettingsForms } from "@/components/admin/settings-forms";
 import { EstimateSettingsForm } from "@/components/admin/estimate-settings-form";
 import { LogoUploader } from "@/components/admin/logo-uploader";
+import { InvoiceSupplierSignatureSettings } from "@/components/admin/invoice-supplier-signature-settings";
+import { InvoiceBankSettings } from "@/components/admin/invoice-bank-settings";
+import { clampSignatureTransform } from "@/lib/invoice-signature";
 
 export default function AdminSettingsPage() {
   return (
@@ -36,21 +42,36 @@ async function AdminSettingsContent() {
   };
 
   const estimateInitial = mergeEstimateConfig(settings?.estimateConfig ?? null);
+  const bankInitial = mergeInvoiceBankConfig(settings?.invoiceBankConfig ?? null);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight">პარამეტრები</h1>
-        <p className="text-sm text-muted-foreground">
-          ლოგო, საკონტაქტო ინფო, ბიუჯეტის ცხრილები და ადმინ პაროლი
-        </p>
-      </div>
-      <LogoUploader
-        initialUrl={settings?.logoUrl ?? null}
-        initialPathname={settings?.logoPathname ?? null}
+    <div className="mx-auto max-w-3xl space-y-6">
+      <AdminPageHeader
+        title="პარამეტრები"
+        description="ლოგო, ინვოისი, კონტაქტი, ბიუჯეტის ცხრილი და ადმინის პაროლი"
       />
-      <SettingsForms initial={initial} />
-      <EstimateSettingsForm initial={estimateInitial} />
+      <AdminSettingsTabs
+        brand={
+          <LogoUploader
+            initialUrl={settings?.logoUrl ?? null}
+            initialPathname={settings?.logoPathname ?? null}
+          />
+        }
+        invoice={
+          <>
+            <InvoiceSupplierSignatureSettings
+              initialUrl={settings?.invoiceSupplierSignatureUrl ?? null}
+              initialPathname={settings?.invoiceSupplierSignaturePathname ?? null}
+              initialTransform={clampSignatureTransform(
+                settings?.invoiceSupplierSignatureTransform,
+              )}
+            />
+            <InvoiceBankSettings initial={bankInitial} />
+          </>
+        }
+        contact={<SettingsForms initial={initial} />}
+        estimate={<EstimateSettingsForm initial={estimateInitial} />}
+      />
     </div>
   );
 }

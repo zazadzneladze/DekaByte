@@ -2,6 +2,19 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  serverExternalPackages: ["@sparticuz/chromium-min", "puppeteer-core"],
+  outputFileTracingIncludes: {
+    "/admin/clients/**": [
+      "./public/fonts/**",
+      "./public/brand/invoice-mark.png",
+      "./public/brand/mark.png",
+    ],
+    "/admin/clients/[id]": [
+      "./public/fonts/**",
+      "./public/brand/invoice-mark.png",
+      "./public/brand/mark.png",
+    ],
+  },
   images: {
     remotePatterns: [
       {
