@@ -282,6 +282,174 @@
     box-shadow: var(--shadow-lift);
   }
 
+  .hero-mark-scene {
+    --hero-mark-orbit: 7.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .hero-mark-scene {
+      --hero-mark-orbit: 8.35rem;
+    }
+  }
+
+  .hero-mark-rays {
+    background:
+      conic-gradient(
+        from 0deg at 50% 50%,
+        transparent 0deg,
+        color-mix(in oklch, var(--electric), transparent 92%) 18deg,
+        transparent 36deg,
+        transparent 60deg,
+        color-mix(in oklch, var(--electric), transparent 94%) 78deg,
+        transparent 96deg,
+        transparent 120deg,
+        color-mix(in oklch, var(--electric), transparent 93%) 138deg,
+        transparent 156deg,
+        transparent 180deg,
+        color-mix(in oklch, var(--electric), transparent 94%) 198deg,
+        transparent 216deg,
+        transparent 240deg,
+        color-mix(in oklch, var(--electric), transparent 92%) 258deg,
+        transparent 276deg,
+        transparent 300deg,
+        color-mix(in oklch, var(--electric), transparent 93%) 318deg,
+        transparent 336deg
+      );
+    opacity: 0.55;
+    mask-image: radial-gradient(circle at 50% 50%, black 18%, transparent 72%);
+  }
+
+  .hero-mark-ring {
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-mark-ring-outer {
+    border: 1px solid color-mix(in oklch, var(--electric), transparent 72%);
+    box-shadow:
+      0 0 24px color-mix(in oklch, var(--electric), transparent 88%),
+      inset 0 0 20px color-mix(in oklch, var(--electric), transparent 94%);
+  }
+
+  .hero-mark-ring-inner {
+    border: 1px dashed color-mix(in oklch, var(--foreground), transparent 88%);
+    opacity: 0.45;
+  }
+
+  .hero-mark-node {
+    display: flex;
+    min-width: 4.25rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    border-radius: 0.875rem;
+    border: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
+    background: color-mix(in oklch, var(--card) 92%, transparent);
+    padding: 0.4rem 0.55rem;
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(8px);
+  }
+
+  .hero-mark-node-index {
+    font-size: 0.52rem;
+    letter-spacing: 0.16em;
+    color: color-mix(in oklch, var(--electric), transparent 25%);
+  }
+
+  .hero-mark-node-label {
+    font-size: clamp(0.78rem, 2vw, 0.88rem);
+    line-height: 1.1;
+    color: var(--foreground);
+  }
+
+  .hero-mark-pedestal {
+    transform: translate(-50%, -50%) translateZ(56px);
+    transform-style: preserve-3d;
+  }
+
+  .hero-mark-plate {
+    border-radius: 1.85rem;
+    border: 1px solid color-mix(in oklch, var(--border) 55%, transparent);
+    background: linear-gradient(
+      155deg,
+      color-mix(in oklch, var(--card) 96%, white 4%) 0%,
+      var(--background) 42%,
+      color-mix(in oklch, var(--secondary) 80%, var(--muted-blue) 20%) 100%
+    );
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, white, transparent 70%) inset,
+      0 28px 56px rgb(18 21 26 / 0.14),
+      0 0 64px color-mix(in oklch, var(--electric), transparent 88%);
+  }
+
+  .dark .hero-mark-plate {
+    background: linear-gradient(
+      155deg,
+      color-mix(in oklch, var(--card) 90%, white 2%) 0%,
+      var(--background) 45%,
+      color-mix(in oklch, var(--secondary) 85%, var(--primary) 15%) 100%
+    );
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, white, transparent 92%) inset,
+      0 28px 56px rgb(0 0 0 / 0.45),
+      0 0 72px color-mix(in oklch, var(--electric), transparent 82%);
+  }
+
+  .hero-mark-plate-shine {
+    background: linear-gradient(
+      135deg,
+      rgb(255 255 255 / 0.55) 0%,
+      rgb(255 255 255 / 0.08) 38%,
+      transparent 58%
+    );
+  }
+
+  .dark .hero-mark-plate-shine {
+    background: linear-gradient(
+      135deg,
+      rgb(255 255 255 / 0.12) 0%,
+      rgb(255 255 255 / 0.03) 38%,
+      transparent 58%
+    );
+  }
+
+  .hero-mark-plate-rim {
+    border: 1px solid color-mix(in oklch, var(--electric), transparent 82%);
+    opacity: 0.65;
+  }
+
+  .hero-mark-image {
+    filter: drop-shadow(0 16px 28px rgb(37 99 235 / 0.28))
+      drop-shadow(0 4px 12px rgb(18 21 26 / 0.12));
+  }
+
+  .dark .hero-mark-image {
+    filter: drop-shadow(0 18px 32px rgb(59 130 246 / 0.35))
+      drop-shadow(0 4px 14px rgb(0 0 0 / 0.35));
+  }
+
+  .hero-mark-ground {
+    margin-top: 0.65rem;
+    height: 0.85rem;
+    width: 4.5rem;
+    border-radius: 9999px;
+    background: radial-gradient(
+      ellipse,
+      rgb(18 21 26 / 0.22) 0%,
+      transparent 72%
+    );
+    filter: blur(2px);
+  }
+
+  .dark .hero-mark-ground {
+    background: radial-gradient(
+      ellipse,
+      rgb(0 0 0 / 0.55) 0%,
+      transparent 72%
+    );
+  }
+
   .hero-core-disc {
     border: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
     background: linear-gradient(
