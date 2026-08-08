@@ -4,7 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Props = {
   appearance: React.ReactNode;
-  brand: React.ReactNode;
   invoice: React.ReactNode;
   contact: React.ReactNode;
   estimate: React.ReactNode;
@@ -12,7 +11,6 @@ type Props = {
 
 export function AdminSettingsTabs({
   appearance,
-  brand,
   invoice,
   contact,
   estimate,
@@ -22,9 +20,6 @@ export function AdminSettingsTabs({
       <TabsList className="h-auto w-full flex-wrap justify-start gap-1 bg-muted/50 p-1">
         <TabsTrigger value="appearance" className="text-xs sm:text-sm">
           გარეგნობა
-        </TabsTrigger>
-        <TabsTrigger value="brand" className="text-xs sm:text-sm">
-          ბრენდი
         </TabsTrigger>
         <TabsTrigger value="invoice" className="text-xs sm:text-sm">
           ინვოისი
@@ -38,9 +33,6 @@ export function AdminSettingsTabs({
       </TabsList>
       <TabsContent value="appearance" className="mt-0 space-y-4 outline-none">
         {appearance}
-      </TabsContent>
-      <TabsContent value="brand" className="mt-0 space-y-4 outline-none">
-        {brand}
       </TabsContent>
       <TabsContent value="invoice" className="mt-0 space-y-4 outline-none">
         {invoice}

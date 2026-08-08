@@ -8,7 +8,6 @@ import { AdminSettingsTabs } from "@/components/admin/admin-settings-tabs";
 import { AppearanceSettingsPanel } from "@/components/admin/appearance-settings-panel";
 import { SettingsForms } from "@/components/admin/settings-forms";
 import { EstimateSettingsForm } from "@/components/admin/estimate-settings-form";
-import { LogoUploader } from "@/components/admin/logo-uploader";
 import { InvoiceSupplierSignatureSettings } from "@/components/admin/invoice-supplier-signature-settings";
 import { InvoiceBankSettings } from "@/components/admin/invoice-bank-settings";
 import { clampSignatureTransform } from "@/lib/invoice-signature";
@@ -56,12 +55,8 @@ async function AdminSettingsContent() {
         appearance={
           <AppearanceSettingsPanel
             heroVisual={resolveHeroVisualMode(settings?.heroVisual)}
-          />
-        }
-        brand={
-          <LogoUploader
-            initialUrl={settings?.logoUrl ?? null}
-            initialPathname={settings?.logoPathname ?? null}
+            logoUrl={settings?.logoUrl ?? null}
+            logoPathname={settings?.logoPathname ?? null}
           />
         }
         invoice={
