@@ -49,7 +49,7 @@ export function UserAvatar({
         )}
       </span>
       {showBadge ? (
-        <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-electric px-1 text-[0.6rem] font-semibold text-white ring-2 ring-card">
+        <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-electric px-1 text-micro-sm font-semibold text-white ring-2 ring-card">
           {badgeLabel}
         </span>
       ) : null}

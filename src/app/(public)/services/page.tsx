@@ -71,7 +71,7 @@ export default function ServicesPage() {
         </div>
         <div className="relative flex flex-wrap gap-3">
           <Button
-            className="bg-surface text-ink hover:bg-surface/90"
+            className="cta-band-button"
             render={<Link href="/contact" />}
           >
             პროექტის დაწყება

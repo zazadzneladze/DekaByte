@@ -91,7 +91,7 @@ export function MobileContactBar({ settings }: MobileContactBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="flex-1"
+          className="touch-target flex-1"
           render={
             <a
               href={tel}
@@ -105,7 +105,7 @@ export function MobileContactBar({ settings }: MobileContactBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="flex-1"
+          className="touch-target flex-1"
           render={
             <a
               href={wa}
@@ -121,14 +121,15 @@ export function MobileContactBar({ settings }: MobileContactBarProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="flex-1"
+          className="touch-target flex-1"
           render={<a href={mail} aria-label="ელფოსტა" />}
         >
           <MailIcon aria-hidden="true" />
         </Button>
         <Button
           variant="ghost"
-          size="icon-sm"
+          size="icon"
+          className="touch-target"
           aria-label="დახურვა"
           onClick={dismiss}
         >

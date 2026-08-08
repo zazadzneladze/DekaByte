@@ -37,7 +37,8 @@ export function CookieConsent() {
 
   return (
     <div
-      role="dialog"
+      role="region"
+      aria-live="polite"
       aria-label="ქუქიების თანხმობა"
       className="fixed inset-x-0 z-50 px-3"
       style={{

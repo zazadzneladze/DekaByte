@@ -33,7 +33,7 @@ export function MacBrowserFrame({
           <span className="size-2.5 rounded-full bg-[#28c840] ring-1 ring-black/10" />
         </div>
         <div className="mx-auto flex min-w-0 max-w-[70%] flex-1 justify-center">
-          <span className="truncate rounded-md bg-black/25 px-3 py-0.5 text-center text-[0.65rem] font-medium tracking-wide text-white/70">
+          <span className="truncate rounded-md bg-black/25 px-3 py-0.5 text-center text-micro font-medium tracking-wide text-white/70">
             {title}
           </span>
         </div>

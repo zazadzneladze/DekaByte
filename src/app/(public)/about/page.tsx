@@ -159,7 +159,7 @@ export default function AboutPage() {
           <div className="flex flex-wrap gap-3">
             <Button
               size="lg"
-              className="bg-surface text-ink hover:bg-surface/90"
+              className="cta-band-button"
               render={<Link href="/contact" />}
             >
               კონტაქტი

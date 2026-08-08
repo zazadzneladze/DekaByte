@@ -49,12 +49,10 @@ export function SiteHeader({ account = null, logoSrc = null }: SiteHeaderProps) 
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [openPath, setOpenPath] = useState(pathname);
 
-  if (openPath !== pathname) {
-    setOpenPath(pathname);
-    if (open) setOpen(false);
-  }
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -86,7 +84,7 @@ export function SiteHeader({ account = null, logoSrc = null }: SiteHeaderProps) 
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative rounded-lg px-3 py-2 text-[0.8125rem] font-medium tracking-wide text-slate transition-colors hover:text-foreground",
+                  "relative rounded-lg px-3 py-2 text-nav-link font-medium tracking-wide text-slate transition-colors hover:text-foreground",
                   active && "text-foreground",
                 )}
               >
@@ -116,7 +114,7 @@ export function SiteHeader({ account = null, logoSrc = null }: SiteHeaderProps) 
             <Button
               variant="ghost"
               size="icon"
-              className="text-slate hover:text-foreground"
+              className="touch-target text-slate hover:text-foreground"
               render={<Link href="/portal/login" />}
               aria-label="კლიენტის პანელი"
               title="კლიენტის პანელი"
@@ -131,7 +129,7 @@ export function SiteHeader({ account = null, logoSrc = null }: SiteHeaderProps) 
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden"
+                  className="touch-target md:hidden"
                   aria-label="მენიუს გახსნა"
                 />
               }

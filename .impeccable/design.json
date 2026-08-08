@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-08T00:52:00.000Z",
+  "title": "Design System: DekaByte",
+  "extensions": {
+    "colorMeta": {
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "#12151A",
+        "tonalRamp": ["#0a0c10", "#12151a", "#1a1d23", "#23272f", "#343a45", "#4a5160", "#9aa3b2", "#f7f8fa"]
+      },
+      "electric": {
+        "role": "primary",
+        "displayName": "Electric Studio Blue",
+        "canonical": "#1D4ED8",
+        "tonalRamp": ["#1e3a8a", "#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa", "#93c5fd", "#bfdbfe", "#dbeafe"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Studio Ink",
+        "canonical": "#0E1116",
+        "tonalRamp": ["#000000", "#0a0c10", "#0e1116", "#12151a", "#1a1d23", "#343a45", "#64748b", "#9aa3b2"]
+      },
+      "off-white": {
+        "role": "neutral",
+        "displayName": "Off-white Field",
+        "canonical": "#F5F6F8",
+        "tonalRamp": ["#e0e3e9", "#eef0f4", "#f5f6f8", "#ffffff", "#ffffff", "#ffffff", "#ffffff", "#ffffff"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero and major section titles; tight tracking."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All Georgian UI paragraphs and descriptions."
+      },
+      "label": {
+        "displayName": "Section Label",
+        "purpose": "Uppercase eyebrows above headings."
+      }
+    },
+    "shadows": [
+      {
+        "name": "soft",
+        "value": "0 1px 2px rgb(18 21 26 / 0.04), 0 10px 28px rgb(18 21 26 / 0.06)",
+        "purpose": "Sticky header, resting elevated chips."
+      },
+      {
+        "name": "lift",
+        "value": "0 4px 8px rgb(18 21 26 / 0.04), 0 24px 48px rgb(18 21 26 / 0.1)",
+        "purpose": "Mobile contact bar, cookie consent, hero device frames."
+      }
+    ],
+    "motion": [
+      {
+        "name": "fade-up",
+        "value": "0.85s cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Hero copy entrance and scroll reveals."
+      },
+      {
+        "name": "float",
+        "value": "7s ease-in-out infinite",
+        "purpose": "Ambient hero composition layers only."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main CTA on marketing and forms.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">პროექტის დაწყება</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; height: 2.25rem; padding: 0 1rem; font-family: var(--font-noto-sans-georgian), ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; color: #fff; background: var(--primary, #1d4ed8); border: 1px solid transparent; border-radius: var(--radius, 0.75rem); cursor: pointer; transition: background 0.15s ease; } .ds-btn-primary:hover { background: color-mix(in oklch, var(--primary, #1d4ed8), white 20%); } .ds-btn-primary:focus-visible { outline: 2px solid var(--ring, #1d4ed8); outline-offset: 2px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary marketing actions.",
+      "html": "<button class=\"ds-btn-outline\" type=\"button\">ნამუშევრების ნახვა</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; height: 2.25rem; padding: 0 1rem; font-family: var(--font-noto-sans-georgian), ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; color: var(--foreground, #12151a); background: var(--background, #f5f6f8); border: 1px solid var(--border, #e0e3e9); border-radius: var(--radius, 0.75rem); cursor: pointer; transition: background 0.15s ease, color 0.15s ease; } .ds-btn-outline:hover { background: var(--muted, #dbeafe); color: var(--foreground, #12151a); } .ds-btn-outline:focus-visible { outline: 2px solid var(--ring, #1d4ed8); outline-offset: 2px; }"
+    },
+    {
+      "name": "Section Label",
+      "kind": "custom",
+      "description": "Uppercase eyebrow above section headings.",
+      "html": "<p class=\"ds-section-label\">პორტფოლიო</p>",
+      "css": ".ds-section-label { margin: 0 0 0.75rem; font-family: var(--font-noto-sans-georgian), ui-sans-serif, system-ui, sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary, #1d4ed8); }"
+    },
+    {
+      "name": "Site Header",
+      "kind": "nav",
+      "description": "Sticky blurred public navigation bar.",
+      "html": "<header class=\"ds-site-header\"><a class=\"ds-nav-link ds-nav-link-active\" href=\"/\">მთავარი</a><a class=\"ds-nav-link\" href=\"/work\">ნამუშევრები</a></header>",
+      "css": ".ds-site-header { display: flex; align-items: center; gap: 0.25rem; height: 4rem; padding: 0 1.5rem; background: color-mix(in oklch, var(--background, #f5f6f8), transparent 25%); backdrop-filter: blur(16px); border-bottom: 1px solid color-mix(in oklch, var(--border, #e0e3e9), transparent 20%); } .ds-nav-link { position: relative; padding: 0.5rem 0.75rem; font-family: var(--font-noto-sans-georgian), ui-sans-serif, system-ui, sans-serif; font-size: 0.8125rem; font-weight: 500; color: var(--color-slate, #4a5160); text-decoration: none; border-radius: 0.5rem; transition: color 0.15s ease; } .ds-nav-link:hover { color: var(--foreground, #12151a); } .ds-nav-link-active { color: var(--foreground, #12151a); } .ds-nav-link-active::after { content: ''; position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0; height: 1px; background: var(--primary, #1d4ed8); }"
+    },
+    {
+      "name": "CTA Band",
+      "kind": "card",
+      "description": "Ink closing section with electric glow.",
+      "html": "<section class=\"ds-cta-band\"><h2 class=\"ds-cta-title\">გაქვს პროექტის იდეა?</h2></section>",
+      "css": ".ds-cta-band { position: relative; overflow: hidden; padding: 5rem 1.5rem; background: var(--ink, #0e1116); color: var(--surface, #fff); } .ds-cta-band::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 0%, var(--cta-glow, rgb(37 99 235 / 0.22)) 0%, transparent 50%); pointer-events: none; } .ds-cta-title { position: relative; margin: 0; font-family: var(--font-noto-sans-georgian), ui-sans-serif, system-ui, sans-serif; font-size: 2rem; font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Graphite Studio",
+    "overview": "A precision Georgian studio surface: calm off-white or charcoal field, graphite type, one electric-blue voice for action. Marketing persuades with real portfolio proof; admin and portal operate with shadcn clarity. Light is default; dark is first-class. Ink bands anchor closure.",
+    "keyCharacteristics": [
+      "Graphite + electric blue; Noto Sans Georgian throughout",
+      "Open grids over marketing card boxes",
+      "Hero portfolio in device chrome with mark/cube/orbit toggle",
+      "Subtle motion with reduced-motion respect",
+      "No fake stats or testimonials"
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Electric blue on primary actions and labels—not full-page gradients.", "section": "colors" },
+      { "name": "The Ink Anchor Rule", "body": "Footer and CTA bands stay ink regardless of theme.", "section": "colors" },
+      { "name": "The Georgian-Only Rule", "body": "Never use Latin-only display fonts for Georgian UI.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Shadows only for elevation or scroll state.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use semantic tokens for light/dark coherence",
+      "Do use SectionLabel + display headline pattern",
+      "Do respect prefers-reduced-motion",
+      "Do keep Georgian copy honest"
+    ],
+    "donts": [
+      "Don't use purple gradients or cream-serif templates",
+      "Don't card-box every marketing block",
+      "Don't show fake metrics or testimonials",
+      "Don't ignore dark mode on public, admin, or portal"
+    ]
+  }
+}

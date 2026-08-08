@@ -15,12 +15,12 @@ const FACE_ROTATES = [
 ] as const;
 
 const FACE_TINTS = [
-  "from-[#eff6ff] via-[#dbeafe] to-[#bfdbfe]",
-  "from-[#f8fafc] via-[#e2e8f0] to-[#cbd5e1]",
-  "from-[#ecfdf5] via-[#d1fae5] to-[#a7f3d0]",
-  "from-[#f5f3ff] via-[#ede9fe] to-[#ddd6fe]",
-  "from-[#fff7ed] via-[#ffedd5] to-[#fed7aa]",
-  "from-[#eff6ff] via-[#e0e7ff] to-[#c7d2fe]",
+  "from-muted-blue/90 via-muted to-secondary dark:from-primary/20 dark:via-card dark:to-secondary",
+  "from-secondary via-muted-blue/80 to-card dark:from-card dark:via-secondary dark:to-background",
+  "from-muted via-secondary to-muted-blue/70 dark:from-secondary dark:via-card dark:to-muted",
+  "from-card via-muted to-secondary dark:from-background dark:via-card dark:to-secondary",
+  "from-muted-blue/70 via-muted to-card dark:from-primary/15 dark:via-secondary dark:to-card",
+  "from-secondary via-muted-blue/60 to-muted dark:from-card dark:via-muted dark:to-background",
 ] as const;
 
 type HeroCubeProps = {
@@ -103,8 +103,8 @@ export function HeroCube({ className }: HeroCubeProps) {
       onPointerLeave={onPointerLeave}
       aria-hidden="true"
     >
-      <div className="pointer-events-none absolute inset-[6%] rounded-[40%] bg-[radial-gradient(circle_at_50%_42%,rgb(219_234_254)_0%,rgb(245_246_248/0.4)_38%,transparent_70%)]" />
-      <div className="pointer-events-none absolute inset-[20%] rounded-full bg-[radial-gradient(circle,rgb(29_78_216/0.16)_0%,transparent_72%)] blur-3xl" />
+      <div className="hero-scene-halo pointer-events-none absolute inset-[6%] rounded-[40%]" />
+      <div className="hero-scene-accent hero-scene-blur pointer-events-none absolute inset-[20%] rounded-full" />
 
       <div
         className="relative"
@@ -126,7 +126,7 @@ export function HeroCube({ className }: HeroCubeProps) {
             <div
               key={cat.id}
               className={cn(
-                "absolute inset-0 flex flex-col items-center justify-center gap-2.5 overflow-hidden border border-white/50",
+                "absolute inset-0 flex flex-col items-center justify-center gap-2.5 overflow-hidden border border-border/50",
                 "bg-gradient-to-br shadow-[inset_0_1px_0_rgb(255_255_255/0.75),0_18px_48px_rgb(18_21_26/0.14)]",
                 FACE_TINTS[i],
               )}
@@ -136,13 +136,13 @@ export function HeroCube({ className }: HeroCubeProps) {
               }}
             >
               <span className="absolute inset-x-0 top-0 h-px bg-white/70" />
-              <span className="font-mono text-[0.62rem] tracking-[0.28em] text-electric/80 uppercase">
+              <span className="font-mono text-micro-sm tracking-[0.28em] text-electric/80 uppercase">
                 0{i + 1}
               </span>
-              <span className="text-display px-3 text-center text-[1.35rem] leading-tight font-semibold tracking-tight text-graphite sm:text-[1.55rem]">
+              <span className="text-display text-cube-face-title px-3 text-center leading-tight font-semibold tracking-tight text-foreground">
                 {cat.short}
               </span>
-              <span className="max-w-[85%] truncate px-2 text-center text-[0.65rem] text-slate/80">
+              <span className="text-micro max-w-[85%] truncate px-2 text-center text-muted-foreground">
                 {cat.label}
               </span>
               <span className="h-px w-8 bg-electric/40" />

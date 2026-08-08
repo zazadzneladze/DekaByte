@@ -67,10 +67,10 @@ export function HeroVisualToggle({ className }: { className?: string }) {
           <Button
             key={opt.id}
             type="button"
-            size="icon-sm"
+            size="icon"
             variant={active ? "secondary" : "ghost"}
             className={cn(
-              "size-8",
+              "touch-target sm:size-8 sm:min-h-0 sm:min-w-0",
               active && "bg-card text-foreground shadow-soft",
             )}
             aria-pressed={active}

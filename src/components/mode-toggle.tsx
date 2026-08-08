@@ -54,8 +54,8 @@ export function ModeToggle({ className, variant = "icon" }: ModeToggleProps) {
         render={
           <Button
             variant="ghost"
-            size="icon-sm"
-            className={cn("rounded-full", className)}
+            size="icon"
+            className={cn("touch-target rounded-full", className)}
             aria-label="თემის შეცვლა"
           />
         }

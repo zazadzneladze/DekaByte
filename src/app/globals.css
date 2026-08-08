@@ -242,6 +242,94 @@
     @apply border-y border-border bg-card;
   }
 
+  .cta-band-button {
+    background-color: #ffffff;
+    color: var(--ink);
+  }
+
+  .cta-band-button:hover {
+    background-color: rgb(255 255 255 / 0.9);
+  }
+
+  .hero-scene-halo {
+    background: radial-gradient(
+      circle at 50% 42%,
+      var(--hero-glow-1) 0%,
+      transparent 70%
+    );
+  }
+
+  .hero-scene-accent {
+    background: radial-gradient(
+      circle,
+      var(--cta-glow) 0%,
+      transparent 72%
+    );
+  }
+
+  .hero-scene-blur {
+    filter: blur(24px);
+  }
+
+  .hero-plate {
+    border: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
+    background: linear-gradient(
+      to bottom right,
+      var(--card),
+      var(--background),
+      var(--secondary)
+    );
+    box-shadow: var(--shadow-lift);
+  }
+
+  .hero-core-disc {
+    border: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
+    background: linear-gradient(
+      to bottom right,
+      var(--card),
+      var(--background),
+      var(--secondary)
+    );
+    box-shadow: var(--shadow-lift);
+  }
+
+  .touch-target {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+
+  .text-nav-link {
+    font-size: 0.8125rem;
+  }
+
+  .text-hero-brand {
+    font-size: clamp(2.65rem, 6vw, 3.65rem);
+  }
+
+  .text-hero-subhead {
+    font-size: clamp(1.25rem, 2.5vw, 1.65rem);
+  }
+
+  .text-micro {
+    font-size: 0.65rem;
+  }
+
+  .text-micro-sm {
+    font-size: 0.62rem;
+  }
+
+  .text-orbit-index {
+    font-size: 0.55rem;
+  }
+
+  .text-orbit-label {
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+  }
+
+  .text-cube-face-title {
+    font-size: clamp(1.35rem, 3vw, 1.55rem);
+  }
+
   .studio-grain {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
     background-size: 180px 180px;
@@ -362,6 +450,10 @@
 
   .hero-byte {
     opacity: 0.9;
+  }
+
+  .hero-scene-blur {
+    filter: none !important;
   }
 
   .reveal-io {

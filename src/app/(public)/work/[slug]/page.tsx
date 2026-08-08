@@ -237,7 +237,7 @@ async function ProjectDetailContent({ params }: PageProps) {
             </p>
             <div className="mt-5 flex flex-col gap-2">
               <Button
-                className="w-full bg-surface text-ink hover:bg-surface/90"
+                className="cta-band-button w-full"
                 render={<Link href="/contact" />}
               >
                 პროექტის დაწყება
@@ -292,7 +292,7 @@ async function ProjectDetailContent({ params }: PageProps) {
                         ) : null}
                       </div>
                     </MacBrowserFrame>
-                    <p className="text-[0.65rem] font-semibold tracking-[0.14em] text-electric uppercase">
+                    <p className="text-micro font-semibold tracking-[0.14em] text-electric uppercase">
                       {categoryLabel(item.category)}
                     </p>
                     <h3 className="font-semibold tracking-tight text-foreground group-hover:text-electric">
@@ -315,7 +315,7 @@ async function ProjectDetailContent({ params }: PageProps) {
             href={`/work/${prev.slug}`}
             className="group max-w-sm text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
-            <span className="block text-[0.65rem] font-semibold tracking-[0.14em] uppercase">
+            <span className="block text-micro font-semibold tracking-[0.14em] uppercase">
               წინა
             </span>
             <span className="mt-1 block text-base font-medium text-foreground group-hover:text-electric">
@@ -330,7 +330,7 @@ async function ProjectDetailContent({ params }: PageProps) {
             href={`/work/${next.slug}`}
             className="group max-w-sm text-right text-sm text-muted-foreground transition-colors hover:text-foreground sm:ml-auto"
           >
-            <span className="block text-[0.65rem] font-semibold tracking-[0.14em] uppercase">
+            <span className="block text-micro font-semibold tracking-[0.14em] uppercase">
               შემდეგი
             </span>
             <span className="mt-1 block text-base font-medium text-foreground group-hover:text-electric">

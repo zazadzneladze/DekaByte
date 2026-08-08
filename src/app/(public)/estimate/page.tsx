@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { EstimateCalculator } from "@/app/(public)/estimate/estimate-calculator";
-import { SectionLabel } from "@/components/public/section-label";
+import { PublicPageHero } from "@/components/public/public-page-hero";
 import { getEstimateConfig } from "@/db/queries";
 
 export const metadata: Metadata = {
@@ -14,20 +14,13 @@ export default async function EstimatePage() {
   const config = await getEstimateConfig();
 
   return (
-    <div
-      data-hide-mobile-contact
-      className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24"
-    >
-      <div className="mb-12 max-w-2xl">
-        <SectionLabel>კალკულატორი</SectionLabel>
-        <h1 className="text-display text-3xl font-semibold text-foreground sm:text-5xl">
-          ბიუჯეტის შეფასება
-        </h1>
-        <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
-          აირჩიეთ პროდუქტის ტიპი, მასშტაბი და საჭირო მოდულები — მიიღეთ საწყისი
-          სავარაუდო დიაპაზონი.
-        </p>
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+    <div data-hide-mobile-contact>
+      <PublicPageHero
+        label="კალკულატორი"
+        title="ბიუჯეტის შეფასება"
+        description="აირჩიეთ პროდუქტის ტიპი, მასშტაბი და საჭირო მოდულები — მიიღეთ საწყისი სავარაუდო დიაპაზონი."
+      >
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           {config.disclaimer}
         </p>
         {config.discountPercent > 0 ? (
@@ -35,9 +28,10 @@ export default async function EstimatePage() {
             მიმდინარე ფასდაკლება: {config.discountPercent}%
           </p>
         ) : null}
+      </PublicPageHero>
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <EstimateCalculator config={config} />
       </div>
-
-      <EstimateCalculator config={config} />
     </div>
   );
 }

@@ -5,7 +5,7 @@ import {
   WorkFilters,
   type WorkListItem,
 } from "@/app/(public)/work/work-filters";
-import { SectionLabel } from "@/components/public/section-label";
+import { PublicPageHero } from "@/components/public/public-page-hero";
 import { getPublishedProjects } from "@/db/queries";
 
 export const metadata: Metadata = {
@@ -29,20 +29,17 @@ export default async function WorkPage() {
   }));
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-      <div className="mb-12 max-w-2xl">
-        <SectionLabel>პორტფოლიო</SectionLabel>
-        <h1 className="text-display text-3xl font-semibold text-foreground sm:text-5xl">
-          ნამუშევრები
-        </h1>
-        <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
-          შერჩეული ციფრული პროდუქტები — კატეგორიით გაფილტვრით.
-        </p>
+    <>
+      <PublicPageHero
+        label="პორტფოლიო"
+        title="ნამუშევრები"
+        description="შერჩეული ციფრული პროექტები — კატეგორიით გაფილტვრით."
+      />
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <Suspense fallback={<p className="text-muted-foreground">იტვირთება…</p>}>
+          <WorkFilters projects={projects} />
+        </Suspense>
       </div>
-
-      <Suspense fallback={<p className="text-muted-foreground">იტვირთება…</p>}>
-        <WorkFilters projects={projects} />
-      </Suspense>
-    </div>
+    </>
   );
 }

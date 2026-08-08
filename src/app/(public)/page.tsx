@@ -54,14 +54,14 @@ export default async function HomePage() {
             <SectionLabel className="animate-fade-up mb-0">
               ციფრული სტუდიო
             </SectionLabel>
-            <p className="animate-fade-up text-display text-[2.65rem] font-bold tracking-tight text-foreground sm:text-5xl lg:text-[3.65rem]">
+            <p className="animate-fade-up text-display text-hero-brand font-bold tracking-tight text-foreground">
               Deka<span className="text-electric">Byte</span>
             </p>
             <div
               aria-hidden="true"
               className="animate-fade-up h-px w-16 bg-electric/70"
             />
-            <h1 className="animate-fade-up-delay max-w-xl text-xl font-semibold leading-snug text-foreground sm:text-2xl lg:text-[1.65rem] lg:leading-snug">
+            <h1 className="animate-fade-up-delay max-w-xl text-hero-subhead font-semibold leading-snug text-foreground sm:text-2xl">
               ვებსაიტები, Android აპლიკაციები და ციფრული სისტემები
               ბიზნესისთვის
             </h1>
@@ -344,7 +344,7 @@ export default async function HomePage() {
           <Reveal className="flex flex-wrap gap-3">
             <Button
               size="lg"
-              className="bg-surface text-ink hover:bg-surface/90"
+              className="cta-band-button"
               render={<Link href="/contact" />}
             >
               პროექტის დაწყება

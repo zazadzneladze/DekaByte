@@ -91,8 +91,8 @@ export function HeroOrbit({ className }: HeroOrbitProps) {
       onPointerLeave={onPointerLeave}
       aria-hidden="true"
     >
-      <div className="pointer-events-none absolute inset-[8%] rounded-full bg-[radial-gradient(circle_at_50%_45%,rgb(219_234_254)_0%,rgb(245_246_248/0.35)_42%,transparent_72%)]" />
-      <div className="pointer-events-none absolute inset-[24%] rounded-full bg-[radial-gradient(circle,rgb(37_99_235/0.18)_0%,transparent_70%)] blur-2xl" />
+      <div className="hero-scene-halo pointer-events-none absolute inset-[8%] rounded-full" />
+      <div className="hero-scene-accent hero-scene-blur pointer-events-none absolute inset-[24%] rounded-full" />
 
       <div
         className="relative size-[min(72vw,20rem)] sm:size-[22rem]"
@@ -117,7 +117,7 @@ export function HeroOrbit({ className }: HeroOrbitProps) {
           />
 
           <div
-            className="absolute top-1/2 left-1/2 flex size-[5.75rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full border border-white/75 bg-gradient-to-br from-white via-[#f8fafc] to-[#e8eef8] p-2.5 shadow-[0_18px_40px_rgb(18_21_26/0.16)] sm:size-[6.5rem]"
+            className="hero-core-disc absolute top-1/2 left-1/2 flex size-[5.75rem] -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full p-2.5 sm:size-[6.5rem]"
             style={{ transform: "translateZ(36px)" }}
           >
             <Image
@@ -149,12 +149,12 @@ export function HeroOrbit({ className }: HeroOrbitProps) {
                     ref={(el) => {
                       labelRefs.current[i] = el;
                     }}
-                    className="-translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/65 bg-card/95 px-2.5 py-2 text-center shadow-[0_10px_28px_rgb(18_21_26/0.12)] backdrop-blur-sm sm:min-w-[4.5rem] sm:px-3"
+                    className="-translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border/60 bg-card/95 px-2.5 py-2 text-center shadow-soft backdrop-blur-sm sm:min-w-[4.5rem] sm:px-3"
                   >
-                    <p className="font-mono text-[0.55rem] tracking-[0.18em] text-electric/75 uppercase">
+                    <p className="font-mono text-orbit-index tracking-[0.18em] text-electric/75 uppercase">
                       0{i + 1}
                     </p>
-                    <p className="text-display text-[0.85rem] leading-none font-semibold tracking-tight text-graphite sm:text-[0.95rem]">
+                    <p className="text-display text-orbit-label leading-none font-semibold tracking-tight text-foreground">
                       {cat.short}
                     </p>
                   </div>
