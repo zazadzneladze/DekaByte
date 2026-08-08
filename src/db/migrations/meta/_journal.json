@@ -92,6 +92,13 @@
       "when": 1786077000000,
       "tag": "0012_client_push_subscriptions",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1786080000000,
+      "tag": "0013_hero_visual",
+      "breakpoints": true
     }
   ]
 }

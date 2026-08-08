@@ -145,6 +145,7 @@ export const siteSettings = pgTable("site_settings", {
   } | null>(),
   invoiceBankConfig: jsonb("invoice_bank_config").$type<InvoiceBankConfig | null>(),
   estimateConfig: jsonb("estimate_config").$type<EstimateConfig | null>(),
+  heroVisual: varchar("hero_visual", { length: 16 }).notNull().default("mark"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

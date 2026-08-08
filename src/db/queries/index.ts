@@ -17,6 +17,7 @@ import {
 } from "@/db/schema";
 import { siteDefaults } from "@/config/site";
 import type { ProjectCategoryId } from "@/config/categories";
+import { resolveHeroVisualMode } from "@/lib/hero-visual";
 import {
   defaultEstimateConfig,
   mergeEstimateConfig,
@@ -56,6 +57,7 @@ export async function getPublicSiteSettings() {
       defaultSeoTitle: row.defaultSeoTitle,
       defaultSeoDescription: row.defaultSeoDescription,
       logoUrl: row.logoUrl,
+      heroVisual: resolveHeroVisualMode(row.heroVisual),
     };
   } catch {
     return { ...siteDefaults };

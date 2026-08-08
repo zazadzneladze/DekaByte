@@ -13,6 +13,7 @@ export const siteDefaults = {
   defaultSeoDescription:
     "DekaByte ქმნის თანამედროვე ვებსაიტებს, Web Applications-ს, ადმინისტრირების სისტემებს, UI/UX დიზაინსა და Android აპლიკაციებს.",
   logoUrl: null as string | null,
+  heroVisual: "mark" as const,
 } as const;
 
 export function getSiteUrl() {

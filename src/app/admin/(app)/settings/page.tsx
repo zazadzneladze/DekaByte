@@ -5,13 +5,14 @@ import { mergeEstimateConfig } from "@/config/estimate";
 import { mergeInvoiceBankConfig } from "@/config/invoice";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminSettingsTabs } from "@/components/admin/admin-settings-tabs";
-import { ThemeSettingsPanel } from "@/components/admin/theme-settings-panel";
+import { AppearanceSettingsPanel } from "@/components/admin/appearance-settings-panel";
 import { SettingsForms } from "@/components/admin/settings-forms";
 import { EstimateSettingsForm } from "@/components/admin/estimate-settings-form";
 import { LogoUploader } from "@/components/admin/logo-uploader";
 import { InvoiceSupplierSignatureSettings } from "@/components/admin/invoice-supplier-signature-settings";
 import { InvoiceBankSettings } from "@/components/admin/invoice-bank-settings";
 import { clampSignatureTransform } from "@/lib/invoice-signature";
+import { resolveHeroVisualMode } from "@/lib/hero-visual";
 
 export default function AdminSettingsPage() {
   return (
@@ -52,7 +53,11 @@ async function AdminSettingsContent() {
         description="ლოგო, ინვოისი, კონტაქტი, ბიუჯეტის ცხრილი და ადმინის პაროლი"
       />
       <AdminSettingsTabs
-        appearance={<ThemeSettingsPanel />}
+        appearance={
+          <AppearanceSettingsPanel
+            heroVisual={resolveHeroVisualMode(settings?.heroVisual)}
+          />
+        }
         brand={
           <LogoUploader
             initialUrl={settings?.logoUrl ?? null}

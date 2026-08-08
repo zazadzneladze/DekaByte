@@ -20,10 +20,11 @@ import {
   whyDekabyte,
 } from "@/config/content";
 import { whatsappDefaultMessage, whatsappHref } from "@/config/site";
-import { getFeaturedProjects, getPublishedProjects } from "@/db/queries";
+import { getFeaturedProjects, getPublishedProjects, getPublicSiteSettings } from "@/db/queries";
 import { TrackedAnchor } from "@/lib/meta-pixel";
 
 export default async function HomePage() {
+  const settings = await getPublicSiteSettings();
   let featured = await getFeaturedProjects();
   if (featured.length === 0) {
     featured = (await getPublishedProjects()).slice(0, 3);
@@ -82,7 +83,7 @@ export default async function HomePage() {
               </Button>
             </div>
           </div>
-          <HeroVisual className="animate-fade-in" />
+          <HeroVisual mode={settings.heroVisual} className="animate-fade-in" />
         </div>
       </section>
 

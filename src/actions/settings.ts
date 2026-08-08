@@ -16,6 +16,7 @@ import { estimateConfigSchema } from "@/validators/estimate";
 import { deleteBlobSafe } from "@/lib/blob";
 import { isSafeHttpUrl } from "@/lib/security";
 import { clampSignatureTransform } from "@/lib/invoice-signature";
+import { siteDefaults } from "@/config/site";
 import type { EstimateConfig } from "@/config/estimate";
 import type { InvoiceBankConfig } from "@/config/invoice";
 import { invoiceBankConfigSchema } from "@/validators/invoice-bank";
@@ -381,5 +382,40 @@ export async function changeAdminPassword(
 
   // Never log passwords.
   revalidatePath("/admin/settings");
+  return { ok: true };
+}
+
+const heroVisualSchema = z.enum(["mark", "cube", "orbit"]);
+
+export async function updateHeroVisual(raw: unknown): Promise<SettingsActionResult> {
+  await requireAdmin();
+
+  const parsed = heroVisualSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { ok: false, error: "Hero ვიზუალი არასწორია" };
+  }
+
+  const db = getDb();
+  const existing = await adminGetSiteSettings();
+  const data = {
+    heroVisual: parsed.data,
+    updatedAt: new Date(),
+  };
+
+  if (existing) {
+    await db.update(siteSettings).set(data).where(eq(siteSettings.id, 1));
+  } else {
+    await db.insert(siteSettings).values({
+      id: 1,
+      ...siteDefaults,
+      heroVisual: parsed.data,
+      updatedAt: new Date(),
+    });
+  }
+
+  invalidateSiteSettingsCache();
+  revalidatePath("/admin/settings");
+  revalidatePath("/");
+
   return { ok: true };
 }
