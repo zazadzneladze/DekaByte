@@ -5,6 +5,7 @@ import { mergeEstimateConfig } from "@/config/estimate";
 import { mergeInvoiceBankConfig } from "@/config/invoice";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminSettingsTabs } from "@/components/admin/admin-settings-tabs";
+import { ThemeSettingsPanel } from "@/components/admin/theme-settings-panel";
 import { SettingsForms } from "@/components/admin/settings-forms";
 import { EstimateSettingsForm } from "@/components/admin/estimate-settings-form";
 import { LogoUploader } from "@/components/admin/logo-uploader";
@@ -51,6 +52,7 @@ async function AdminSettingsContent() {
         description="ლოგო, ინვოისი, კონტაქტი, ბიუჯეტის ცხრილი და ადმინის პაროლი"
       />
       <AdminSettingsTabs
+        appearance={<ThemeSettingsPanel />}
         brand={
           <LogoUploader
             initialUrl={settings?.logoUrl ?? null}

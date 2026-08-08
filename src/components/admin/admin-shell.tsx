@@ -18,7 +18,6 @@ import {
   type AdminNotificationThread,
 } from "@/components/admin/admin-notifications-sheet";
 import { AdminPushControls } from "@/components/admin/push-controls";
-import { ModeToggle } from "@/components/mode-toggle";
 import { DEFAULT_LOGO_SRC } from "@/components/public/logo";
 import { UserAvatar } from "@/components/public/user-avatar";
 import { Button } from "@/components/ui/button";
@@ -205,7 +204,6 @@ export function AdminShell({
               <p className="truncate text-sm font-medium">{pageTitle(pathname)}</p>
             </div>
             <div className="ml-auto flex items-center gap-1.5">
-              <ModeToggle />
               <AdminPushControls vapidPublicKey={vapidPublicKey} />
               <AdminNotificationsSheet
                 totalCount={inboxCount}

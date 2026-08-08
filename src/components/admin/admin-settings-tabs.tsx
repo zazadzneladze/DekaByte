@@ -3,16 +3,26 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Props = {
+  appearance: React.ReactNode;
   brand: React.ReactNode;
   invoice: React.ReactNode;
   contact: React.ReactNode;
   estimate: React.ReactNode;
 };
 
-export function AdminSettingsTabs({ brand, invoice, contact, estimate }: Props) {
+export function AdminSettingsTabs({
+  appearance,
+  brand,
+  invoice,
+  contact,
+  estimate,
+}: Props) {
   return (
-    <Tabs defaultValue="brand" className="w-full gap-4">
+    <Tabs defaultValue="appearance" className="w-full gap-4">
       <TabsList className="h-auto w-full flex-wrap justify-start gap-1 bg-muted/50 p-1">
+        <TabsTrigger value="appearance" className="text-xs sm:text-sm">
+          გარეგნობა
+        </TabsTrigger>
         <TabsTrigger value="brand" className="text-xs sm:text-sm">
           ბრენდი
         </TabsTrigger>
@@ -26,6 +36,9 @@ export function AdminSettingsTabs({ brand, invoice, contact, estimate }: Props) 
           ბიუჯეტი
         </TabsTrigger>
       </TabsList>
+      <TabsContent value="appearance" className="mt-0 space-y-4 outline-none">
+        {appearance}
+      </TabsContent>
       <TabsContent value="brand" className="mt-0 space-y-4 outline-none">
         {brand}
       </TabsContent>
